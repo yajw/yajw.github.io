@@ -3,7 +3,7 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: Yajun
+title: yajw
 subtitle:
 description:
 keywords:
@@ -14,7 +14,7 @@ timezone:
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
-url: http://yajun.com
+url: http://yajunw.com
 root: /
 permalink: :year/:month/:day/:title/
 permalink_defaults:
