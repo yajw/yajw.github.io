@@ -7,9 +7,7 @@ branches:
 
 before_install:
   - npm install -g hexo-cli
-
-install:
-  - npm i
+  - npm install -g hexo
 
 before_script:
   - git config user.name "yajw"
@@ -17,5 +15,6 @@ before_script:
   - sed -i'' "s~https://github.com/yajw/yajw.github.io.git~https://${ACCESS_TOKEN}@github.com/yajw/yajw.github.io.git~" blog/_config.yml
 script:
   - cd blog
+  - npm i
   - hexo g
   - hexo d
