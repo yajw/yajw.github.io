@@ -3,7 +3,7 @@ node_js: --lts
 
 branches:
   only:
-    - master
+    - source
 
 before_install:
   - npm install -g hexo-cli

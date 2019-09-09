@@ -81,7 +81,7 @@ theme: xoxo-plus
 deploy: 
   type: git
   repo: https://github.com/yajw/yajw.github.io.git
-  branch: gh-pages
+  branch: master
 
 archive_generator:
   enabled: true
