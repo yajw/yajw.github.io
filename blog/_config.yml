@@ -116,7 +116,7 @@ feed:
 
 
 sitemap:
-    path: sitemap.xml
+  path: sitemap.xml
 
 disqus_shortname: 
 

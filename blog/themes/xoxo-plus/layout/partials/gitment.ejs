@@ -1,0 +1,24 @@
+<% if (page.comments){ %>
+  <div class="comment-container">
+    <div id="gitment-container">
+      <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+  </div>
+
+  <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+  <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+  
+  <script>
+      var gitment = new Gitment({
+        //评论issue唯一ID
+        id: '<%= page.date.format("YYYYMMDDHH") + "-" + page.title %>',
+        owner: 'yajw',
+        repo: 'yajw.github.io',
+        oauth: {
+          client_id: '22cdf46e2d6ccbe19c49',
+          client_secret: '7f84c5f9859178e872a55beea8705470b1b304ff',
+        },
+      })
+      gitment.render('gitment-container')
+  </script>
+<% } %>
