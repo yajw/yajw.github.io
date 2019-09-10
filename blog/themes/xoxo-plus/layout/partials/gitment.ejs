@@ -11,7 +11,7 @@
   <script>
       var gitment = new Gitment({
         //评论issue唯一ID
-        id: '<%= page.date.format("YYYYMMDDHH") + "-" + page.title %>',
+        id: '<%= page.date.format("YYYYMMDDHHmm") %>',
         owner: 'yajw',
         repo: 'yajw.github.io',
         oauth: {
