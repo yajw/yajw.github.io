@@ -31,6 +31,7 @@ stylesheets:
 # - /css/normalize.css
 - //cdn.bootcss.com/pure/1.0.0/pure-min.css
 - /css/xoxo.css
+- /css/gitment.css
 
 # baidu url js push
 baidu_url_js_push: true
@@ -39,6 +40,7 @@ baidu_url_js_push: true
 scripts:
 #- //cdn.bootcss.com/zepto/1.2.0/zepto.min.js
 - /js/xoxo.js
+- /js/gitment.browser.js
 
 # switch
 show_excerpt: true
