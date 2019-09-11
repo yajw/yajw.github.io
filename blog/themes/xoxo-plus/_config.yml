@@ -47,7 +47,7 @@ show_date: true
 #footer
 index_page: 
 main_site: 
-github: 
+github: https://github.com/yajw
 links_url: /links
 
 # 友情链接
