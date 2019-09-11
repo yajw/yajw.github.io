@@ -22,12 +22,12 @@ github issue获取comments的api不支持倒序，替换下原有获取comments�
         if (!reverse) {
             return _utils.http.get(issue.comments_url, { page: page, per_page: _this8.perPage }, '');
         } else {
-            console.log('reversed')
             var comments = []
             var perPage = _this8.perPage
             var totalCommentsCount = issue.comments
-            var start = totalCommentsCount - (page * perPage) + 1
+            var start = Math.max(1, totalCommentsCount - (page * perPage) + 1)
             var startPage = Math.ceil(start / perPage)
+            var thisPage = Math.min(perPage, totalCommentsCount - start + 1)
             var comments_url = issue.comments_url
             return _utils.http.get(comments_url, { 
                 page: startPage, 
@@ -36,13 +36,13 @@ github issue获取comments的api不支持倒序，替换下原有获取comments�
                 for (var i = ((start-1)%perPage); i < startPageComments.length; i++) {
                     comments.push(startPageComments[i])
                 }
-                if (comments.length < perPage) {
+                if (comments.length < thisPage) {
                     return _utils.http.get(comments_url, { 
                         page: startPage+1, 
                         per_page: perPage 
                     }, '').then(function(nextPageComments) {
                         for (var i = 0; i < nextPageComments.length; i++) {
-                            if (comments.length >= perPage) {
+                            if (comments.length >= thisPage) {
                                 break
                             }
                             comments.push(nextPageComments[i])
