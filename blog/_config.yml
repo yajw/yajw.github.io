@@ -93,6 +93,7 @@ archive_generator:
 menu:
   home: /
 #   # post:
+  whisper: /whisper
   archives: /archives
   categories: /categories
   tags: /tags
