@@ -22,36 +22,53 @@ github issue获取comments的api不支持倒序，替换下原有获取comments�
         if (!reverse) {
             return _utils.http.get(issue.comments_url, { page: page, per_page: _this8.perPage }, '');
         } else {
-            var comments = []
-            var perPage = _this8.perPage
-            var totalCommentsCount = issue.comments
-            var start = Math.max(1, totalCommentsCount - (page * perPage) + 1)
-            var startPage = Math.ceil(start / perPage)
-            var thisPage = Math.min(perPage, totalCommentsCount - start + 1)
+            var pageSize = Math.min(Math.max(_this8.perPage, 0), 50)
+
+            var total = issue.comments
+            var totalPageCount = Math.floor((total + pageSize - 1) / pageSize)
+            console.log(total, totalPageCount)
+
+            var pageNo = Math.min(Math.max(page, 0), totalPageCount)
+
+            var start = (pageNo - 1) * pageSize + 1
+            var end = Math.min(pageNo * pageSize, total)
+            
+            var inverseStart = total + 1 - end
+            var inverseEnd = total + 1 - start
+            console.log(inverseStart, inverseEnd)
+
+            var inverseStartPageNo = Math.floor((inverseStart - 1) / pageSize + 1)
+            console.log(inverseStartPageNo)
+            
             var comments_url = issue.comments_url
-            return _utils.http.get(comments_url, { 
-                page: startPage, 
-                per_page: perPage 
-            }, '').then(function(startPageComments) {
-                for (var i = ((start-1)%perPage); i < startPageComments.length; i++) {
+            return _utils.http.get(comments_url, {
+                    page: inverseStartPageNo, 
+                    per_page: pageSize 
+                }, ''
+            ).then(function(startPageComments) {
+                var comments = []
+                var preCount = (inverseStartPageNo - 1) * pageSize
+                var to =  Math.min(startPageComments.length, inverseEnd-preCount)
+                for (var i = inverseStart-1-preCount; i < to; i++) {
                     comments.push(startPageComments[i])
                 }
-                if (comments.length < thisPage) {
+                if (startPageComments.length < inverseEnd-preCount) {
                     return _utils.http.get(comments_url, { 
-                        page: startPage+1, 
-                        per_page: perPage 
-                    }, '').then(function(nextPageComments) {
-                        for (var i = 0; i < nextPageComments.length; i++) {
-                            if (comments.length >= thisPage) {
-                                break
-                            }
+                            page: inverseStartPageNo+1, 
+                            per_page: pageSize 
+                        }, ''
+                    ).then(function(nextPageComments) {
+                        var preCount = inverseStartPageNo * pageSize
+                        for (var i = 0; i < inverseEnd-preCount; i++) {
                             comments.push(nextPageComments[i])
                         }
-                        return comments.reverse()
+                        return comments
                     });
                 } else {
-                    return comments.reverse()
+                    return comments
                 }
+            }).then(function(comments) {
+                return comments.reverse()
             });
         }
       }).then(function (comments) {
@@ -59,5 +76,5 @@ github issue获取comments的api不支持倒序，替换下原有获取comments�
         return comments;
       });
     }
-},
+  },
 ```
