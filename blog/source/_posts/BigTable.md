@@ -10,6 +10,16 @@ categories: 读书
 
 BigTable是什么？分布式存储系统，设计目标是能够处理大到PT级别的数据量，能够支持数千台服务器的集群。应用场景包括不同数据量（url到网页到卫星图片），吞吐型（批处理），低延迟型（实时查询）。BigTable在处理这些各种各样的场景时，表现出了灵活性和高性能。
 
+BigTable
+1. 设计思路和特点
+2. 主要优势，怎么实现的
+  - 怎么可靠可伸缩
+  - 高性能
+  - 多场景
+  - 高可用
+  - 一致性
+3. 启发
+
 BigTabe特点：
 - 能够可靠地伸缩
 - 简单的数据模型
@@ -35,8 +45,25 @@ row key是字符串，最长支持到64kb。
 
 在同一个row key下，对数据读写操作是原子的。
 
-BigTable按照row key的字典序maintain data。BigTable会按照row key的range来分区，一个range叫做一个tablet，tablet是负载均衡和分布的最小单元。
+BigTable按照row key的字典序maintain data。
 
+BigTable会按照row key的range来分区，一个range叫做一个table。tablet是负载均衡和分布式的最小单元。
+
+### Column Families
+
+这里为了方便描述，要发明一些（自己的）术语。
+
+列键标识一列，列族标识一组列键。列族是访问控制的基本单元。
+
+列族中的数据通常是同一个类型，在BigTable中是压缩存储。
+
+一个table下，列族最多支持数百个，列键数量则无限制。
+
+列键的命名格式是：`familiy:qualifier`
+
+列族的名字必须是printable的，qualifier则可以是任意的。
+
+访问控制、磁盘和内存审计都在列族层面。
 
 ## BigTable结构
 
