@@ -65,6 +65,41 @@ BigTable会按照row key的range来分区，一个range叫做一个table。table
 
 访问控制、磁盘和内存审计都在列族层面。
 
+### timestamp
+
+BigTable用时间戳标识数据的多个版本，各个版本按时间戳倒序存储。
+
+时间戳的格式是64 bit整数，精确到微秒。
+
+时间戳可以由客户端自己生成。
+
+BigTable支持两个列族粒度的参数，来用不同策略对比较老的数据版本作垃圾回收：一是保留最近n个版本，二是保留最近某段时间，比如最近7天。
+
+## API
+
+BigTable提供了两种API，一是表和列族的操作，二是管理集群、表、列族的元数据，例如访问权限控制。
+
+客户端支持，写/删除value，对单行查找value，遍历某个子集。
+
+`RowMutation`对单行数据作更新。
+
+`Scanner`支持遍历操作。
+
+其他的复杂操作：
+1. 单行事务
+2. 允许单个cell作计数器
+3. 支持在服务器上只读脚本（Sawzall语言）
+4. 和MapReduce集成，作为MapReduce的输入输出
+
+## 构件
+
+BigTable使用GFS来存储日志和数据文件。
+
+BigTable运行在Google的共享机器池中，依赖公共的集群管理系统（任务调度、资源分配、故障处理、监控）。
+
+BigTable内部使用Google的SSTable结构来存储数据。SSTable是持久的、有序的immutable map，key和value都是任意字节串。
+SSTable支持查找、特定key range的遍历。SSTable包含多个blocks，一个block包含64KB。SSTable包含一个block index来快速定位block。block index在SSTable打开时加载到内存中。一次查找只需要一次磁盘seek，首先在内存中找到block，然后读取该block。SSTable也可以配置成完全内存加载方式，避免磁盘操作。
+
 ## BigTable结构
 
 逻辑上是多维的有序map，维度包括：row, column family, timestamp。既然是map，维度就是key，value是字符串。其中column family可以有多个（最多数百个），每个column family可以不限数量。
