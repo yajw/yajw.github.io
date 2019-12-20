@@ -6,6 +6,11 @@ tags: [linux, awk]
 categories: 实用
 ---
 
+## 入门文章
+- AWK 简明教程 https://coolshell.cn/articles/9070.html
+- awk 入门教程 http://www.ruanyifeng.com/blog/2018/11/awk.html
+
+
 ## 匹配
 **包含某些关键词，但不包含其他关键词**
 ```bash
