@@ -6,12 +6,36 @@ tags: [linux, awk]
 categories: 实用
 ---
 
-日志第一列是ip，数不同ip的日志行数
+## 匹配
+**包含某些关键词，但不包含其他关键词**
+```bash
+awk -F '|' '/error|warn/ && !/system/' error.log
+```
+
+## 统计
+**日志第一列是ip，数不同ip的日志行数**
 ```bash
 awk -v OFS='\t' -F '|' '{count[$1]++;} END {for (ip in count) print ip, count[ip]}' info.log
 ```
 
-包含某些关键词，但不包含其他关键词
+**按照ip数统计某个url的请求量**
 ```bash
-awk -F '|' '/error|warn/ && !/system/' error.log
+awk -F '|' '/api\/service/ && !/api\/service\/other/ {c[$1]++} END {for (ip in c) print ip,c[ip]}' info.log
+```
+
+**按照小时统计某个url的请求量**
+
+sample log
+```
+0.0.0.0|2019-12-19 13:01:02|elapsed=12ms,url=/api/service
+```
+
+```bash
+awk -F '|' '/api\/service/ {split($2, t, "[-: ]"); c[t[4]]++;} END {for (hour in c) print hour,c[hour]}' info.log | sort -k1
+```
+
+**按照小时统计某个url的请求量，并且包含占总量的百分比**
+
+```bash
+awk -F '|' '/api\/service/ {split($2, t, "[-: ]"); c[t[4]]++; s++} END {for (hour in c) printf "%s\t%s\t%.2f\n" hour,c[hour],100*c[hour]/s}' info.log | sort -k1
 ```
