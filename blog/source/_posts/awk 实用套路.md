@@ -39,3 +39,20 @@ awk -F '|' '/api\/service/ {split($2, t, "[-: ]"); c[t[4]]++;} END {for (hour in
 ```bash
 awk -F '|' '/api\/service/ {split($2, t, "[-: ]"); c[t[4]]++; s++} END {for (hour in c) printf "%s\t%s\t%.2f\n" hour,c[hour],100*c[hour]/s}' info.log | sort -k1
 ```
+
+**统计错误日志中不同类型的种类**
+
+```bash
+awk -F '|' ' /ERROR/ {c[$7]++;s++} END {for (r in c) printf "%s\t%.2f\t%s\n", c[r],100*c[r]/s,r}' error.log | sort -k2
+```
+
+**连接状态统计**
+
+```bash
+ss | awk 'NR!=1{c[$2]++} END {for (s in c) print s, c[s]}'
+```
+
+**统计不同目的ip的不同状态的连接数**
+```bash
+netstat -t | awk -v OFS='\t\t' 'NR>2{c[$5,$6]++} END {for (x in c) {split(x, s, SUBSEP); print c[x],s[2],s[1]} }'
+```
