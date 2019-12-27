@@ -6,7 +6,9 @@ tags: [linux, grub, 笔记]
 categories: 实用
 ---
 
-参考：https://www.jianshu.com/p/7c78dc4c53e5
+参考：
+1. https://www.jianshu.com/p/7c78dc4c53e5
+2. https://www.viseator.com/2017/05/17/arch_install/
 
 以下mvne0n1p5为boot分区。
 
@@ -21,7 +23,7 @@ mount /dev/nvme0n1p5 /mnt/boot/efi
 切换到arch后，
 ```bash
 pacman -S intel-ucode os-prober grub efibootmgr
-grub-install --target=i386-pc /dev/nvme0n1
+grub-install --target=i386-pc /dev/nvme0n1  # 失败加--force解决了，即grub-install --target=i386-pc --force /dev/nvme0n1
 grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=ArchLinux
 grub-mkconfig -o /boot/grub/grub.cfg
 ```
