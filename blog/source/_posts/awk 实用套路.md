@@ -61,3 +61,15 @@ ss | awk 'NR!=1{c[$2]++} END {for (s in c) print s, c[s]}'
 ```bash
 netstat -t | awk -v OFS='\t\t' 'NR>2{c[$5,$6]++} END {for (x in c) {split(x, s, SUBSEP); print c[x],s[2],s[1]} }'
 ```
+
+## 远程awk重定向输出到本地文件
+
+这个需要在本地分析日志时很有用，heredoc可以避开escape的问题。
+
+借助heredoc和ssh重定向
+
+```bash
+ ssh > daemon.log aps-live-log <<-'EOF'
+awk -F '|' '!/ktc_settlement_report/ && !/txn_3ds/ && $2>"[2020-01-05 01:00:00" && $2<"[2020-01-05 01:05:00"' /data/error.log
+EOF
+```
