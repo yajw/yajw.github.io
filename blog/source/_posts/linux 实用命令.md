@@ -6,6 +6,36 @@ tags: [linux, awk, split, sed]
 categories: 实用
 ---
 
+# split
+
+文件分割比较有用。例如把一个script.sql文件按每100行拆分，输出文件前缀为split_
+mac上用的gsplit (GNU版本的split)
+
+```bash
+gsplit -dl 400 --additional-suffix=.sql script.sql script_
+```
+
+也支持按文件大小分割，同时支持按行分割
+
+# sed
+
+例如，script.sql文件每行一条insert语句，想要改成`on duplicate update`来同时支持插入和已有记录的更新（这个操作是幂等的），就可以用下面的方法：
+
+第一步，去掉文件每行末的最后一个字符：
+```bash
+sed 's/.$//' script.sql > script_noprefix.sql
+```
+
+然后，给每行加上指定字符串，这里是`ON DUPLICATE KEY`:
+```bash
+sed 's/$/ ON DUPLICATE KEY UPDATE update_time=values(update_time);/' script_noprefix.sql > script_update_insert.sql
+```
+
+sed支持直接替换，上面的例子也可以直接替最后一个字符为指定字符串。一个替换的例子(mac版本)：
+```bash
+sed -i '' -- 's/.$/ ON DUPLICATE KEY UPDATE update_time=values(update_time);/g' script.sql
+```
+
 # awk 实用套路
 
 其他学习文章
