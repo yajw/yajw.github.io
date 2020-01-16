@@ -1,15 +1,16 @@
 ---
-title: awk 实用套路
+title: linux 实用命令
 comments: true
 date: 2019-12-20 00:00:00
-tags: [linux, awk]
+tags: [linux, awk, split, sed]
 categories: 实用
 ---
+
+# awk 实用套路
 
 其他学习文章
 - AWK 简明教程 https://coolshell.cn/articles/9070.html
 - awk 入门教程 http://www.ruanyifeng.com/blog/2018/11/awk.html
-
 
 ## 匹配
 **包含某些关键词，但不包含其他关键词**
