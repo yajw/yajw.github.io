@@ -31,7 +31,8 @@ sed 's/.$//' script.sql > script_noprefix.sql
 sed 's/$/ ON DUPLICATE KEY UPDATE update_time=values(update_time);/' script_noprefix.sql > script_update_insert.sql
 ```
 
-sed支持直接替换，上面的例子也可以直接替最后一个字符为指定字符串。一个替换的例子(mac版本)：
+sed支持直接替换，上面的例子也可以直接替最后一个字符为指定字符串。
+一个替换的例子(mac版本)，**注意：这里是原地替换，直接修改原文件内**：
 ```bash
 sed -i '' -- 's/.$/ ON DUPLICATE KEY UPDATE update_time=values(update_time);/g' script.sql
 ```
