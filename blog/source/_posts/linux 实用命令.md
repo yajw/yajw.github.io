@@ -28,7 +28,7 @@ sed 's/.$//' script.sql > script_noprefix.sql
 
 然后，给每行加上指定字符串，这里是`ON DUPLICATE KEY`:
 ```bash
-sed 's/$/ ON DUPLICATE KEY UPDATE update_time=values(update_time);/' script_noprefix.sql > script_update_insert.sql
+sed 's/.$/ ON DUPLICATE KEY UPDATE update_time=values(update_time);/' script_noprefix.sql > script_update_insert.sql
 ```
 
 sed支持直接替换，上面的例子也可以直接替最后一个字符为指定字符串。
@@ -101,7 +101,7 @@ netstat -t | awk -v OFS='\t\t' 'NR>2{c[$5,$6]++} END {for (x in c) {split(x, s, 
 借助heredoc和ssh重定向
 
 ```bash
- ssh > daemon.log aps-live-log <<-'EOF'
+ssh > daemon.log aps-live-log <<-'EOF'
 awk -F '|' '!/ktc_settlement_report/ && !/txn_3ds/ && $2>"[2020-01-05 01:00:00" && $2<"[2020-01-05 01:05:00"' /data/error.log
 EOF
 ```
