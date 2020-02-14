@@ -17,6 +17,10 @@ gsplit -dl 400 --additional-suffix=.sql script.sql script_
 
 也支持按文件大小分割，同时支持按行分割
 
+```bash
+gsplit -C 10M --additional-suffix=.sql script.sql script_
+```
+
 # sed
 
 例如，script.sql文件每行一条insert语句，想要改成`on duplicate update`来同时支持插入和已有记录的更新（这个操作是幂等的），就可以用下面的方法：
