@@ -6,6 +6,22 @@ tags: [linux, awk, split, sed]
 categories: 实用
 ---
 
+# sftp
+
+upload local file to remote sftp:
+```bash
+sftp -oPort=2201 user@host:${remote_path} <<< $'put {local_file_path}'
+```
+
+download remote file to local:
+```bash
+sftp user@host:${remote_path} ${local_path}
+```
+
+路径支持通配符来匹配多个文件
+
+sftp常用命令有这些：`ls` `ls -lh` `rm` `put` `get`等。
+
 # split
 
 文件分割比较有用。例如把一个script.sql文件按每100行拆分，输出文件前缀为split_
