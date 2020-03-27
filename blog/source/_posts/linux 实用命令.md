@@ -24,6 +24,8 @@ sftp常用命令有这些：`ls` `ls -lh` `rm` `put` `get`等。
 
 # split
 
+* mac安装gsplit: `brew install coreutils`
+
 文件分割比较有用。例如把一个script.sql文件按每100行拆分，输出文件前缀为split_
 mac上用的gsplit (GNU版本的split)
 
