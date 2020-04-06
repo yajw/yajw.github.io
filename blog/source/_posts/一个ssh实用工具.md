@@ -93,16 +93,22 @@ import re
 from ssh.client import SSHSession
 
 
+
 class ShellHandler:
 
     def __init__(self, host, **kwargs):
-        self.ssh = SSHSession(host, **kwargs).client
+        self.session = SSHSession(host, **kwargs)
+        self.ssh = self.session.client
         channel = self.ssh.invoke_shell()
         self.stdin = channel.makefile('wb')
         self.stdout = channel.makefile('r')
 
-    def __del__(self):
-        self.ssh.close()
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if self.ssh is not None:
+            self.ssh.close()
 
     def execute(self, cmd):
         """
@@ -146,7 +152,6 @@ class ShellHandler:
             sherr.pop(0)
 
         return shin, shout, sherr
-
 ```
 
 ## 使用
@@ -157,9 +162,9 @@ with SSHSession("server0") as session:
     print session.exec_command("ls")
 
 # ShellHandler
-shell = ShellHandler("server1")
-shell.execute("cd /")
-shell.execute("ls ")
-_, out, err = shell.execute("uname -a")
-print out
+with ShellHandler("server2") as shell:
+    shell.execute("cd /home")
+    shell.execute("ls -al")
+    _, out, err = shell.execute("date")
+    print out
 ```
