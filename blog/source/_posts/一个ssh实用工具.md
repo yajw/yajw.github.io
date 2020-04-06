@@ -85,9 +85,81 @@ class SSHSession(object):
         return client
 ```
 
+交互式shell（作者：[misha](https://stackoverflow.com/a/36948840/4886367)）:
+
+```python
+import re
+
+from ssh.client import SSHSession
+
+
+class ShellHandler:
+
+    def __init__(self, host, **kwargs):
+        self.ssh = SSHSession(host, **kwargs).client
+        channel = self.ssh.invoke_shell()
+        self.stdin = channel.makefile('wb')
+        self.stdout = channel.makefile('r')
+
+    def __del__(self):
+        self.ssh.close()
+
+    def execute(self, cmd):
+        """
+
+        :param cmd: the command to be executed on the remote computer
+        :examples:  execute('ls')
+                    execute('finger')
+                    execute('cd folder_name')
+        """
+        cmd = cmd.strip('\n')
+        self.stdin.write(cmd + '\n')
+        finish = 'End-Of-Command-by-ShellHandler'
+        echo_cmd = 'echo {} $?'.format(finish)
+        self.stdin.write(echo_cmd + '\n')
+        shin = self.stdin
+        self.stdin.flush()
+
+        shout = []
+        sherr = []
+        for line in self.stdout:
+            if str(line).startswith(cmd) or str(line).startswith(echo_cmd):
+                shout = []
+            if str(line).startswith(finish):
+                exit_status = int(str(line).rsplit(None, 1)[1])
+                if exit_status:
+                    sherr = shout
+                    shout = []
+                break
+            else:
+                s = re.compile(r'(\x9B|\x1B\[)[0-?]*[ -/]*[@-~]').sub('', line).replace('\b', '').replace('\r', '')
+                if not (finish in s):
+                    shout.append(s)
+
+        if shout and echo_cmd in shout[-1]:
+            shout.pop()
+        if shout and cmd in shout[0]:
+            shout.pop(0)
+        if sherr and echo_cmd in sherr[-1]:
+            sherr.pop()
+        if sherr and cmd in sherr[0]:
+            sherr.pop(0)
+
+        return shin, shout, sherr
+
+```
+
 ## 使用
 
 ```python
+# SSHSession
 with SSHSession("server0") as session:
     print session.exec_command("ls")
+
+# ShellHandler
+shell = ShellHandler("server1")
+shell.execute("cd /")
+shell.execute("ls ")
+_, out, err = shell.execute("uname -a")
+print out
 ```
