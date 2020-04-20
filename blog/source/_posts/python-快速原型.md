@@ -1,0 +1,12 @@
+---
+title: python 快速原型
+comments: true
+date: 2020-04-20 17:07:12
+tags: [python, 工具链]
+---
+
+# 运行环境
+
+virtualenv： 给项目创建独立的运行环境
+pyenv: 管理python版本，全局版本
+pyenv-virtualenv: 结合了pyenv和virtualenv，能够方便地创建特定版本的运行环境
