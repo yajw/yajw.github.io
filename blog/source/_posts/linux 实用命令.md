@@ -127,3 +127,17 @@ ssh > daemon.log aps-live-log <<-'EOF'
 awk -F '|' '!/ktc_settlement_report/ && !/txn_3ds/ && $2>"[2020-01-05 01:00:00" && $2<"[2020-01-05 01:05:00"' /data/error.log
 EOF
 ```
+
+## awk 正则匹配筛选比较耗时的请求
+
+正则匹配提取：
+
+```bash
+awk -F'|' 'match($6, /elapsed=([0-9]+)/, ta) && match($6, /id=([0-9]+)/, ka) {c[ka[1]]=ta[1]} END {for (k in c) {print t,c[t]}}' data.log | sort -n -k 2
+```
+
+数值比较（筛选出耗时超过2秒的请求）
+
+```bash
+ awk -F'|' 'match($6, /elapsed=([0-9]+)/, ta) && match($6, /id=([0-9]+)/, ka) {if ((ta[1]+0)>2000) c[ka[1]]=ta[1]} END {for (t in c) {print t,c[t]}}' data_log | sort -n -k 2
+```
