@@ -214,6 +214,77 @@ props是向下传递的。
 
 特别注意一点：通过各种方式（函数式）定义的component，并不会重新实例化。而Hook也只实例化一次。react内部会去track所有的state。
 
+## 1.17 Props Handling (Advanced)
+
+props借助js的descruction语法能够更加简洁。
+
+```javascript
+
+const Item = ({title}) => (
+  <div><span>{title}</span></div>
+)
+
+```
+
+js支持嵌套解耦（nested descructuing）
+
+`spread operator`: `<Item {...item} />`
+`rest operator`: `const List = ({list}) => list.map(({objectID, ...item}) => <Item key={objectID} {...item} />);`
+
+
+## 1.18 React Side-Effects
+
+```javascript
+const [searchTerm, setSearchTerm] = React.useState(
+  localStorage.getItem('search') || 'React'
+)
+
+React.useEffect(() => {
+  localStorage.setItem('search', searchTerm);
+}, [searchTerm])
+
+const handleSearch = event => {
+  setSearchTerm(event.target.value);
+}
+```
+
+类似注册一个`state`的"事件"处理器。
+
+和handler区别：
+1. handler似乎更专注ui
+2. useEffect更专注处理逻辑（非ui，更接近业务）
+
+
+## 1.19 React Custom Hooks (Advanced)
+
+`useSemiPersistentState`封装了一些特定的逻辑，构成一个custom hook
+```javascript
+const useSemiPersistentState = (key, initialState) => {
+  const [value, setValue] = React.useState(
+    localStorage.getItem(key) || initialState
+  );
+
+  React.useEffect(() => {
+    localStorage.setItem(key, value);
+  }, [value]);  // 此处应该是笔误，书中是传递[value, key]
+
+  return [value, setValue];
+}
+```
+
+## 1.20 React Fragments
+
+component返回时如果不想要`<div>`包着，需要定义每个元素的key，react支持`<>`即所谓fragment，来表示top-level element，但是不会有rendered output。
+
+```javascript
+const Search = ({search, onSearch}) = (
+  <>
+    <label ... />
+    <input ... />
+  </>
+)
+```
+
 
 # 参考
 - 不熟悉前端的必读:https://www.robinwieruch.de/javascript-fundamentals-react-requirements
