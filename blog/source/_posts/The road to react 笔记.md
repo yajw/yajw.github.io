@@ -32,6 +32,17 @@ npm常用命令
 
 参考：[npm crash course](https://www.robinwieruch.de/npm-crash-course)
 
+## 1.3 Setting up a React Project
+npx命令: `execute npm package binaries` 
+`create-react-app`： 一个创建/初始化react项目骨架的工具
+通过`create-react-app`所创建的react项目基本结构：
+  - `node_modules/`: 依赖目录
+  - `public/index.html`: 默认`src/`下的js是处理这个文件
+  - `package.json`和`package-lock.json`，同上，另外前者定义了`start`/`build`/`test`命令
+  - `src/App.js`：应用的Components定义
+  - `src/App.css`：Components样式
+  - `src/index.js`：应用入口
+  
 
 
 # 参考
