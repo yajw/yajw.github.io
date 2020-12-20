@@ -14,3 +14,7 @@ SPA: 相比每次从服务端请求一个完整的html文件，SPA使得一个js
 React就是一种能够实现SPA应用或者遵循了SPA原则的技术。
 component是React中的一个重要概念，一个component定义了它的html/css/js即样式和交互，它能够被整个应用中灵活地复用。
 React的优势：稳定，且拥有强大的生态和社区。
+
+
+# 参考
+- 不熟悉前端的必读:https://www.robinwieruch.de/javascript-fundamentals-react-requirements
