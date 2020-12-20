@@ -174,6 +174,46 @@ const Item = props => (
 ) 
 ```
 
+## 1.13 React State
+
+React State能够让component变得interactive。
+
+`React.useState()`
+  - 是一个`React Hook`
+  - 返回一个二元素的数组，第一个是`current state`，第二个是`state updater function`
+  - 当`state updater`被调用后，component会重新render
+
+```javascript
+const App = () => {
+  const [searchTerm, setSearchTerm] = React.useState('');
+  ...
+}
+```
+
+## 1.14 Callback Handlers in JSX
+
+props是向下传递的。
+
+怎么才能让子component传递信息给父component呢？
+  - 父component定义一个callback函数，通过props传递给子component
+  - 子component在处理事件时，调用这个callback函数，实现通知
+
+## 1.15 Lifting State in React
+
+`lift state up`:
+  - 1. state定义在多个子component都需要访问的component中（state和面向对象中类的属性有明显的不同）
+  - 2. 子component通过props和callback来显示和更新state
+  - 3. state和`state updater`更像是event和event handler
+  - 4. state的"作用域"是整个app的生命周期，所以更像是事件
+
+## 1.16 React Controlled Components
+
+`controlled component`：把state通过props传递给组件，这时能够拿到state的初始值，同时component变得和普通的html元素几乎一样（除了使用JSX语法表示外）。
+
+`component lifecycle`：最开始是组件树初始化，同时hooks也用初始值实例化，然后ui就接受各种交互事件，更新state，调用`state updater`，然后所有相关的component重新render
+
+特别注意一点：通过各种方式（函数式）定义的component，并不会重新实例化。而Hook也只实例化一次。react内部会去track所有的state。
+
 
 # 参考
 - 不熟悉前端的必读:https://www.robinwieruch.de/javascript-fundamentals-react-requirements
