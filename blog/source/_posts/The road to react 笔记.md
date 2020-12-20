@@ -285,6 +285,67 @@ const Search = ({search, onSearch}) = (
 )
 ```
 
+## 1.21 Resuable React Component
+
+从search box抽象出`InputWithLabel`，结合js的`default parameter`语法，能够让component容易复用。
+
+
+## 1.22 React Component Composition
+
+`children` prop是react的一个特殊的prop，能够支持react component像html element那样嵌套组合：
+```javascript
+const Input = ({id, children}) => (
+  <>
+    <input id={id} ... />
+  </>
+)
+
+const App = () => (
+  <div>
+    <Input id="search">
+      <strong>Search:</strong>
+    </Input>
+  </div>
+)
+```
+
+## 1.23 Imperative React
+
+`imperative`和`declarative`
+
+react也支持直接访问dom element，来做一些事：
+
+```javascript
+
+const Input = (isFocused=false) => {
+  const ref = React.useRef()
+
+  React.useEffect(() => {
+    if (isFocused && ref.current) {
+      ref.current.focus();
+    };
+  }, [isFocused]);
+
+  return (
+    <>
+      <input ref={ref}/>
+    </>
+  )
+}
+```
+
+## 1.24 Inline Handler in JSX
+
+
+```javascript
+const Item = ({item, onRemoveItem}) => (
+  <>
+    <button onClick={() => onRemoveItem(item)}>
+  </>
+)
+```
+
+
 
 # 参考
 - 不熟悉前端的必读:https://www.robinwieruch.de/javascript-fundamentals-react-requirements
