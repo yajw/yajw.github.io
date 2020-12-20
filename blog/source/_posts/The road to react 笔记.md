@@ -43,6 +43,26 @@ npx命令: `execute npm package binaries`
   - `src/App.css`：Components样式
   - `src/index.js`：应用入口
   
+## 1.4 Meet the React Component
+
+```js
+import React from 'react';
+
+const target = 'React'
+
+function App() {
+  return (
+    <div>
+      <h1>Hello {target}</h1>
+    </div>
+  )
+}
+
+export default App;
+```
+这个component叫做App，同时也是一个普通的js function，所以也叫做function component。
+这个component返回一段类似html的叫做JSX的代码。
+这个component就是一个普通的js function，可以定义变量以及任何符合js语法的逻辑。
 
 
 # 参考
