@@ -45,7 +45,7 @@ npx命令: `execute npm package binaries`
   
 ## 1.4 Meet the React Component
 
-```js
+```javascript
 import React from 'react';
 
 const target = 'React'
@@ -64,6 +64,58 @@ export default App;
 这个component返回一段类似html的叫做JSX的代码。
 这个component就是一个普通的js function，可以定义变量以及任何符合js语法的逻辑。
 
+
+## 1.5 React JSX
+JSX语法：结合html和js
+  - 特殊关键字：`htmlfor`, `className`, `onClick`
+  - `{}`包含的是js表达式
+
+## 1.6 Lists in React
+
+js语法中list有`map`, `filter`等方法，也可以用在JSX中：
+
+```javascript
+const App = () => (
+  <div>
+  {items.map(item => (<div key={item.objectID}>{item.title}</div>))}
+  </div>
+)
+```
+`key`用来标识一个node。
+
+`return null` 表示不生成任何html。
+
+## 1.7 Meet another React Component
+
+一个定义好的component，可以作为JSX的标签来使用。
+```javascript
+const Item = (item) => (
+  <div key={item.objectID}>{item.title}</div>
+)
+
+const App = () => (
+  <div>
+  {items.map(item => (<Item item={item}/>))}
+  </div>
+)
+```
+
+一个react应用由此会形成一个组件树。
+
+## 1.8 React Component instantiation
+
+js中的class:
+```javascript
+class Item {
+  constructor(title) {
+    this.title = title
+  }
+}
+
+const item1 = new Item('test')
+```
+
+当使用JSX语法定义一个component的标签时，也就创建了一个component的实例。
 
 # 参考
 - 不熟悉前端的必读:https://www.robinwieruch.de/javascript-fundamentals-react-requirements
