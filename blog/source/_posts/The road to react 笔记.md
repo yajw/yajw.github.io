@@ -345,7 +345,23 @@ const Item = ({item, onRemoveItem}) => (
 )
 ```
 
+## 1.25 React Asynchronous Data
 
+`Promise`的使用：`.then`, `.catch`
+
+## 1.26 React Conditional Rendering
+
+```javascript
+{isLoading ? (<p>Loading...</p>):()}
+```
+
+## 1.27 React Advanced State
+
+`React.useReducer`
+
+类似发布事件：
+1. 定义reducer，根据current state,type,action计算下一个状态
+2. dispatchFunc: 发布action
 
 # 参考
 - 不熟悉前端的必读:https://www.robinwieruch.de/javascript-fundamentals-react-requirements
