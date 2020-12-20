@@ -89,7 +89,7 @@ const App = () => (
 
 一个定义好的component，可以作为JSX的标签来使用。
 ```javascript
-const Item = (item) => (
+const Item = ({item}) => (
   <div key={item.objectID}>{item.title}</div>
 )
 
@@ -116,6 +116,64 @@ const item1 = new Item('test')
 ```
 
 当使用JSX语法定义一个component的标签时，也就创建了一个component的实例。
+
+## 1.9 React DOM
+
+```javascript
+ReactDOM.render(
+  <App />,
+  document.getElementById('root')
+)
+```
+
+1. `ReactDOM.render`将JSX渲染为真实的的DOM。
+2. `root`是`public/index.html`中的id
+
+## 1.10 React Component Definition (Advanced)
+
+定义componenet的几个pattern
+1. functional component 函数的方式定义component
+2. arrow function
+3. 定义一个类，继承`React.Component`
+
+## 1.11 Handler Function in JSX
+
+```javascript
+const App = () => {
+  const handleChange = event => {
+    console.log(event.target.value)
+  }
+
+  return (
+    <div>
+    <label htmlFor="search">Search: </label>
+    <input id="search" type="text" onChange={handleChange}>
+    </div>
+  )
+}
+```
+
+`synthetic event`合成事件是对浏览器native event的封装，并且改变了某些行为（例如避免submit时刷新页面）。
+JSX中event handler和js的语法十分相似。
+
+## 1.12 React Props
+
+props可以用来在父component到子component的传递参数。
+
+```javascript
+const App = () => (
+  <div>
+     {items.map(item => <Item item={item}>)}
+  </div>
+)
+
+const Item = props => (
+  <div>
+     <span>{props.item.title}</span>
+  </div>
+) 
+```
+
 
 # 参考
 - 不熟悉前端的必读:https://www.robinwieruch.de/javascript-fundamentals-react-requirements
