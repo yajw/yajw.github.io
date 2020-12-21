@@ -363,5 +363,24 @@ const Item = ({item, onRemoveItem}) => (
 1. 定义reducer，根据current state,type,action计算下一个状态
 2. dispatchFunc: 发布action
 
+## 1.28 React Impossible States
+
+使用useReducer hook封装多个相关的状态，减少`impossible states`发生的概率。`impossible state`发生表示bug，或者带来错误的用户体验。
+
+## 1.29 Data Fetching with React
+
+`fetch` api: `fetch(url).then(resp => resp.json()).then...`
+
+## 1.30 Data Re-Fetching in React
+
+useEffect绑定一个state，当state变化时会执行对应逻辑，更新或者发布action
+
+## 1.31 Memorized Handler in React (Advanced)
+
+
+`React.useCallback`: 状态发生变化时，直接调用该callback
+
+死循环？没太看懂
+
 # 参考
 - 不熟悉前端的必读:https://www.robinwieruch.de/javascript-fundamentals-react-requirements
