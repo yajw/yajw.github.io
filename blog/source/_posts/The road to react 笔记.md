@@ -415,5 +415,11 @@ async () => {
 
 `onSubmit`handler: react中处理表单提交的事件
 
+
+## 总结
+1. 熟悉JSX语法
+2. 熟悉javascript的一些语法，例如arrow function, destructuring, promise, async/await
+3. 熟悉几个react hooks的用法
+
 # 参考
 - 不熟悉前端的必读:https://www.robinwieruch.de/javascript-fundamentals-react-requirements
