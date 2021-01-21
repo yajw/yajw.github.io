@@ -14,10 +14,6 @@ categories: 实用
 机器配置：`32core,32GB,ubuntu 16.04,docker容器`
 sysbench: `sysbench 1.0.20 (using bundled LuaJIT 2.1.0-beta2)`
 
-## 1.1 MySQL
-
-版本：`mysql  Ver 14.14 Distrib 5.7.31-34, for debian-linux-gnu (x86_64) using  6.3`
-
 my.cnf:
 ```
 [mysqld]
@@ -50,6 +46,12 @@ innodb_read_io_threads=16
 innodb_flush_method=O_DIRECT
 ```
 
+## 1.1 MySQL
+
+版本：`mysql  Ver 14.14 Distrib 5.7.31-34, for debian-linux-gnu (x86_64) using  6.3`
+
+percona server 5.7
+
 ## 1.2 MyRocks
 
 安装：[Percona MyRocks 5.7](https://www.percona.com/doc/percona-server/5.7/myrocks/install.html)
@@ -64,7 +66,7 @@ sudo apt-get update
 sudo apt-get install percona-server-rocksdb-5.7
 ```
 
-版本: ``
+版本: `mysql  Ver 14.14 Distrib 5.7.32-35, for debian-linux-gnu (x86_64) using  6.3`
 
 
 # 2. 测试 oltp_read_write.lua
