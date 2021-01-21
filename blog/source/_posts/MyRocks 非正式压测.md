@@ -8,7 +8,9 @@ categories: 实用
 
 “非正式”：开发环境有个docker容器要过期了，刚好对MyRocks和MySQL性能对比感兴趣，就拿来简单不专业地测下，仅对比下同样环境下两个版本的结果，测试工具是sysbench，场景是olap_read_write.lua。
 
-简单的压测发现，同样配置下，MyRocks包括读写、事务的性能是MySQL两倍。当innodb缓冲池从26G减少到6G时，性能提升了40%，可能说明了MyRocks写入放大问题。
+简单的压测发现，同样配置下，MyRocks包括读写、事务的性能是MySQL的3倍。
+
+percona官方的一个性能对比：[MyRocks Performance](https://www.percona.com/blog/2018/04/30/a-look-at-myrocks-performance/)
 
 # 1. 配置
 机器配置：`32core,32GB,ubuntu 16.04,docker容器`
