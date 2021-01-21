@@ -2,7 +2,7 @@
 title: MyRocks 非正式压测
 comments: true
 date: 2021-01-21 00:00:00
-tags: [压测,rocksdb,MyRocks]
+tags: [压测, rocksdb, MyRocks]
 categories: 实用
 ---
 
@@ -14,7 +14,7 @@ sysbench: `sysbench 1.0.20 (using bundled LuaJIT 2.1.0-beta2)`
 
 ## 1.1 MySQL
 
-版本：``
+版本：`mysql  Ver 14.14 Distrib 5.7.31-34, for debian-linux-gnu (x86_64) using  6.3`
 
 my.cnf:
 ```
@@ -119,7 +119,6 @@ sysbench /usr/share/sysbench/oltp_read_write.lua --mysql-host=127.0.0.1 --mysql-
 ```
 sysbench /usr/share/sysbench/oltp_read_write.lua --threads=4 --mysql-host=127.0.0.1 --mysql-db=test --tables=20 --table_size=1000000 --mysql-user=root --mysql-password=passw0rd run
 ```
-
 
 ## 2.3 cleanup
 
