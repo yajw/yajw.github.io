@@ -177,3 +177,43 @@ Threads fairness:
 ```
 
 
+## 3.2 MyRocks (innodb_buffer_pool_size=6G)
+buffer pool 改为 6G 后测试结果:
+```
+sysbench 1.0.20 (using bundled LuaJIT 2.1.0-beta2)
+
+Running the test with following options:
+Number of threads: 32
+Initializing random number generator from current time
+
+
+Initializing worker threads...
+
+Threads started!
+
+SQL statistics:
+    queries performed:
+        read:                            157080
+        write:                           44880
+        other:                           22440
+        total:                           224400
+    transactions:                        11220  (1112.78 per sec.)
+    queries:                             224400 (22255.58 per sec.)
+    ignored errors:                      0      (0.00 per sec.)
+    reconnects:                          0      (0.00 per sec.)
+
+General statistics:
+    total time:                          10.0784s
+    total number of events:              11220
+
+Latency (ms):
+         min:                                    1.78
+         avg:                                   28.38
+         max:                                  494.21
+         95th percentile:                       75.82
+         sum:                               318412.66
+
+Threads fairness:
+    events (avg/stddev):           350.6250/54.21
+    execution time (avg/stddev):   9.9504/0.04
+```
