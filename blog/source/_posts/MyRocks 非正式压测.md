@@ -8,7 +8,7 @@ categories: 实用
 
 “非正式”：开发环境有个docker容器要过期了，刚好对MyRocks和MySQL性能对比感兴趣，就拿来简单不专业地测下，仅对比下同样环境下两个版本的结果，测试工具是sysbench，场景是olap_read_write.lua。
 
-简单的压测发现，同样配置下，MyRocks包括读写、事务的性能是MySQL两倍。
+简单的压测发现，同样配置下，MyRocks包括读写、事务的性能是MySQL两倍。当innodb缓冲池从26G减少到6G时，性能提升了40%，可能说明了MyRocks写入放大问题。
 
 # 1. 配置
 机器配置：`32core,32GB,ubuntu 16.04,docker容器`
@@ -75,24 +75,24 @@ sudo apt-get install percona-server-rocksdb-5.7
 
 首先创建test db，然后执行：
 ```
-sysbench /usr/share/sysbench/oltp_read_write.lua --mysql-host=127.0.0.1 --mysql-db=test --tables=20 --table_size=1000000 --mysql-user=root --mysql-password=passw0rd prepare
+sysbench /usr/share/sysbench/oltp_read_write.lua --threads=32 --mysql-host=127.0.0.1 --mysql-db=test --tables=20 --table_size=1000000 --mysql-user=root --mysql-password=passw0rd prepare
 ```
 
 ## 2.2 run
 
 ```
-sysbench /usr/share/sysbench/oltp_read_write.lua --threads=4 --mysql-host=127.0.0.1 --mysql-db=test --tables=20 --table_size=1000000 --mysql-user=root --mysql-password=passw0rd run
+sysbench /usr/share/sysbench/oltp_read_write.lua --threads=32 --mysql-host=127.0.0.1 --mysql-db=test --tables=20 --table_size=1000000 --mysql-user=root --mysql-password=passw0rd run
 ```
 
 ## 2.3 cleanup
 
 ```
-sysbench /usr/share/sysbench/oltp_read_write.lua --threads=4 --mysql-host=127.0.0.1 --mysql-db=test --tables=20 --table_size=1000000 --mysql-user=root --mysql-password=passw0rd cleanup
+sysbench /usr/share/sysbench/oltp_read_write.lua --threads=32 --mysql-host=127.0.0.1 --mysql-db=test --tables=20 --table_size=1000000 --mysql-user=root --mysql-password=passw0rd cleanup
 ```
 
 # 3. 测试结果
 
-## 3.1 percona MySQL 5.7
+## 3.1 percona MySQL 5.7 (innodb_buffer_pool_size=26G)
 
 oltp read write
 ```
@@ -105,43 +105,42 @@ Initializing random number generator from current time
 
 Initializing worker threads...
 
-
 Threads started!
 
 SQL statistics:
     queries performed:
-        read:                            62230
-        write:                           17780
-        other:                           8890
-        total:                           88900
-    transactions:                        4445   (438.55 per sec.)
-    queries:                             88900  (8770.98 per sec.)
+        read:                            53088
+        write:                           15168
+        other:                           7584
+        total:                           75840
+    transactions:                        3792   (374.42 per sec.)
+    queries:                             75840  (7488.42 per sec.)
     ignored errors:                      0      (0.00 per sec.)
     reconnects:                          0      (0.00 per sec.)
 
 General statistics:
-    total time:                          10.1280s
-    total number of events:              4445
+    total time:                          10.1240s
+    total number of events:              3792
 
 Latency (ms):
-         min:                                    3.46
-         avg:                                   72.08
-         max:                                  454.91
-         95th percentile:                      167.44
-         sum:                               320397.94
+         min:                                    2.60
+         avg:                                   84.53
+         max:                                  520.82
+         95th percentile:                      186.54
+         sum:                               320521.06
 
 Threads fairness:
-    events (avg/stddev):           138.9062/9.37
-    execution time (avg/stddev):   10.0124/0.01
+    events (avg/stddev):           118.5000/7.16
+    execution time (avg/stddev):   10.0163/0.01
 ```
 
-## 3.2 MyRocks
+## 3.3 MyRocks (innodb_buffer_pool_size=26G)
 
 ```
 sysbench 1.0.20 (using bundled LuaJIT 2.1.0-beta2)
 
 Running the test with following options:
-Number of threads: 4
+Number of threads: 32
 Initializing random number generator from current time
 
 
@@ -151,33 +150,32 @@ Threads started!
 
 SQL statistics:
     queries performed:
-        read:                            110810
-        write:                           31660
-        other:                           15830
-        total:                           158300
-    transactions:                        7915   (789.10 per sec.)
-    queries:                             158300 (15782.04 per sec.)
+        read:                            135940
+        write:                           38840
+        other:                           19420
+        total:                           194200
+    transactions:                        9710   (962.99 per sec.)
+    queries:                             194200 (19259.75 per sec.)
     ignored errors:                      0      (0.00 per sec.)
     reconnects:                          0      (0.00 per sec.)
 
 General statistics:
-    total time:                          10.0291s
-    total number of events:              7915
+    total time:                          10.0805s
+    total number of events:              9710
 
 Latency (ms):
-         min:                                    1.65
-         avg:                                    5.05
-         max:                                  460.64
-         95th percentile:                       12.08
-         sum:                                39987.29
+         min:                                    1.89
+         avg:                                   32.85
+         max:                                  345.30
+         95th percentile:                       94.10
+         sum:                               318990.98
 
 Threads fairness:
-    events (avg/stddev):           1978.7500/124.21
-    execution time (avg/stddev):   9.9968/0.01
+    events (avg/stddev):           303.4375/49.73
+    execution time (avg/stddev):   9.9685/0.03
 ```
 
-
-## 3.2 MyRocks (innodb_buffer_pool_size=6G)
+## 3.3 MyRocks (innodb_buffer_pool_size=4G)
 buffer pool 改为 6G 后测试结果:
 ```
 sysbench 1.0.20 (using bundled LuaJIT 2.1.0-beta2)
@@ -193,27 +191,69 @@ Threads started!
 
 SQL statistics:
     queries performed:
-        read:                            157080
-        write:                           44880
-        other:                           22440
-        total:                           224400
-    transactions:                        11220  (1112.78 per sec.)
-    queries:                             224400 (22255.58 per sec.)
+        read:                            140994
+        write:                           40284
+        other:                           20142
+        total:                           201420
+    transactions:                        10071  (1001.71 per sec.)
+    queries:                             201420 (20034.23 per sec.)
     ignored errors:                      0      (0.00 per sec.)
     reconnects:                          0      (0.00 per sec.)
 
 General statistics:
-    total time:                          10.0784s
-    total number of events:              11220
+    total time:                          10.0523s
+    total number of events:              10071
 
 Latency (ms):
-         min:                                    1.78
-         avg:                                   28.38
-         max:                                  494.21
-         95th percentile:                       75.82
-         sum:                               318412.66
+         min:                                    1.80
+         avg:                                   31.67
+         max:                                  332.13
+         95th percentile:                       90.78
+         sum:                               318995.75
 
 Threads fairness:
-    events (avg/stddev):           350.6250/54.21
-    execution time (avg/stddev):   9.9504/0.04
+    events (avg/stddev):           314.7188/71.47
+    execution time (avg/stddev):   9.9686/0.02
+```
+
+
+## 3.4 MyRocks (innodb_buffer_pool_size=16G)
+
+```
+sysbench 1.0.20 (using bundled LuaJIT 2.1.0-beta2)
+
+Running the test with following options:
+Number of threads: 32
+Initializing random number generator from current time
+
+
+Initializing worker threads...
+
+Threads started!
+
+SQL statistics:
+    queries performed:
+        read:                            165508
+        write:                           47288
+        other:                           23644
+        total:                           236440
+    transactions:                        11822  (1173.39 per sec.)
+    queries:                             236440 (23467.75 per sec.)
+    ignored errors:                      0      (0.00 per sec.)
+    reconnects:                          0      (0.00 per sec.)
+
+General statistics:
+    total time:                          10.0721s
+    total number of events:              11822
+
+Latency (ms):
+         min:                                    1.83
+         avg:                                   26.81
+         max:                                  687.19
+         95th percentile:                       71.83
+         sum:                               316940.56
+
+Threads fairness:
+    events (avg/stddev):           369.4375/29.95
+    execution time (avg/stddev):   9.9044/0.05
 ```
