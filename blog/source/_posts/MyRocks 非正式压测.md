@@ -178,7 +178,7 @@ Threads fairness:
 ```
 
 ## 3.3 MyRocks (innodb_buffer_pool_size=4G)
-buffer pool 改为 6G 后测试结果:
+
 ```
 sysbench 1.0.20 (using bundled LuaJIT 2.1.0-beta2)
 
