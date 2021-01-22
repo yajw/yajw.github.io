@@ -2,7 +2,7 @@
 title: leetcode summary.md
 comments: true
 date: 2019-12-21 00:00:00
-tags: [算法，数据结构]
+tags: [算法, 数据结构]
 categories: 算法
 ---
 
