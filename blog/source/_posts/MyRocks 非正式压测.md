@@ -37,8 +37,8 @@ log_error                      = /var/lib/mysql/mysql-error.log
 log_queries_not_using_indexes  = 1
 slow_query_log                 = 1
 slow_query_log_file            = /var/lib/mysql/mysql-slow.log
-query_response_time_stats = on
-innodb_monitor_enable = all
+# query_response_time_stats = on
+# innodb_monitor_enable = all
 innodb_log_buffer_size          = 512M
 innodb_log_file_size            = 1024M
 innodb_flush_log_at_trx_commit = 0
@@ -63,7 +63,6 @@ wget https://repo.percona.com/apt/percona-release_latest.generic_all.deb
 sudo dpkg -i percona-release_latest.generic_all.deb
 sudo apt-get install --fix-broken
 sudo percona-release setup ps80
-
 sudo apt-get update
 sudo apt-get install percona-server-rocksdb-5.7
 ```
