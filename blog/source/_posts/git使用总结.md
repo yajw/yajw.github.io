@@ -18,3 +18,9 @@ git clone <url> <path> && cd <path>
 git submodule init
 git submodule update
 另一种：git clone <url> <path> --recurse-submodules
+
+
+git config:
+
+[format]
+        pretty = "%C(Yellow)%h  %C(reset)%ai  %C(Cyan)%an  %C(reset)%s" (%C(Green)%cr%C(reset))
