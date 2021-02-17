@@ -141,3 +141,8 @@ awk -F'|' 'match($6, /elapsed=([0-9]+)/, ta) && match($6, /id=([0-9]+)/, ka) {c[
 ```bash
  awk -F'|' 'match($6, /elapsed=([0-9]+)/, ta) && match($6, /id=([0-9]+)/, ka) {if ((ta[1]+0)>2000) c[ka[1]]=ta[1]} END {for (t in c) {print t,c[t]}}' data_log | sort -n -k 2
 ```
+
+## ss
+
+mac 下模拟ss: `alias ss='lsof -Pn -i4 | grep LISTEN'`
+
