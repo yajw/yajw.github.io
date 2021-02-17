@@ -146,3 +146,10 @@ awk -F'|' 'match($6, /elapsed=([0-9]+)/, ta) && match($6, /id=([0-9]+)/, ka) {c[
 
 mac 下模拟ss: `alias ss='lsof -Pn -i4 | grep LISTEN'`
 
+
+## ssh
+
+ssh 转发： https://jin-yang.github.io/post/ssh-proxy.html
+
+
+
