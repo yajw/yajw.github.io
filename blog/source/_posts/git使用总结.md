@@ -11,3 +11,10 @@ git fetch <remote> <remote_branch>:<local_branch_name>
 git checkout <local_branch_name>
 ```
 
+
+clone一个项目时，同时同步submodule：
+
+git clone <url> <path> && cd <path>
+git submodule init
+git submodule update
+另一种：git clone <url> <path> --recurse-submodules
