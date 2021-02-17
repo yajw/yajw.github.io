@@ -24,3 +24,6 @@ git config:
 
 [format]
         pretty = "%C(Yellow)%h  %C(reset)%ai  %C(Cyan)%an  %C(reset)%s" (%C(Green)%cr%C(reset))
+
+按时间倒序列出分支 git branch --sort=-committerdate
+
