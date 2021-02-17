@@ -152,4 +152,8 @@ mac 下模拟ss: `alias ss='lsof -Pn -i4 | grep LISTEN'`
 ssh 转发： https://jin-yang.github.io/post/ssh-proxy.html
 
 
+## 获取访问某个ip的本地接口
+outgoing ip
 
+ ip route get 8.8.8.8
+mac: brew install iproute2mac
