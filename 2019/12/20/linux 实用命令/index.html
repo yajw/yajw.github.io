@@ -1,0 +1,422 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#202020">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+  
+  
+    <meta name="keywords" content="linux,awk,split,sed,">
+  
+
+  
+    <meta name="description" content="linux 实用命令">
+  
+  
+  
+  <link rel="icon" type="image/x-icon" href="/images/footer-logo.png">
+  
+  <title>linux 实用命令</title>
+  
+    <!-- stylesheets list from config.yml -->
+    
+      <link rel="stylesheet" href="//cdn.bootcss.com/pure/1.0.0/pure-min.css">
+    
+      <link rel="stylesheet" href="/css/xoxo.css">
+    
+      <link rel="stylesheet" href="/css/gitment.css">
+    
+  
+</head>
+
+
+<body>
+  <div class="nav-container">
+    <nav class="home-menu pure-menu pure-menu-horizontal">
+  <a class="pure-menu-heading" href="/">
+    
+    <span class="title" style="text-transform:none">yajw</span>
+  </a>
+
+  <ul class="pure-menu-list clearfix">
+      
+          
+            
+              <li class="pure-menu-item"><a href="/" class="pure-menu-link">首页</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/whisper" class="pure-menu-link">片言</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/archives" class="pure-menu-link">归档</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/categories" class="pure-menu-link">分类</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/tags" class="pure-menu-link">标签</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/search" class="pure-menu-link">搜索</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/about" class="pure-menu-link">关于</a></li>
+            
+          
+      
+  </ul>
+   
+</nav>
+
+  </div>
+
+  <div class="container" id="content-outer">
+    <div class="inner" id="content-inner">
+      <div class="post-container">
+  <article class="post" id="post">
+    <header class="post-header text-center">
+      <h1 class="title">
+        linux 实用命令
+      </h1>
+      <span>
+        
+        <time class="time" datetime="2019-12-20T00:00:00.000Z">
+        2019-12-20
+      </time>
+        
+      </span>
+      <span class="slash">/</span>
+      <span class="post-meta">
+      <span class="post-tags">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/awk/">awk</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/linux/">linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/sed/">sed</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/split/">split</a></li></ul>
+      </span>
+    </span>
+      <span class="slash">/</span>
+      <span class="read">
+      <span id="busuanzi_value_page_pv"></span> 点击
+    </span>
+      <span class="slash">/</span>
+      <span class="read">阅读耗时 6 分钟</span>
+    </header>
+
+    <div class="post-content">
+      <h1 id="sftp"><a href="#sftp" class="headerlink" title="sftp"></a>sftp</h1><p>upload local file to remote sftp:</p>
+<pre><code class="bash">sftp -oPort=2201 user@host:${remote_path} &lt;&lt;&lt; $&#39;put {local_file_path}&#39;</code></pre>
+<p>download remote file to local:</p>
+<pre><code class="bash">sftp user@host:${remote_path} ${local_path}</code></pre>
+<p>路径支持通配符来匹配多个文件</p>
+<p>sftp常用命令有这些：<code>ls</code> <code>ls -lh</code> <code>rm</code> <code>put</code> <code>get</code>等。</p>
+<h1 id="split"><a href="#split" class="headerlink" title="split"></a>split</h1><ul>
+<li>mac安装gsplit: <code>brew install coreutils</code></li>
+</ul>
+<p>文件分割比较有用。例如把一个script.sql文件按每100行拆分，输出文件前缀为split_<br>mac上用的gsplit (GNU版本的split)</p>
+<pre><code class="bash">gsplit -dl 400 --additional-suffix=.sql script.sql script_</code></pre>
+<p>也支持按文件大小分割，同时支持按行分割</p>
+<pre><code class="bash">gsplit -C 10M --additional-suffix=.sql script.sql script_</code></pre>
+<h1 id="sed"><a href="#sed" class="headerlink" title="sed"></a>sed</h1><p>例如，script.sql文件每行一条insert语句，想要改成<code>on duplicate update</code>来同时支持插入和已有记录的更新（这个操作是幂等的），就可以用下面的方法：</p>
+<p>第一步，去掉文件每行末的最后一个字符：</p>
+<pre><code class="bash">sed &#39;s/.$//&#39; script.sql &gt; script_noprefix.sql</code></pre>
+<p>然后，给每行加上指定字符串，这里是<code>ON DUPLICATE KEY</code>:</p>
+<pre><code class="bash">sed &#39;s/.$/ ON DUPLICATE KEY UPDATE update_time=values(update_time);/&#39; script_noprefix.sql &gt; script_update_insert.sql</code></pre>
+<p>sed支持直接替换，上面的例子也可以直接替最后一个字符为指定字符串。<br>一个替换的例子(mac版本)，<strong>注意：这里是原地替换，直接修改原文件内</strong>：</p>
+<pre><code class="bash">sed -i &#39;&#39; -- &#39;s/.$/ ON DUPLICATE KEY UPDATE update_time=values(update_time);/g&#39; script.sql</code></pre>
+<h1 id="awk-实用套路"><a href="#awk-实用套路" class="headerlink" title="awk 实用套路"></a>awk 实用套路</h1><p>其他学习文章</p>
+<ul>
+<li>AWK 简明教程 <a href="https://coolshell.cn/articles/9070.html" target="_blank" rel="noopener">https://coolshell.cn/articles/9070.html</a></li>
+<li>awk 入门教程 <a href="http://www.ruanyifeng.com/blog/2018/11/awk.html" target="_blank" rel="noopener">http://www.ruanyifeng.com/blog/2018/11/awk.html</a></li>
+</ul>
+<h2 id="匹配"><a href="#匹配" class="headerlink" title="匹配"></a>匹配</h2><p><strong>包含某些关键词，但不包含其他关键词</strong></p>
+<pre><code class="bash">awk -F &#39;|&#39; &#39;/error|warn/ &amp;&amp; !/system/&#39; error.log</code></pre>
+<h2 id="统计"><a href="#统计" class="headerlink" title="统计"></a>统计</h2><p><strong>日志第一列是ip，数不同ip的日志行数</strong></p>
+<pre><code class="bash">awk -v OFS=&#39;\t&#39; -F &#39;|&#39; &#39;{count[$1]++;} END {for (ip in count) print ip, count[ip]}&#39; info.log</code></pre>
+<p><strong>按照ip数统计某个url的请求量</strong></p>
+<pre><code class="bash">awk -F &#39;|&#39; &#39;/api\/service/ &amp;&amp; !/api\/service\/other/ {c[$1]++} END {for (ip in c) print ip,c[ip]}&#39; info.log</code></pre>
+<p><strong>按照小时统计某个url的请求量</strong></p>
+<p>sample log</p>
+<pre><code>0.0.0.0|2019-12-19 13:01:02|elapsed=12ms,url=/api/service</code></pre><pre><code class="bash">awk -F &#39;|&#39; &#39;/api\/service/ {split($2, t, &quot;[-: ]&quot;); c[t[4]]++;} END {for (hour in c) print hour,c[hour]}&#39; info.log | sort -k1</code></pre>
+<p><strong>按照小时统计某个url的请求量，并且包含占总量的百分比</strong></p>
+<pre><code class="bash">awk -F &#39;|&#39; &#39;/api\/service/ {split($2, t, &quot;[-: ]&quot;); c[t[4]]++; s++} END {for (hour in c) printf &quot;%s\t%s\t%.2f\n&quot; hour,c[hour],100*c[hour]/s}&#39; info.log | sort -k1</code></pre>
+<p><strong>统计错误日志中不同类型的种类</strong></p>
+<pre><code class="bash">awk -F &#39;|&#39; &#39; /ERROR/ {c[$7]++;s++} END {for (r in c) printf &quot;%s\t%.2f\t%s\n&quot;, c[r],100*c[r]/s,r}&#39; error.log | sort -k2</code></pre>
+<p><strong>连接状态统计</strong></p>
+<pre><code class="bash">ss | awk &#39;NR!=1{c[$2]++} END {for (s in c) print s, c[s]}&#39;</code></pre>
+<p><strong>统计不同目的ip的不同状态的连接数</strong></p>
+<pre><code class="bash">netstat -t | awk -v OFS=&#39;\t\t&#39; &#39;NR&gt;2{c[$5,$6]++} END {for (x in c) {split(x, s, SUBSEP); print c[x],s[2],s[1]} }&#39;</code></pre>
+<h2 id="远程awk重定向输出到本地文件"><a href="#远程awk重定向输出到本地文件" class="headerlink" title="远程awk重定向输出到本地文件"></a>远程awk重定向输出到本地文件</h2><p>这个需要在本地分析日志时很有用，heredoc可以避开escape的问题。</p>
+<p>借助heredoc和ssh重定向</p>
+<pre><code class="bash">ssh &gt; daemon.log aps-live-log &lt;&lt;-&#39;EOF&#39;
+awk -F &#39;|&#39; &#39;!/ktc_settlement_report/ &amp;&amp; !/txn_3ds/ &amp;&amp; $2&gt;&quot;[2020-01-05 01:00:00&quot; &amp;&amp; $2&lt;&quot;[2020-01-05 01:05:00&quot;&#39; /data/error.log
+EOF</code></pre>
+<h2 id="awk-正则匹配筛选比较耗时的请求"><a href="#awk-正则匹配筛选比较耗时的请求" class="headerlink" title="awk 正则匹配筛选比较耗时的请求"></a>awk 正则匹配筛选比较耗时的请求</h2><p>正则匹配提取：</p>
+<pre><code class="bash">awk -F&#39;|&#39; &#39;match($6, /elapsed=([0-9]+)/, ta) &amp;&amp; match($6, /id=([0-9]+)/, ka) {c[ka[1]]=ta[1]} END {for (k in c) {print t,c[t]}}&#39; data.log | sort -n -k 2</code></pre>
+<p>数值比较（筛选出耗时超过2秒的请求）</p>
+<pre><code class="bash"> awk -F&#39;|&#39; &#39;match($6, /elapsed=([0-9]+)/, ta) &amp;&amp; match($6, /id=([0-9]+)/, ka) {if ((ta[1]+0)&gt;2000) c[ka[1]]=ta[1]} END {for (t in c) {print t,c[t]}}&#39; data_log | sort -n -k 2</code></pre>
+<h2 id="ss"><a href="#ss" class="headerlink" title="ss"></a>ss</h2><p>mac 下模拟ss: <code>alias ss=&#39;lsof -Pn -i4 | grep LISTEN&#39;</code></p>
+<h2 id="ssh"><a href="#ssh" class="headerlink" title="ssh"></a>ssh</h2><p>ssh 转发： <a href="https://jin-yang.github.io/post/ssh-proxy.html" target="_blank" rel="noopener">https://jin-yang.github.io/post/ssh-proxy.html</a></p>
+<h2 id="获取访问某个ip的本地接口"><a href="#获取访问某个ip的本地接口" class="headerlink" title="获取访问某个ip的本地接口"></a>获取访问某个ip的本地接口</h2><p>outgoing ip</p>
+<p> ip route get 8.8.8.8<br>mac: brew install iproute2mac</p>
+
+    </div>
+
+  </article>
+  <div class="toc-container">
+    
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#sftp"><span class="toc-text">sftp</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#split"><span class="toc-text">split</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#sed"><span class="toc-text">sed</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#awk-实用套路"><span class="toc-text">awk 实用套路</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#匹配"><span class="toc-text">匹配</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#统计"><span class="toc-text">统计</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#远程awk重定向输出到本地文件"><span class="toc-text">远程awk重定向输出到本地文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#awk-正则匹配筛选比较耗时的请求"><span class="toc-text">awk 正则匹配筛选比较耗时的请求</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ss"><span class="toc-text">ss</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ssh"><span class="toc-text">ssh</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#获取访问某个ip的本地接口"><span class="toc-text">获取访问某个ip的本地接口</span></a></li></ol></li></ol>
+  </div>
+
+
+  </div>
+</div>
+
+  <div class="comment-container">
+    <div class="post" id="gitment-container">
+      <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+  </div>
+
+  <script src="/js/gitment.browser.js"></script>
+  <link rel="stylesheet" href="/css/gitment.css"/>
+  
+  <script>
+      var gitment = new Gitment({
+        //评论issue唯一ID
+        id: '201912200000',
+        owner: 'yajw',
+        repo: 'yajw.github.io',
+        oauth: {
+          client_id: '22cdf46e2d6ccbe19c49',
+          client_secret: '7f84c5f9859178e872a55beea8705470b1b304ff',
+        },
+      })
+      gitment.render('gitment-container')
+  </script>
+
+<div class="copyright">
+    <span>本作品采用</span>
+    <a href="https://creativecommons.org/licenses/by/4.0/">知识共享署名 4.0 国际许可协议</a>
+    <span>进行许可。 转载时请注明原文链接。</span>
+</div>
+
+
+  
+    <div class="post-nav">
+      <div class="post-nav-item post-nav-next">
+        
+          <span>〈 </span>
+          <a href="/2019/12/20/一些技术组件杂谈/" rel="next" title="一些技术组件杂谈">
+          一些技术组件杂谈
+          </a>
+        
+      </div>
+  
+      <div class="post-nav-item post-nav-prev">
+          
+          <a href="/2019/12/20/ArchLinux 安装引导记录/" rel="prev" title="ArchLinux 安装引导记录">
+            ArchLinux 安装引导记录
+          </a>
+          <span>〉</span>
+        
+      </div>
+    </div>
+  
+
+    </div>
+
+    
+
+  </div>
+  <footer class="footer text-center">
+    <div id="bottom-inner">
+        <a class="bottom-item" href="https://github.com/yajw" target="_blank">GitHub</a> |
+        <a class="bottom-item" href="/links">友情链接</a> |
+        <a class="bottom-item" href="https://hexo.io" target="_blank">Powered by hexo</a> |
+        <a class="bottom-item" href="https://github.com/fooying/hexo-theme-xoxo-plus" target="_blank">Theme xoxo-plus</a> |
+        <a class="bottom-item" href="/atom.xml">RSS</a>
+    </div>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.4.1/styles/github.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.4.1/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+</footer>
+
+  
+  <!-- scripts list from theme config.yml -->
+  
+    <script src="/js/xoxo.js"></script>
+  
+    <script src="/js/gitment.browser.js"></script>
+  
+
+
+<script>
+  (function(window, document, undefined) {
+
+    var timer = null;
+
+    function returnTop() {
+      cancelAnimationFrame(timer);
+      timer = requestAnimationFrame(function fn() {
+        var oTop = document.body.scrollTop || document.documentElement.scrollTop;
+        if (oTop > 0) {
+          document.body.scrollTop = document.documentElement.scrollTop = oTop - 50;
+          timer = requestAnimationFrame(fn);
+        } else {
+          cancelAnimationFrame(timer);
+        }
+      });
+    }
+
+    var hearts = [];
+    window.requestAnimationFrame = (function() {
+      return window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        function(callback) {
+          setTimeout(callback, 1000 / 60);
+        }
+    })();
+    init();
+
+    function init() {
+      css(".heart{z-index:9999;width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: absolute;}.heart:after{top: -5px;}.heart:before{left: -5px;}");
+      attachEvent();
+      gameloop();
+      addMenuEvent();
+    }
+
+    function gameloop() {
+      for (var i = 0; i < hearts.length; i++) {
+        if (hearts[i].alpha <= 0) {
+          document.body.removeChild(hearts[i].el);
+          hearts.splice(i, 1);
+          continue;
+        }
+        hearts[i].y--;
+        hearts[i].scale += 0.004;
+        hearts[i].alpha -= 0.013;
+        hearts[i].el.style.cssText = "left:" + hearts[i].x + "px;top:" + hearts[i].y + "px;opacity:" + hearts[i].alpha + ";transform:scale(" + hearts[i].scale + "," + hearts[i].scale + ") rotate(45deg);background:" + hearts[i].color;
+      }
+      requestAnimationFrame(gameloop);
+    }
+
+    /**
+     * 给logo设置点击事件
+     * 
+     * - 回到顶部
+     * - 出现爱心
+     */
+    function attachEvent() {
+      var old = typeof window.onclick === "function" && window.onclick;
+      var logo = document.getElementById("logo");
+      if (logo) {
+        logo.onclick = function(event) {
+          returnTop();
+          old && old();
+          createHeart(event);
+        }
+      }
+      
+    }
+
+    function createHeart(event) {
+      var d = document.createElement("div");
+      d.className = "heart";
+      hearts.push({
+        el: d,
+        x: event.clientX - 5,
+        y: event.clientY - 5,
+        scale: 1,
+        alpha: 1,
+        color: randomColor()
+      });
+      document.body.appendChild(d);
+    }
+
+    function css(css) {
+      var style = document.createElement("style");
+      style.type = "text/css";
+      try {
+        style.appendChild(document.createTextNode(css));
+      } catch (ex) {
+        style.styleSheet.cssText = css;
+      }
+      document.getElementsByTagName('head')[0].appendChild(style);
+    }
+
+    function randomColor() {
+      // return "rgb(" + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + ")";
+      return "#F44336";
+    }
+
+    function addMenuEvent() {
+      var menu = document.getElementById('menu-main-post');
+      if (menu) {
+        var toc = document.getElementById('toc');
+        if (toc) {
+          menu.onclick = function() {
+            if (toc) {
+              if (toc.style.display == 'block') {
+                toc.style.display = 'none';
+              } else {
+                toc.style.display = 'block';
+              }
+            }
+          };
+        } else {
+          menu.style.display = 'none';
+        }
+      }
+    }
+
+  })(window, document);
+</script>
+
+  
+
+
+
+  
+<script>
+  (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+          bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+      }
+      else {
+          bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+</script>
+
+
+</body>
+</html>

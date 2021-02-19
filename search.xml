@@ -1,0 +1,1192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search> 
+  
+  
+    
+    <entry>
+      <title>MySQL一些基础知识</title>
+      <link href="/2021/02/17/MySQL%E4%B8%80%E4%BA%9B%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"/>
+      <url>/2021/02/17/MySQL%E4%B8%80%E4%BA%9B%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</url>
+      
+        <content type="html"><![CDATA[<p>td</p><ol><li>Mysql锁分析相关 : hedengcheng博客</li><li>mysql其他话题: 高性能Mysql</li><li>gap lock</li><li>mvcc</li></ol><p>查询进行中的事务<br><a href="https://www.cnblogs.com/zuoxingyu/p/6382585.html" target="_blank" rel="noopener">https://www.cnblogs.com/zuoxingyu/p/6382585.html</a></p><p><a href="https://blog.csdn.net/emoers/article/details/77971468" target="_blank" rel="noopener">https://blog.csdn.net/emoers/article/details/77971468</a><br>查询 正在执行的事务：<br>SELECT * FROM information_schema.INNODB_TRX</p><p>查看正在锁的事务<br>SELECT * FROM INFORMATION_SCHEMA.INNODB_LOCKS; </p><p>查看等待锁的事务<br>SELECT * FROM INFORMATION_SCHEMA.INNODB_LOCK_WAITS;</p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> MySQL </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>docker使用</title>
+      <link href="/2021/02/17/docker%E4%BD%BF%E7%94%A8/"/>
+      <url>/2021/02/17/docker%E4%BD%BF%E7%94%A8/</url>
+      
+        <content type="html"><![CDATA[<pre><code>docker exec -it --user root &lt;container&gt; /bin/bashdocker network create &lt;networkName&gt;  # create a new networkdocker network cocnnect &lt;networkName&gt; &lt;containerId&gt; # 绑定到新创建的networkdocker container inspect &lt;containerId&gt; # 查看绑定的network下的ip</code></pre>]]></content>
+      
+      
+      <categories>
+          
+          <category> 总结 </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>feature toggle</title>
+      <link href="/2021/02/17/feature%20toggle/"/>
+      <url>/2021/02/17/feature%20toggle/</url>
+      
+        <content type="html"><![CDATA[<p>#feature swtich#<br>#redis缓存刷新#</p><p>默认缓存定期失效<br>手动触发缓存失效<br>可靠降级：缓存读不到，能够可靠降级到读db<br>失效和超时由远端控制，避免出现本地脏读<br>时间由远端定义<br>方案1</p><p>redis的超时机制，超时删除key<br>value使用远端时间戳表示版本<br>当读到时，对比和本地的版本，如果发现不一致，就读db刷新本地，然后更新本地版本<br>当读不到时，尝试远程更新，用CAS方式刷新远程版本，注意一定避免并发导致的脏读<br>降级：缓存时间不要太久，最好5分钟左右，减少故障损失<br>远程更新失败：降级到读db<br>方案2<br>使用Redis的发布订阅功能<br>问题：要保持长连接</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 总结 </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>git使用总结</title>
+      <link href="/2021/02/17/git%E4%BD%BF%E7%94%A8%E6%80%BB%E7%BB%93/"/>
+      <url>/2021/02/17/git%E4%BD%BF%E7%94%A8%E6%80%BB%E7%BB%93/</url>
+      
+        <content type="html"><![CDATA[<pre><code>git fetch &lt;remote&gt; &lt;remote_branch&gt;:&lt;local_branch_name&gt;git checkout &lt;local_branch_name&gt;</code></pre><p>clone一个项目时，同时同步submodule：</p><p>git clone <url> <path> &amp;&amp; cd <path><br>git submodule init<br>git submodule update<br>另一种：git clone <url> <path> –recurse-submodules</path></url></path></path></url></p><p>git config:</p><p>[format]<br>        pretty = “%C(Yellow)%h  %C(reset)%ai  %C(Cyan)%an  %C(reset)%s” (%C(Green)%cr%C(reset))</p><p>按时间倒序列出分支 git branch –sort=-committerdate</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 总结 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> git </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>k8s使用总结</title>
+      <link href="/2021/02/17/k8s%E4%BD%BF%E7%94%A8%E6%80%BB%E7%BB%93/"/>
+      <url>/2021/02/17/k8s%E4%BD%BF%E7%94%A8%E6%80%BB%E7%BB%93/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      <categories>
+          
+          <category> 总结 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> k8s </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>nginx</title>
+      <link href="/2021/02/17/nginx/"/>
+      <url>/2021/02/17/nginx/</url>
+      
+        <content type="html"><![CDATA[<p>nginx 同ip多端口转发配置</p><p>upstream api {<br>    server 127.0.0.1:10001 weight=10;<br>    server 127.0.0.1:10002 weight=10;<br>    server 127.0.0.1:10003 weight=10;<br>    server 127.0.0.1:10004 weight=10;<br>    keepalive 300;<br>}</p><p>server {<br>    listen 80;</p><pre><code>location / {    proxy_set_header Host $http_host;    proxy_pass http://api;    proxy_http_version 1.1;    proxy_set_header Connection &quot;&quot;;}</code></pre><p>}</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 总结 </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>reactive 相关</title>
+      <link href="/2021/02/17/reactive%20%E7%9B%B8%E5%85%B3/"/>
+      <url>/2021/02/17/reactive%20%E7%9B%B8%E5%85%B3/</url>
+      
+        <content type="html"><![CDATA[<p><a href="https://docs.spring.io/spring-framework/docs/current/reference/html/web-reactive.html" target="_blank" rel="noopener">https://docs.spring.io/spring-framework/docs/current/reference/html/web-reactive.html</a></p><p>Spring reactive</p><p>异步、非阻塞能够让少量硬件和线程支持大量并发<br>函数式：更容易写非阻塞的代码<br>reactive： non-blocking back pressure，数据消费者能够控制生产者的生产速率</p><p>webflux 支持reactor, RxJava, kotlin的coroutine</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 总结 </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>service mesh</title>
+      <link href="/2021/02/17/service%20mesh/"/>
+      <url>/2021/02/17/service%20mesh/</url>
+      
+        <content type="html"><![CDATA[<p>istio</p><p>envoy</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 总结 </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>一些分布式理论和组件的总结</title>
+      <link href="/2021/02/17/%E4%B8%80%E4%BA%9B%E5%88%86%E5%B8%83%E5%BC%8F%E7%90%86%E8%AE%BA%E5%92%8C%E7%BB%84%E4%BB%B6%E7%9A%84%E6%80%BB%E7%BB%93/"/>
+      <url>/2021/02/17/%E4%B8%80%E4%BA%9B%E5%88%86%E5%B8%83%E5%BC%8F%E7%90%86%E8%AE%BA%E5%92%8C%E7%BB%84%E4%BB%B6%E7%9A%84%E6%80%BB%E7%BB%93/</url>
+      
+        <content type="html"><![CDATA[<p>CAP<br>paxoes</p><p>chubby<br>raft</p><p>hazelcast<br><a href="https://github.com/etcd-io/etcd" target="_blank" rel="noopener">https://github.com/etcd-io/etcd</a></p><p>为什么基础服务不应该高可用<br><a href="https://draveness.me/whys-the-design-unstable-infrastructure/" target="_blank" rel="noopener">https://draveness.me/whys-the-design-unstable-infrastructure/</a></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 总结 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 分布式 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>不知道啥时候才读的书单</title>
+      <link href="/2021/02/17/%E4%B8%8D%E7%9F%A5%E9%81%93%E5%95%A5%E6%97%B6%E5%80%99%E6%89%8D%E8%AF%BB%E7%9A%84%E4%B9%A6%E5%8D%95/"/>
+      <url>/2021/02/17/%E4%B8%8D%E7%9F%A5%E9%81%93%E5%95%A5%E6%97%B6%E5%80%99%E6%89%8D%E8%AF%BB%E7%9A%84%E4%B9%A6%E5%8D%95/</url>
+      
+        <content type="html"><![CDATA[<p>Distributed systems: for fun and profit <a href="http://book.mixu.net/distsys/" target="_blank" rel="noopener">http://book.mixu.net/distsys/</a></p><p>Google File System(2003), MapReduce(2004), and BigTable(2006).</p><p>Essentials of Programming Languages</p><p>收藏的链接：</p><ol><li><a href="https://catkang.github.io/" target="_blank" rel="noopener">https://catkang.github.io/</a></li><li><a href="https://github.com/soulmachine/acm-cheat-sheet" target="_blank" rel="noopener">https://github.com/soulmachine/acm-cheat-sheet</a></li><li><a href="https://tonydeng.github.io/sdn-handbook/" target="_blank" rel="noopener">https://tonydeng.github.io/sdn-handbook/</a></li><li><a href="https://zhuanlan.zhihu.com/p/91434149" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/91434149</a></li></ol>]]></content>
+      
+      
+      <categories>
+          
+          <category> 书单 </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>业务理解</title>
+      <link href="/2021/02/17/%E4%B8%9A%E5%8A%A1%E7%90%86%E8%A7%A3/"/>
+      <url>/2021/02/17/%E4%B8%9A%E5%8A%A1%E7%90%86%E8%A7%A3/</url>
+      
+        <content type="html"><![CDATA[<p>一些业务的理解</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 总结 </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>业务监控</title>
+      <link href="/2021/02/17/%E4%B8%9A%E5%8A%A1%E7%9B%91%E6%8E%A7/"/>
+      <url>/2021/02/17/%E4%B8%9A%E5%8A%A1%E7%9B%91%E6%8E%A7/</url>
+      
+        <content type="html"><![CDATA[<p>关键：<br>省心</p><p>xflush, sunfire</p><p><a href="https://www.infoq.cn/article/alibaba-core-business-monitoring-platform-sunfire" target="_blank" rel="noopener">https://www.infoq.cn/article/alibaba-core-business-monitoring-platform-sunfire</a></p><p>alimonitor</p><p>EagleEye</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 总结 </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>任务调度</title>
+      <link href="/2021/02/17/%E4%BB%BB%E5%8A%A1%E8%B0%83%E5%BA%A6/"/>
+      <url>/2021/02/17/%E4%BB%BB%E5%8A%A1%E8%B0%83%E5%BA%A6/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      <categories>
+          
+          <category> 总结 </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>分布式事务</title>
+      <link href="/2021/02/17/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/"/>
+      <url>/2021/02/17/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/</url>
+      
+        <content type="html"><![CDATA[<p>mysql<br>oceanbase<br>tidb<br>rocketmq<br>msgBroker</p><p>TCC, XA，事务消息</p><p>本地消息表，执行本地事务，记录要发送某个消息，事务成功后，再由一个调度任务把消息发送出去，并且保证成功（不断重试，业务上要求消费方幂等，失败情况属于系统问题需要人工介入）。关键是调度任务。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 总结 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 分布式 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>分布式锁</title>
+      <link href="/2021/02/17/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/"/>
+      <url>/2021/02/17/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/</url>
+      
+        <content type="html"><![CDATA[<p><a href="https://hazelcast.com/blog/long-live-distributed-locks/" target="_blank" rel="noopener">https://hazelcast.com/blog/long-live-distributed-locks/</a><br><a href="https://github.com/jepsen-io/jepsen" target="_blank" rel="noopener">https://github.com/jepsen-io/jepsen</a></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 总结 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 分布式 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>分库分表</title>
+      <link href="/2021/02/17/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/"/>
+      <url>/2021/02/17/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/</url>
+      
+        <content type="html"><![CDATA[<p>不做数据迁移<br>尽量少的改动，不对业务代码有污染<br>扩展性</p><p>总结</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 总结 </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>压测相关总结</title>
+      <link href="/2021/02/17/%E5%8E%8B%E6%B5%8B%E7%9B%B8%E5%85%B3%E6%80%BB%E7%BB%93/"/>
+      <url>/2021/02/17/%E5%8E%8B%E6%B5%8B%E7%9B%B8%E5%85%B3%E6%80%BB%E7%BB%93/</url>
+      
+        <content type="html"><![CDATA[<p>压测工具</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 总结 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 压测 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>开源组件总结</title>
+      <link href="/2021/02/17/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6%E6%80%BB%E7%BB%93/"/>
+      <url>/2021/02/17/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6%E6%80%BB%E7%BB%93/</url>
+      
+        <content type="html"><![CDATA[<p>tikv</p><p>maglev</p><p><a href="https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/44824.pdf" target="_blank" rel="noopener">https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/44824.pdf</a></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 总结 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 开源 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>性能优化总结</title>
+      <link href="/2021/02/17/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E6%80%BB%E7%BB%93/"/>
+      <url>/2021/02/17/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E6%80%BB%E7%BB%93/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      <categories>
+          
+          <category> 总结 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 支付 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>支付相关</title>
+      <link href="/2021/02/17/%E6%94%AF%E4%BB%98%E7%9B%B8%E5%85%B3/"/>
+      <url>/2021/02/17/%E6%94%AF%E4%BB%98%E7%9B%B8%E5%85%B3/</url>
+      
+        <content type="html"><![CDATA[<p>第三方渠道的配置相关</p><p>一致性：<br>#一致性#本地事务中如果带有第三方的api请求，第三方成功，然后本地事务失败，会出现不一致。一些常见的：进程被强制杀掉，系统断电。</p><p>多渠道选择器</p><p>幂等实现</p><p>渠道接入：<br>错误处理/补偿设计<br>定时调度<br>运营支撑<br>渠道选取逻辑<br>接入规范</p><p>信用卡退款失败异常流程：<br>一个特殊规则：当天账户退款数目超过请款数目时，后续的退款会返回失败。<br>这些失败是需要隔天重试的。</p><p>支付路由设计<br><a href="https://zhuanlan.zhihu.com/p/34559347" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/34559347</a></p><p>第三方渠道的超时，异常流程处理（特别是超时，消耗资源的情况）</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 总结 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 支付 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>服务分层设计</title>
+      <link href="/2021/02/17/%E6%9C%8D%E5%8A%A1%E5%88%86%E5%B1%82%E8%AE%BE%E8%AE%A1/"/>
+      <url>/2021/02/17/%E6%9C%8D%E5%8A%A1%E5%88%86%E5%B1%82%E8%AE%BE%E8%AE%A1/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      <categories>
+          
+          <category> 总结 </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>服务治理总结</title>
+      <link href="/2021/02/17/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86%E6%80%BB%E7%BB%93/"/>
+      <url>/2021/02/17/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86%E6%80%BB%E7%BB%93/</url>
+      
+        <content type="html"><![CDATA[<ol><li>一些认识和总结，不一定全面</li><li>健康检查： http的head,get,options,nginx 健康检查：主动，被动<br>upstream status: nginx_upstream_check_module<br>ngx_upstream_status</li><li>部署方案</li><li>弹性服务：backpressure思路和实现</li></ol><p>三板斧：可灰度、可监控、可回滚</p><p>核心业务技术拆分逻辑：把不同的业务独立开，目标是增加稳定性和可维护性，实现核心业务的“高内聚，低耦合”，实现对客户的高可靠保证。<br>稳定性：减少核心业务的代码层面的依赖，隔离数据库、缓存、部署等，通过职责分离降低复杂度，从而提升稳定性。<br>可维护性：核心业务拆出后，关注点分离，从而更加容易聚焦和迭代，带来可维护性提升。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 总结 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 服务治理 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>流计算</title>
+      <link href="/2021/02/17/%E6%B5%81%E8%AE%A1%E7%AE%97/"/>
+      <url>/2021/02/17/%E6%B5%81%E8%AE%A1%E7%AE%97/</url>
+      
+        <content type="html"><![CDATA[<p>flink<br>OLAP</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 总结 </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>测试</title>
+      <link href="/2021/02/17/%E6%B5%8B%E8%AF%95/"/>
+      <url>/2021/02/17/%E6%B5%8B%E8%AF%95/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      <categories>
+          
+          <category> 总结 </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>码代码</title>
+      <link href="/2021/02/17/%E7%A0%81%E4%BB%A3%E7%A0%81/"/>
+      <url>/2021/02/17/%E7%A0%81%E4%BB%A3%E7%A0%81/</url>
+      
+        <content type="html"><![CDATA[<p>日志：#日志# api请求的，请求异常一定要有日志</p><p>#异常处理# 封装的异常，要保留原始异常信息，异常堆栈中要能追溯原始异常的堆栈</p><p>打日志一个非常重要的点（特别是支付场景）：<br>在请求前打，请求之后再打，而不是只在一边打</p><p>#软件工程师核心能力# 读代码<br>并不是每个项目都是从零开始的，大多数时候都是给一个现有的仓库做维护，好比给一个房子添砖加瓦、做改造。<br>如果不了解手头做的事，只追求把自己的那部分做好，不了解改动会对现有系统产生什么样的影响，可能会导致什么后果，就不算是合格的，很可能有一天会砸到自己、碰到别人。<br>怎么避免呢？依靠对业务的理解和判断（和领域专家、团队沟通），对实现的理解（读代码）。</p><p>命名一定要很明确，无论是业务系统，还是技术组件，明确表达是干啥的。<br>ps: 看见项目代码中各种set_xxx, process_xxx就头大。。。</p><p>对扩展开放，#开原则#的应用：<br>实现sdk的版本迭代时，提供一个最基础的方法，方便用户找不到封装方法时，自己还能在这个最基础的方法上实现一个，达到用户端扩展的目的。</p><p>延伸：有依赖关系的且多变的地方，强调简单、灵活。</p><p>api设计：简单，傻瓜化，不要指望调用方处理复杂的逻辑。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 总结 </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>网络协议总结</title>
+      <link href="/2021/02/17/%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE%E6%80%BB%E7%BB%93/"/>
+      <url>/2021/02/17/%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE%E6%80%BB%E7%BB%93/</url>
+      
+        <content type="html"><![CDATA[<p>http协议，http2</p><p>NAT</p><p>https流量解密：<a href="https://imququ.com/post/how-to-decrypt-https.html" target="_blank" rel="noopener">https://imququ.com/post/how-to-decrypt-https.html</a></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 总结 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 网络协议 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>认识分布式数据库</title>
+      <link href="/2021/02/17/%E8%AE%A4%E8%AF%86%E5%88%86%E5%B8%83%E5%BC%8F%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+      <url>/2021/02/17/%E8%AE%A4%E8%AF%86%E5%88%86%E5%B8%83%E5%BC%8F%E6%95%B0%E6%8D%AE%E5%BA%93/</url>
+      
+        <content type="html"><![CDATA[<p>tidb<br>oceanbase<br>…</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 总结 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 数据库 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>认识重构</title>
+      <link href="/2021/02/17/%E8%AE%A4%E8%AF%86%E9%87%8D%E6%9E%84/"/>
+      <url>/2021/02/17/%E8%AE%A4%E8%AF%86%E9%87%8D%E6%9E%84/</url>
+      
+        <content type="html"><![CDATA[<ol><li>一些例子，为什么重构，出发点，障碍，如何推动</li><li>读《重构这本书》，思考总结</li></ol>]]></content>
+      
+      
+      <categories>
+          
+          <category> 总结 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 重构 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>配置管理</title>
+      <link href="/2021/02/17/%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86/"/>
+      <url>/2021/02/17/%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86/</url>
+      
+        <content type="html"><![CDATA[<p>diamond</p><p>todo: </p><ol><li>配置管理的思路</li><li>一些开源方案调研<br><a href="https://github.com/Qihoo360/QConf" target="_blank" rel="noopener">https://github.com/Qihoo360/QConf</a></li></ol><p>配置服务：</p><ol><li>需要持久化</li><li>如果有缓存，需要动态分发给运行的实例</li></ol><p>动态配置管理</p><p>自己实现的总结</p><p>高可用</p><p><a href="http://blog.zollty.com/b/archive/config-center-selection.html" target="_blank" rel="noopener">http://blog.zollty.com/b/archive/config-center-selection.html</a></p><p><a href="https://zhuanlan.zhihu.com/p/38253575" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/38253575</a></p><p>配置管理的正交变量：环境</p><p>配置管理需要考虑配置变更导致的级联效应</p><p>长连接：<a href="https://www.huaweicloud.com/articles/db992dcc503d3c225f533003fc5387bb.html" target="_blank" rel="noopener">https://www.huaweicloud.com/articles/db992dcc503d3c225f533003fc5387bb.html</a><br><a href="https://github.com/WeMobileDev/article/blob/master/%E5%BE%AE%E4%BF%A1%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%80%8E%E6%A0%B7%E5%BA%94%E5%AF%B9%E5%BC%B1%E7%BD%91%E7%BB%9C.pdf" target="_blank" rel="noopener">https://github.com/WeMobileDev/article/blob/master/%E5%BE%AE%E4%BF%A1%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%80%8E%E6%A0%B7%E5%BA%94%E5%AF%B9%E5%BC%B1%E7%BD%91%E7%BB%9C.pdf</a></p><p>长轮询<br><a href="https://developer.aliyun.com/article/781914?groupCode=alitech" target="_blank" rel="noopener">https://developer.aliyun.com/article/781914?groupCode=alitech</a></p><p>携程Apollo：</p><ol><li><a href="https://ctripcorp.github.io/apollo/#/zh/README" target="_blank" rel="noopener">https://ctripcorp.github.io/apollo/#/zh/README</a></li><li><a href="https://mp.weixin.qq.com/s/-hUaQPzfsl9Lm3IqQW3VDQ" target="_blank" rel="noopener">https://mp.weixin.qq.com/s/-hUaQPzfsl9Lm3IqQW3VDQ</a></li></ol>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> 配置 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>问题收集总结</title>
+      <link href="/2021/02/17/%E9%97%AE%E9%A2%98%E6%94%B6%E9%9B%86%E6%80%BB%E7%BB%93/"/>
+      <url>/2021/02/17/%E9%97%AE%E9%A2%98%E6%94%B6%E9%9B%86%E6%80%BB%E7%BB%93/</url>
+      
+        <content type="html"><![CDATA[<p>backlog过小导致accept queue满，导致客户端连接超时：<a href="https://www.infoq.cn/article/y5KYxYeVPXAlHI1Y8ylX" target="_blank" rel="noopener">https://www.infoq.cn/article/y5KYxYeVPXAlHI1Y8ylX</a></p><p>#事故学习#支付任务没有发成功邮件，但是支付已经成功了，人工重试导致重复付款。<br>总结：一定要考虑一致性、事务，任务重试需要考虑是否幂等。</p><p>模拟connection timeout：<br><a href="https://gist.github.com/anthavio/5092439" target="_blank" rel="noopener">https://gist.github.com/anthavio/5092439</a></p><p>思路：server socket backlog 设置1，起一个客户端去占用连接数，其他的连接会连接超时</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 总结 </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>高效工作</title>
+      <link href="/2021/02/17/%E9%AB%98%E6%95%88%E5%B7%A5%E4%BD%9C/"/>
+      <url>/2021/02/17/%E9%AB%98%E6%95%88%E5%B7%A5%E4%BD%9C/</url>
+      
+        <content type="html"><![CDATA[<p>技术方案沟通：<br>一个经验之谈，讲ppt方案时，不要暴露太多的实现方案，要把听的人的注意力放在思路和架构上面。因为实现方案千变万化，每个人有自己的偏好，容易被pk。</p><p>基本上，if u can’t do something right now, u can’t do it tmr or on weekends.</p><p>#离职#如果换个地方，问题能解决，那就换，否则要想一想。</p><p>技术方案ppt涵盖内容：背景、问题、具体方案包括（思路，问题回顾，实施设计）、作出哪些变更，时间资源预估。评估的会议要拉上相关方，会前要达成一致，会中具体的时间和投入资源的确认、排期，会后要有沟通。</p><p>对比/PK技术方案，一个要点是资源，一样的方案，都能实现，但是所使用资源未必一样，资源包括人力、时间、机器成本。前两个和复杂度有关联，关键在于提出者对方案很熟悉，能够说服大家，最后一个是比较客观的理由。</p><p>用结果来客观评价</p><p>依赖人而不是流程</p><p>软件开发的鬼故事:<a href="https://www.infoq.cn/article/c20etwzh3qhtidmr9idc" target="_blank" rel="noopener">https://www.infoq.cn/article/c20etwzh3qhtidmr9idc</a></p><p>人和交互重于流程和工具</p><p>推动项目需求落地：分析各方成本收益，争取，打击</p><p>团队外，对接其他团队，尤其第三方，沟通方式要正式，对接前要明确，过程中要沟通及时，出现问题主动去解决。</p><p>技术方案讲演：</p><p>要有具体的<br>要有设计，设计的思路<br>可以预期的一个结果<br>可以实行的方案</p><p>会议：消除背后不确定的东西</p><p>例如：QA的case review能够消除开发和PM对QA阶段的不确定性</p><p>重点是把问题的解决办法提出来。</p><p>开会讲话要清晰，如果没讲清楚，大家都很迷茫</p><p>开会目的要清晰</p><p>汇报</p><p>做了哪些事，归纳，具体能带来什么提升<br>要做的事归纳，具体做什么</p><p><a href="https://www.infoq.cn/article/AM44HRkGjr3aZh0PMaci" target="_blank" rel="noopener">https://www.infoq.cn/article/AM44HRkGjr3aZh0PMaci</a></p><p>#leader# 明确方向，使团队往一个目标发力</p><p>#推动#事情有转机，就马上推动</p><p>工作中真正耗时的地方：</p><p>环境，开发环境和测试环境的搭建部署，这里面涉及很多，例如配置管理，分支管理，环境资源管理，例如多个feature穿插交给测试（QA在测A时，需要切换到一个更紧急的B）。<br>设计，无论是小的不能再小的改动，还是牵一发动全身的，都需要想想清楚之后，思路明确再动手。这里的耗时很难估计，对项目的熟悉程度，个人的技术局限，甚至个人做事的节奏，都会影响到。</p><p>团队沟通，一定需要有耐心，自己认为好的想法和点子，需要传达、消化、转化为计划、付诸行动这个过程。</p><p>工作效率</p><p>工作的需求：业务需求，技术需求，个人的想法<br>衡量效率：内在的条理，时间线、逻辑线清晰</p><p>如何全面和体系化思考问题：</p><p>多举例子，思考对应情况怎么处理，这个过程也同时会加深对问题的认识<br>讨论，不同人的角度未必一样，不同人的认识深度也不一样，未必能讨论出结果，但一定会加深认知<br>抽象建模，总结问题，提取出模型的部分，模型是相对不变的，有了靠谱的模型做参考，就能避免舍本逐末（或者叫过早优化）<br>我去，怎么感觉和DDD的方法论有点像啊，难不成潜意识是搬过来了？</p><p>不严肃地回答不严肃的问题</p><p>系统分析/系统设计，最重要的是流程图，交互图，类/模块设计</p><p>沉下心做事，也要有应变能力<br>一些应变的预案，提前的充分沟通</p><p>#软件工程团队# 和分布式一致性算法一样，变更的目标要提前拥有多数投票（不一定是多数人），为什么这么做？</p><p>明确和团队方向一致<br>团队知识的保留<br>减少沟通成本</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 总结 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 高效 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>MyRocks 非正式压测</title>
+      <link href="/2021/01/21/MyRocks%20%E9%9D%9E%E6%AD%A3%E5%BC%8F%E5%8E%8B%E6%B5%8B/"/>
+      <url>/2021/01/21/MyRocks%20%E9%9D%9E%E6%AD%A3%E5%BC%8F%E5%8E%8B%E6%B5%8B/</url>
+      
+        <content type="html"><![CDATA[<p>“非正式”：开发环境有个docker容器要过期了，刚好对MyRocks和MySQL性能对比感兴趣，就拿来简单不专业地测下，仅对比下同样环境下两个版本的结果，测试工具是sysbench，场景是olap_read_write.lua。</p><p>简单的压测发现，同样配置下，MyRocks包括读写、事务的性能是MySQL的3倍。</p><p>percona官方的一个性能对比：<a href="https://www.percona.com/blog/2018/04/30/a-look-at-myrocks-performance/" target="_blank" rel="noopener">MyRocks Performance</a></p><h1 id="1-配置"><a href="#1-配置" class="headerlink" title="1. 配置"></a>1. 配置</h1><p>机器配置：<code>32core,32GB,ubuntu 16.04,docker容器</code><br>sysbench: <code>sysbench 1.0.20 (using bundled LuaJIT 2.1.0-beta2)</code></p><p>my.cnf:</p><pre><code>[mysqld]bind-address    = 0.0.0.0# SAFETY #max_allowed_packet             = 16Mmax_connect_errors             = 1000000innodb                         = FORCE# BINARY LOGGING #log_bin                        = /var/lib/mysql/mysql-binexpire_logs_days               = 14sync_binlog                    = 100000server-id  = 1open_files_limit               = 65535max_connections = 10000innodb_buffer_pool_size        = 26G# LOGGING #log_error                      = /var/lib/mysql/mysql-error.loglog_queries_not_using_indexes  = 1slow_query_log                 = 1slow_query_log_file            = /var/lib/mysql/mysql-slow.log# query_response_time_stats = on# innodb_monitor_enable = allinnodb_log_buffer_size          = 512Minnodb_log_file_size            = 1024Minnodb_flush_log_at_trx_commit = 0sync_binlog = 100000innodb_write_io_threads=16innodb_read_io_threads=16innodb_flush_method=O_DIRECT</code></pre><h2 id="1-1-MySQL"><a href="#1-1-MySQL" class="headerlink" title="1.1 MySQL"></a>1.1 MySQL</h2><p>版本：<code>mysql  Ver 14.14 Distrib 5.7.31-34, for debian-linux-gnu (x86_64) using  6.3</code></p><p>percona server 5.7</p><h2 id="1-2-MyRocks"><a href="#1-2-MyRocks" class="headerlink" title="1.2 MyRocks"></a>1.2 MyRocks</h2><p>安装：<a href="https://www.percona.com/doc/percona-server/5.7/myrocks/install.html" target="_blank" rel="noopener">Percona MyRocks 5.7</a></p><pre><code>sudo apt-get install -y wget gnupg2 lsb-release curlwget https://repo.percona.com/apt/percona-release_latest.generic_all.debsudo dpkg -i percona-release_latest.generic_all.debsudo apt-get install --fix-brokensudo percona-release setup ps80sudo apt-get updatesudo apt-get install percona-server-rocksdb-5.7</code></pre><p>版本: <code>mysql  Ver 14.14 Distrib 5.7.32-35, for debian-linux-gnu (x86_64) using  6.3</code></p><h1 id="2-测试-oltp-read-write-lua"><a href="#2-测试-oltp-read-write-lua" class="headerlink" title="2. 测试 oltp_read_write.lua"></a>2. 测试 oltp_read_write.lua</h1><h2 id="2-1-prepare"><a href="#2-1-prepare" class="headerlink" title="2.1 prepare"></a>2.1 prepare</h2><p>首先创建test db，然后执行：</p><pre><code>sysbench /usr/share/sysbench/oltp_read_write.lua --threads=32 --mysql-host=127.0.0.1 --mysql-db=test --tables=20 --table_size=1000000 --mysql-user=root --mysql-password=passw0rd prepare</code></pre><h2 id="2-2-run"><a href="#2-2-run" class="headerlink" title="2.2 run"></a>2.2 run</h2><pre><code>sysbench /usr/share/sysbench/oltp_read_write.lua --threads=32 --mysql-host=127.0.0.1 --mysql-db=test --tables=20 --table_size=1000000 --mysql-user=root --mysql-password=passw0rd run</code></pre><h2 id="2-3-cleanup"><a href="#2-3-cleanup" class="headerlink" title="2.3 cleanup"></a>2.3 cleanup</h2><pre><code>sysbench /usr/share/sysbench/oltp_read_write.lua --threads=32 --mysql-host=127.0.0.1 --mysql-db=test --tables=20 --table_size=1000000 --mysql-user=root --mysql-password=passw0rd cleanup</code></pre><h1 id="3-测试结果"><a href="#3-测试结果" class="headerlink" title="3. 测试结果"></a>3. 测试结果</h1><h2 id="3-1-percona-MySQL-5-7-innodb-buffer-pool-size-26G"><a href="#3-1-percona-MySQL-5-7-innodb-buffer-pool-size-26G" class="headerlink" title="3.1 percona MySQL 5.7 (innodb_buffer_pool_size=26G)"></a>3.1 percona MySQL 5.7 (innodb_buffer_pool_size=26G)</h2><p>oltp read write</p><pre><code>sysbench 1.0.20 (using bundled LuaJIT 2.1.0-beta2)Running the test with following options:Number of threads: 32Initializing random number generator from current timeInitializing worker threads...Threads started!SQL statistics:    queries performed:        read:                            53088        write:                           15168        other:                           7584        total:                           75840    transactions:                        3792   (374.42 per sec.)    queries:                             75840  (7488.42 per sec.)    ignored errors:                      0      (0.00 per sec.)    reconnects:                          0      (0.00 per sec.)General statistics:    total time:                          10.1240s    total number of events:              3792Latency (ms):         min:                                    2.60         avg:                                   84.53         max:                                  520.82         95th percentile:                      186.54         sum:                               320521.06Threads fairness:    events (avg/stddev):           118.5000/7.16    execution time (avg/stddev):   10.0163/0.01</code></pre><h2 id="3-3-MyRocks-innodb-buffer-pool-size-26G"><a href="#3-3-MyRocks-innodb-buffer-pool-size-26G" class="headerlink" title="3.3 MyRocks (innodb_buffer_pool_size=26G)"></a>3.3 MyRocks (innodb_buffer_pool_size=26G)</h2><pre><code>sysbench 1.0.20 (using bundled LuaJIT 2.1.0-beta2)Running the test with following options:Number of threads: 32Initializing random number generator from current timeInitializing worker threads...Threads started!SQL statistics:    queries performed:        read:                            135940        write:                           38840        other:                           19420        total:                           194200    transactions:                        9710   (962.99 per sec.)    queries:                             194200 (19259.75 per sec.)    ignored errors:                      0      (0.00 per sec.)    reconnects:                          0      (0.00 per sec.)General statistics:    total time:                          10.0805s    total number of events:              9710Latency (ms):         min:                                    1.89         avg:                                   32.85         max:                                  345.30         95th percentile:                       94.10         sum:                               318990.98Threads fairness:    events (avg/stddev):           303.4375/49.73    execution time (avg/stddev):   9.9685/0.03</code></pre><h2 id="3-3-MyRocks-innodb-buffer-pool-size-4G"><a href="#3-3-MyRocks-innodb-buffer-pool-size-4G" class="headerlink" title="3.3 MyRocks (innodb_buffer_pool_size=4G)"></a>3.3 MyRocks (innodb_buffer_pool_size=4G)</h2><pre><code>sysbench 1.0.20 (using bundled LuaJIT 2.1.0-beta2)Running the test with following options:Number of threads: 32Initializing random number generator from current timeInitializing worker threads...Threads started!SQL statistics:    queries performed:        read:                            140994        write:                           40284        other:                           20142        total:                           201420    transactions:                        10071  (1001.71 per sec.)    queries:                             201420 (20034.23 per sec.)    ignored errors:                      0      (0.00 per sec.)    reconnects:                          0      (0.00 per sec.)General statistics:    total time:                          10.0523s    total number of events:              10071Latency (ms):         min:                                    1.80         avg:                                   31.67         max:                                  332.13         95th percentile:                       90.78         sum:                               318995.75Threads fairness:    events (avg/stddev):           314.7188/71.47    execution time (avg/stddev):   9.9686/0.02</code></pre><h2 id="3-4-MyRocks-innodb-buffer-pool-size-16G"><a href="#3-4-MyRocks-innodb-buffer-pool-size-16G" class="headerlink" title="3.4 MyRocks (innodb_buffer_pool_size=16G)"></a>3.4 MyRocks (innodb_buffer_pool_size=16G)</h2><pre><code>sysbench 1.0.20 (using bundled LuaJIT 2.1.0-beta2)Running the test with following options:Number of threads: 32Initializing random number generator from current timeInitializing worker threads...Threads started!SQL statistics:    queries performed:        read:                            165508        write:                           47288        other:                           23644        total:                           236440    transactions:                        11822  (1173.39 per sec.)    queries:                             236440 (23467.75 per sec.)    ignored errors:                      0      (0.00 per sec.)    reconnects:                          0      (0.00 per sec.)General statistics:    total time:                          10.0721s    total number of events:              11822Latency (ms):         min:                                    1.83         avg:                                   26.81         max:                                  687.19         95th percentile:                       71.83         sum:                               316940.56Threads fairness:    events (avg/stddev):           369.4375/29.95    execution time (avg/stddev):   9.9044/0.05</code></pre>]]></content>
+      
+      
+      <categories>
+          
+          <category> 实用 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 压测 </tag>
+            
+            <tag> rocksdb </tag>
+            
+            <tag> MyRocks </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>The road to react 笔记</title>
+      <link href="/2020/12/20/The%20road%20to%20react%20%E7%AC%94%E8%AE%B0/"/>
+      <url>/2020/12/20/The%20road%20to%20react%20%E7%AC%94%E8%AE%B0/</url>
+      
+        <content type="html"><![CDATA[<h1 id="1-Fundamentals-of-React"><a href="#1-Fundamentals-of-React" class="headerlink" title="1. Fundamentals of React"></a>1. Fundamentals of React</h1><h2 id="1-1-Hello-React"><a href="#1-1-Hello-React" class="headerlink" title="1.1 Hello React"></a>1.1 Hello React</h2><p><strong>SPA</strong>: 相比每次从服务端请求一个完整的html文件，SPA使得一个js和一个html文件就能完成客户端的绝大部分功能。页面的切换通过js就能完成。<br><strong>React</strong>就是一种能够实现SPA应用或者遵循了SPA原则的技术。<br><strong>Component</strong>是React中的一个重要概念，一个Component定义了它的html/css/js即样式和交互，它能够被整个应用中灵活地复用。<br>作者认为的<strong>React的优势</strong>：稳定，且拥有强大的生态和社区。</p><h2 id="1-2-Requirements"><a href="#1-2-Requirements" class="headerlink" title="1.2 Requirements"></a>1.2 Requirements</h2><p>编辑器: VSCode<br>运行环境：node<br>包管理：npm</p><p>依赖包的定义：<code>package.json</code>和<code>package-lock.json</code><br>依赖包本地目录：<code>npm_modules/</code></p><p>npm常用命令</p><ul><li><code>npm install -g &lt;module&gt;</code>: 全局安装</li><li><code>npm install --save-dev</code>： 调试安装，不会写到<code>package.json</code></li><li><code>npm uninstall &lt;module&gt;</code>：卸载</li><li><code>npm init -y</code>：初始化</li></ul><p>参考：<a href="https://www.robinwieruch.de/npm-crash-course" target="_blank" rel="noopener">npm crash course</a></p><h2 id="1-3-Setting-up-a-React-Project"><a href="#1-3-Setting-up-a-React-Project" class="headerlink" title="1.3 Setting up a React Project"></a>1.3 Setting up a React Project</h2><p>npx命令: <code>execute npm package binaries</code><br><code>create-react-app</code>： 一个创建/初始化react项目骨架的工具<br>通过<code>create-react-app</code>所创建的react项目基本结构：</p><ul><li><code>node_modules/</code>: 依赖目录</li><li><code>public/index.html</code>: 默认<code>src/</code>下的js是处理这个文件</li><li><code>package.json</code>和<code>package-lock.json</code>，同上，另外前者定义了<code>start</code>/<code>build</code>/<code>test</code>命令</li><li><code>src/App.js</code>：应用的Components定义</li><li><code>src/App.css</code>：Components样式</li><li><code>src/index.js</code>：应用入口</li></ul><h2 id="1-4-Meet-the-React-Component"><a href="#1-4-Meet-the-React-Component" class="headerlink" title="1.4 Meet the React Component"></a>1.4 Meet the React Component</h2><pre><code class="javascript">import React from &#39;react&#39;;const target = &#39;React&#39;function App() {  return (    &lt;div&gt;      &lt;h1&gt;Hello {target}&lt;/h1&gt;    &lt;/div&gt;  )}export default App;</code></pre><p>这个component叫做App，同时也是一个普通的js function，所以也叫做function component。<br>这个component返回一段类似html的叫做JSX的代码。<br>这个component就是一个普通的js function，可以定义变量以及任何符合js语法的逻辑。</p><h2 id="1-5-React-JSX"><a href="#1-5-React-JSX" class="headerlink" title="1.5 React JSX"></a>1.5 React JSX</h2><p>JSX语法：结合html和js</p><ul><li>特殊关键字：<code>htmlfor</code>, <code>className</code>, <code>onClick</code></li><li><code>{}</code>包含的是js表达式</li></ul><h2 id="1-6-Lists-in-React"><a href="#1-6-Lists-in-React" class="headerlink" title="1.6 Lists in React"></a>1.6 Lists in React</h2><p>js语法中list有<code>map</code>, <code>filter</code>等方法，也可以用在JSX中：</p><pre><code class="javascript">const App = () =&gt; (  &lt;div&gt;  {items.map(item =&gt; (&lt;div key={item.objectID}&gt;{item.title}&lt;/div&gt;))}  &lt;/div&gt;)</code></pre><p><code>key</code>用来标识一个node。</p><p><code>return null</code> 表示不生成任何html。</p><h2 id="1-7-Meet-another-React-Component"><a href="#1-7-Meet-another-React-Component" class="headerlink" title="1.7 Meet another React Component"></a>1.7 Meet another React Component</h2><p>一个定义好的component，可以作为JSX的标签来使用。</p><pre><code class="javascript">const Item = ({item}) =&gt; (  &lt;div key={item.objectID}&gt;{item.title}&lt;/div&gt;)const App = () =&gt; (  &lt;div&gt;  {items.map(item =&gt; (&lt;Item item={item}/&gt;))}  &lt;/div&gt;)</code></pre><p>一个react应用由此会形成一个组件树。</p><h2 id="1-8-React-Component-instantiation"><a href="#1-8-React-Component-instantiation" class="headerlink" title="1.8 React Component instantiation"></a>1.8 React Component instantiation</h2><p>js中的class:</p><pre><code class="javascript">class Item {  constructor(title) {    this.title = title  }}const item1 = new Item(&#39;test&#39;)</code></pre><p>当使用JSX语法定义一个component的标签时，也就创建了一个component的实例。</p><h2 id="1-9-React-DOM"><a href="#1-9-React-DOM" class="headerlink" title="1.9 React DOM"></a>1.9 React DOM</h2><pre><code class="javascript">ReactDOM.render(  &lt;App /&gt;,  document.getElementById(&#39;root&#39;))</code></pre><ol><li><code>ReactDOM.render</code>将JSX渲染为真实的的DOM。</li><li><code>root</code>是<code>public/index.html</code>中的id</li></ol><h2 id="1-10-React-Component-Definition-Advanced"><a href="#1-10-React-Component-Definition-Advanced" class="headerlink" title="1.10 React Component Definition (Advanced)"></a>1.10 React Component Definition (Advanced)</h2><p>定义componenet的几个pattern</p><ol><li>functional component 函数的方式定义component</li><li>arrow function</li><li>定义一个类，继承<code>React.Component</code></li></ol><h2 id="1-11-Handler-Function-in-JSX"><a href="#1-11-Handler-Function-in-JSX" class="headerlink" title="1.11 Handler Function in JSX"></a>1.11 Handler Function in JSX</h2><pre><code class="javascript">const App = () =&gt; {  const handleChange = event =&gt; {    console.log(event.target.value)  }  return (    &lt;div&gt;    &lt;label htmlFor=&quot;search&quot;&gt;Search: &lt;/label&gt;    &lt;input id=&quot;search&quot; type=&quot;text&quot; onChange={handleChange}&gt;    &lt;/div&gt;  )}</code></pre><p><code>synthetic event</code>合成事件是对浏览器native event的封装，并且改变了某些行为（例如避免submit时刷新页面）。<br>JSX中event handler和js的语法十分相似。</p><h2 id="1-12-React-Props"><a href="#1-12-React-Props" class="headerlink" title="1.12 React Props"></a>1.12 React Props</h2><p>props可以用来在父component到子component的传递参数。</p><pre><code class="javascript">const App = () =&gt; (  &lt;div&gt;     {items.map(item =&gt; &lt;Item item={item}&gt;)}  &lt;/div&gt;)const Item = props =&gt; (  &lt;div&gt;     &lt;span&gt;{props.item.title}&lt;/span&gt;  &lt;/div&gt;) </code></pre><h2 id="1-13-React-State"><a href="#1-13-React-State" class="headerlink" title="1.13 React State"></a>1.13 React State</h2><p>React State能够让component变得interactive。</p><p><code>React.useState()</code></p><ul><li>是一个<code>React Hook</code></li><li>返回一个二元素的数组，第一个是<code>current state</code>，第二个是<code>state updater function</code></li><li>当<code>state updater</code>被调用后，component会重新render</li></ul><pre><code class="javascript">const App = () =&gt; {  const [searchTerm, setSearchTerm] = React.useState(&#39;&#39;);  ...}</code></pre><h2 id="1-14-Callback-Handlers-in-JSX"><a href="#1-14-Callback-Handlers-in-JSX" class="headerlink" title="1.14 Callback Handlers in JSX"></a>1.14 Callback Handlers in JSX</h2><p>props是向下传递的。</p><p>怎么才能让子component传递信息给父component呢？</p><ul><li>父component定义一个callback函数，通过props传递给子component</li><li>子component在处理事件时，调用这个callback函数，实现通知</li></ul><h2 id="1-15-Lifting-State-in-React"><a href="#1-15-Lifting-State-in-React" class="headerlink" title="1.15 Lifting State in React"></a>1.15 Lifting State in React</h2><p><code>lift state up</code>:</p><ul><li><ol><li>state定义在多个子component都需要访问的component中（state和面向对象中类的属性有明显的不同）</li></ol></li><li><ol start="2"><li>子component通过props和callback来显示和更新state</li></ol></li><li><ol start="3"><li>state和<code>state updater</code>更像是event和event handler</li></ol></li><li><ol start="4"><li>state的”作用域”是整个app的生命周期，所以更像是事件</li></ol></li></ul><h2 id="1-16-React-Controlled-Components"><a href="#1-16-React-Controlled-Components" class="headerlink" title="1.16 React Controlled Components"></a>1.16 React Controlled Components</h2><p><code>controlled component</code>：把state通过props传递给组件，这时能够拿到state的初始值，同时component变得和普通的html元素几乎一样（除了使用JSX语法表示外）。</p><p><code>component lifecycle</code>：最开始是组件树初始化，同时hooks也用初始值实例化，然后ui就接受各种交互事件，更新state，调用<code>state updater</code>，然后所有相关的component重新render</p><p>特别注意一点：通过各种方式（函数式）定义的component，并不会重新实例化。而Hook也只实例化一次。react内部会去track所有的state。</p><h2 id="1-17-Props-Handling-Advanced"><a href="#1-17-Props-Handling-Advanced" class="headerlink" title="1.17 Props Handling (Advanced)"></a>1.17 Props Handling (Advanced)</h2><p>props借助js的descruction语法能够更加简洁。</p><pre><code class="javascript">const Item = ({title}) =&gt; (  &lt;div&gt;&lt;span&gt;{title}&lt;/span&gt;&lt;/div&gt;)</code></pre><p>js支持嵌套解耦（nested descructuing）</p><p><code>spread operator</code>: <code>&lt;Item {...item} /&gt;</code><br><code>rest operator</code>: <code>const List = ({list}) =&gt; list.map(({objectID, ...item}) =&gt; &lt;Item key={objectID} {...item} /&gt;);</code></p><h2 id="1-18-React-Side-Effects"><a href="#1-18-React-Side-Effects" class="headerlink" title="1.18 React Side-Effects"></a>1.18 React Side-Effects</h2><pre><code class="javascript">const [searchTerm, setSearchTerm] = React.useState(  localStorage.getItem(&#39;search&#39;) || &#39;React&#39;)React.useEffect(() =&gt; {  localStorage.setItem(&#39;search&#39;, searchTerm);}, [searchTerm])const handleSearch = event =&gt; {  setSearchTerm(event.target.value);}</code></pre><p>类似注册一个<code>state</code>的”事件”处理器。</p><p>和handler区别：</p><ol><li>handler似乎更专注ui</li><li>useEffect更专注处理逻辑（非ui，更接近业务）</li></ol><h2 id="1-19-React-Custom-Hooks-Advanced"><a href="#1-19-React-Custom-Hooks-Advanced" class="headerlink" title="1.19 React Custom Hooks (Advanced)"></a>1.19 React Custom Hooks (Advanced)</h2><p><code>useSemiPersistentState</code>封装了一些特定的逻辑，构成一个custom hook</p><pre><code class="javascript">const useSemiPersistentState = (key, initialState) =&gt; {  const [value, setValue] = React.useState(    localStorage.getItem(key) || initialState  );  React.useEffect(() =&gt; {    localStorage.setItem(key, value);  }, [value]);  // 此处应该是笔误，书中是传递[value, key]  return [value, setValue];}</code></pre><h2 id="1-20-React-Fragments"><a href="#1-20-React-Fragments" class="headerlink" title="1.20 React Fragments"></a>1.20 React Fragments</h2><p>component返回时如果不想要<code>&lt;div&gt;</code>包着，需要定义每个元素的key，react支持<code>&lt;&gt;</code>即所谓fragment，来表示top-level element，但是不会有rendered output。</p><pre><code class="javascript">const Search = ({search, onSearch}) = (  &lt;&gt;    &lt;label ... /&gt;    &lt;input ... /&gt;  &lt;/&gt;)</code></pre><h2 id="1-21-Resuable-React-Component"><a href="#1-21-Resuable-React-Component" class="headerlink" title="1.21 Resuable React Component"></a>1.21 Resuable React Component</h2><p>从search box抽象出<code>InputWithLabel</code>，结合js的<code>default parameter</code>语法，能够让component容易复用。</p><h2 id="1-22-React-Component-Composition"><a href="#1-22-React-Component-Composition" class="headerlink" title="1.22 React Component Composition"></a>1.22 React Component Composition</h2><p><code>children</code> prop是react的一个特殊的prop，能够支持react component像html element那样嵌套组合：</p><pre><code class="javascript">const Input = ({id, children}) =&gt; (  &lt;&gt;    &lt;input id={id} ... /&gt;  &lt;/&gt;)const App = () =&gt; (  &lt;div&gt;    &lt;Input id=&quot;search&quot;&gt;      &lt;strong&gt;Search:&lt;/strong&gt;    &lt;/Input&gt;  &lt;/div&gt;)</code></pre><h2 id="1-23-Imperative-React"><a href="#1-23-Imperative-React" class="headerlink" title="1.23 Imperative React"></a>1.23 Imperative React</h2><p><code>imperative</code>和<code>declarative</code></p><p>react也支持直接访问dom element，来做一些事：</p><pre><code class="javascript">const Input = (isFocused=false) =&gt; {  const ref = React.useRef()  React.useEffect(() =&gt; {    if (isFocused &amp;&amp; ref.current) {      ref.current.focus();    };  }, [isFocused]);  return (    &lt;&gt;      &lt;input ref={ref}/&gt;    &lt;/&gt;  )}</code></pre><h2 id="1-24-Inline-Handler-in-JSX"><a href="#1-24-Inline-Handler-in-JSX" class="headerlink" title="1.24 Inline Handler in JSX"></a>1.24 Inline Handler in JSX</h2><pre><code class="javascript">const Item = ({item, onRemoveItem}) =&gt; (  &lt;&gt;    &lt;button onClick={() =&gt; onRemoveItem(item)}&gt;  &lt;/&gt;)</code></pre><h2 id="1-25-React-Asynchronous-Data"><a href="#1-25-React-Asynchronous-Data" class="headerlink" title="1.25 React Asynchronous Data"></a>1.25 React Asynchronous Data</h2><p><code>Promise</code>的使用：<code>.then</code>, <code>.catch</code></p><h2 id="1-26-React-Conditional-Rendering"><a href="#1-26-React-Conditional-Rendering" class="headerlink" title="1.26 React Conditional Rendering"></a>1.26 React Conditional Rendering</h2><pre><code class="javascript">{isLoading ? (&lt;p&gt;Loading...&lt;/p&gt;):()}</code></pre><h2 id="1-27-React-Advanced-State"><a href="#1-27-React-Advanced-State" class="headerlink" title="1.27 React Advanced State"></a>1.27 React Advanced State</h2><p><code>React.useReducer</code></p><p>类似发布事件：</p><ol><li>定义reducer，根据current state,type,action计算下一个状态</li><li>dispatchFunc: 发布action</li></ol><h2 id="1-28-React-Impossible-States"><a href="#1-28-React-Impossible-States" class="headerlink" title="1.28 React Impossible States"></a>1.28 React Impossible States</h2><p>使用useReducer hook封装多个相关的状态，减少<code>impossible states</code>发生的概率。<code>impossible state</code>发生表示bug，或者带来错误的用户体验。</p><h2 id="1-29-Data-Fetching-with-React"><a href="#1-29-Data-Fetching-with-React" class="headerlink" title="1.29 Data Fetching with React"></a>1.29 Data Fetching with React</h2><p><code>fetch</code> api: <code>fetch(url).then(resp =&gt; resp.json()).then...</code></p><h2 id="1-30-Data-Re-Fetching-in-React"><a href="#1-30-Data-Re-Fetching-in-React" class="headerlink" title="1.30 Data Re-Fetching in React"></a>1.30 Data Re-Fetching in React</h2><p>useEffect绑定一个state，当state变化时会执行对应逻辑，更新或者发布action</p><h2 id="1-31-Memorized-Handler-in-React-Advanced"><a href="#1-31-Memorized-Handler-in-React-Advanced" class="headerlink" title="1.31 Memorized Handler in React (Advanced)"></a>1.31 Memorized Handler in React (Advanced)</h2><p><code>React.useCallback</code>: 状态发生变化时，直接调用该callback</p><p>死循环？没太看懂</p><h2 id="1-32-Explicit-Data-Fetching-with-React"><a href="#1-32-Explicit-Data-Fetching-with-React" class="headerlink" title="1.32 Explicit Data Fetching with React"></a>1.32 Explicit Data Fetching with React</h2><p>使用”按钮按下”的side effect来发api请求，而不是每次input change。</p><p>想清楚ui是如何交互的，何时发生什么事件，然后再设计state。</p><h2 id="1-33-Third-Party-Libraries-in-React"><a href="#1-33-Third-Party-Libraries-in-React" class="headerlink" title="1.33 Third-Party Libraries in React"></a>1.33 Third-Party Libraries in React</h2><p><code>fetch</code>是浏览器的api，<code>axios</code>是一个library，用来发异步的请求。</p><pre><code>npm install axiosimport axios from &#39;axios&#39;axios.get(url).then(...)</code></pre><h2 id="1-34-Async-Await-in-React-Advanced"><a href="#1-34-Async-Await-in-React-Advanced" class="headerlink" title="1.34 Async/Await in React(Advanced)"></a>1.34 Async/Await in React(Advanced)</h2><pre><code class="javascript">async () =&gt; {  const result = await axios.get(url)  // wait}</code></pre><h2 id="1-35-Forms-in-React"><a href="#1-35-Forms-in-React" class="headerlink" title="1.35 Forms in React"></a>1.35 Forms in React</h2><p><code>event.preventDefault()</code>: prevent browser reload</p><p><code>onSubmit</code>handler: react中处理表单提交的事件</p><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ol><li>熟悉JSX语法</li><li>熟悉javascript的一些语法，例如arrow function, destructuring, promise, async/await</li><li>熟悉几个react hooks的用法</li></ol><h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ul><li>不熟悉前端的必读:<a href="https://www.robinwieruch.de/javascript-fundamentals-react-requirements" target="_blank" rel="noopener">https://www.robinwieruch.de/javascript-fundamentals-react-requirements</a></li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> 实用 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 笔记 </tag>
+            
+            <tag> react </tag>
+            
+            <tag> frontend </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>LC 秋叶收藏集</title>
+      <link href="/2020/11/09/LC%20%E7%A7%8B%E5%8F%B6%E6%94%B6%E8%97%8F%E9%9B%86/"/>
+      <url>/2020/11/09/LC%20%E7%A7%8B%E5%8F%B6%E6%94%B6%E8%97%8F%E9%9B%86/</url>
+      
+        <content type="html"><![CDATA[<p><a href="https://leetcode-cn.com/problems/UlBDOe/" target="_blank" rel="noopener">题目链接</a></p><p>想了半天没想出来，看了题解。</p><p>两种解法：</p><ol><li>三维dp，这个类似套路，寻找状态转移方程，不熟练不容易想出来</li><li>推导：这个直观，结合推导，来找效率比较高的算法，是一个通用的思路</li></ol><p>定义Y(i)表示以i为结尾的y的个数，R(i)则表示r的个数。</p><p>M表示总的y的个数。</p><p>那么答案是：</p><pre><code>Y(x)+R(y) - R(x) + M - Y(y) = M + [Y(x)-R(x)] - [Y(y)-R(y)] </code></pre><p>那么令g(x)=Y(x)-R(x)，枚举y，然后寻找最小的g(x)，就能得到答案。</p><p>计算g(x)，可以维护y和r的计数器，O(1)就得到。<br>最小的g(x) 满足<code>x&lt;y</code>，只需要维护当前遇到的g(x)的最小值即可，也是O(1)。</p><p>所以整体复杂度O(n)，而空间复杂度可以做到O(1)。</p><pre><code class="java">class Solution {    public int minimumOperations(String leaves) {        int n = leaves.length();        int mg = 0;        int cy = 0;        int cr = 0;        int ans = n;        for (int i = 0; i &lt; n; i++) {            if (leaves.charAt(i) == &#39;y&#39;) {                cy ++ ;            } else {                cr ++;            }            int g = cy - cr;            if (i &gt;= 1 &amp;&amp; i &lt; n-1) {                ans = Math.min(ans, mg - g);            }            if (i == 0) {                mg = g;            } else {                mg = Math.min(mg, g);            }        }        return ans + cy;    }}</code></pre><p>自己想时，其实是按照第二种思路来的，但是没有动笔，也缺乏归纳出g(x)的思路，所以没想出来。<br>而dp也不太熟练，就没法了。</p><p>第三种思路：<a href="https://leetcode-cn.com/problems/UlBDOe/comments/588942" target="_blank" rel="noopener">https://leetcode-cn.com/problems/UlBDOe/comments/588942</a></p><p>同样是推导，不过用枚举区间的长度，和区间内y的个数做参数，转化为最大连续和问题。</p><p>最大连续和问题也是dp。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 算法 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> LC </tag>
+            
+            <tag> 算法 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>gunicorn启动长耗时的worker</title>
+      <link href="/2020/05/27/gunicorn%E5%90%AF%E5%8A%A8%E9%95%BF%E8%80%97%E6%97%B6%E7%9A%84worker/"/>
+      <url>/2020/05/27/gunicorn%E5%90%AF%E5%8A%A8%E9%95%BF%E8%80%97%E6%97%B6%E7%9A%84worker/</url>
+      
+        <content type="html"><![CDATA[<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>线上有个使用django框架的服务，需要创建大量的django model（~25k），并且要注册到django框架。</p><p>那么启动这个服务必定耗时很久，实际测下来要40s左右。</p><h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>线下测试时，发现gunicorn方式启动后的前几个请求总是超时，原因是worker似乎是等到请求到来时才完整启动。</p><h2 id="如何处理"><a href="#如何处理" class="headerlink" title="如何处理"></a>如何处理</h2><p>第一种方式，改进部署脚本，在gunicorn启动后，发起一次业务无关的调用来让worker完整启动，那么后续的请求就不受影响。<br>不过gunicorn在运行过程中可能会kill worker，需要考虑这种情况下怎么处理。</p><p>第二种方式，性能优化，把启动耗时控制在4s左右，4s是业务方可以接受的，就能彻底解决这个问题。</p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> gunicorn </tag>
+            
+            <tag> python </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>python 快速原型</title>
+      <link href="/2020/04/20/python-%E5%BF%AB%E9%80%9F%E5%8E%9F%E5%9E%8B/"/>
+      <url>/2020/04/20/python-%E5%BF%AB%E9%80%9F%E5%8E%9F%E5%9E%8B/</url>
+      
+        <content type="html"><![CDATA[<h1 id="运行环境"><a href="#运行环境" class="headerlink" title="运行环境"></a>运行环境</h1><p>virtualenv： 给项目创建独立的运行环境<br>pyenv: 管理python版本，全局版本<br>pyenv-virtualenv: 结合了pyenv和virtualenv，能够方便地创建特定版本的运行环境</p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> python </tag>
+            
+            <tag> 工具链 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>python2 的编码问题</title>
+      <link href="/2020/04/07/python2-%E7%9A%84%E7%BC%96%E7%A0%81%E9%97%AE%E9%A2%98/"/>
+      <url>/2020/04/07/python2-%E7%9A%84%E7%BC%96%E7%A0%81%E9%97%AE%E9%A2%98/</url>
+      
+        <content type="html"><![CDATA[<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>这篇blog是和python2中让人抓狂的编码异常做个了断。</p><p>仔细读了以下文档：</p><ul><li>python2 <a href="https://docs.python.org/2/howto/unicode.html" target="_blank" rel="noopener">Unicode HOWTO</a></li><li>python3 <a href="https://docs.python.org/3/howto/unicode.html" target="_blank" rel="noopener">Unicode HOWTO</a></li></ul><h2 id="编码异常以及Python-2-的str和unicode"><a href="#编码异常以及Python-2-的str和unicode" class="headerlink" title="编码异常以及Python 2 的str和unicode"></a>编码异常以及Python 2 的str和unicode</h2><p>character：表示文本的最小的不可分割字符，例如”A”, “饕”，”È”等。</p><p>code point：是一个整数（注意仅仅是数值，并没有限制存储上需要几个字节），通常用16进制表示，和character能够对应起来。</p><p>unicode标准：定义了character和code point之间的mapping。</p><p>屏幕上的字符：是专门的图形表示元素glyph通过程序渲染的效果。</p><p>换言之，屏幕上看到的字符的表示（character），对应一个code point（整数），并且对应一个特定的字符（抽象意义）。</p><p>encoding： 把unicode字符串转化为字节数组，注意这里并不确定具体按照什么规则转化、怎么转化，是固定用4个字节，还是用8个字节，或者用变长，encoding没有明确这个规则。</p><p>编码（以utf-8为例）：定义了encoding的规则，也就是unicode字符串和字节数组之间如何相互转化，utf-8是一种变长的规则。</p><p>ascii编码：只支持0-127，如果一个code point的值超过127，encoding时就会报UnicodeEncodeError。</p><pre><code class="python">&gt;&gt;&gt; u&#39;羁绊是什么意思&#39;.encode(&#39;ascii&#39;)Traceback (most recent call last):  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;UnicodeEncodeError: &#39;ascii&#39; codec can&#39;t encode characters in position 0-6: ordinal not in range(128)&gt;&gt;&gt;</code></pre><p>UTF-8的特点：变长，支持所有unicode code point，没有0字节，比较鲁棒（能够识别出一个字节是否是code point的开始）。</p><p>上面的例子用utf-8编码：</p><pre><code class="python">&gt;&gt;&gt; u&#39;羁绊是什么意思&#39;.encode(&#39;utf-8&#39;)&#39;\xe7\xbe\x81\xe7\xbb\x8a\xe6\x98\xaf\xe4\xbb\x80\xe4\xb9\x88\xe6\x84\x8f\xe6\x80\x9d&#39;&gt;&gt;&gt;</code></pre><pre><code class="python">&gt;&gt;&gt; unicode(&#39;abcdef&#39; + chr(255))    Traceback (most recent call last):...UnicodeDecodeError: &#39;ascii&#39; codec can&#39;t decode byte 0xff in position 6:ordinal not in range(128)&gt;&gt;&gt; unicode(&#39;\x80abc&#39;, errors=&#39;replace&#39;)u&#39;\ufffdabc&#39;&gt;&gt;&gt; unicode(&#39;\x80abc&#39;, errors=&#39;ignore&#39;)u&#39;abc&#39;</code></pre><h2 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h2><p>基本上看完官方文档，就能清楚python2中unicode和str的区别，以及处理常见的编码问题了，所以到这就戛然而止了。</p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> python2 </tag>
+            
+            <tag> unicode </tag>
+            
+            <tag> 编码 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>一个ssh实用工具</title>
+      <link href="/2020/04/06/%E4%B8%80%E4%B8%AAssh%E5%AE%9E%E7%94%A8%E5%B7%A5%E5%85%B7/"/>
+      <url>/2020/04/06/%E4%B8%80%E4%B8%AAssh%E5%AE%9E%E7%94%A8%E5%B7%A5%E5%85%B7/</url>
+      
+        <content type="html"><![CDATA[<h2 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h2><p>公司电脑连接很多环境都是通过<code>./ssh/config</code>配置的，并且用到了ssh tunnel。</p><p>每次on duty时，经常需要到日志服务器上抓一些特定的日志。例如拉取一些失败的交易数据，包括请求和响应，给运营去找银行线下处理。</p><p>当然，运营希望看到的是关心的字段都要有，并且最好是excel格式。</p><p>写excel格式还好，关键是有些字段可能要匹配多个不通的日志（例如不同服务的日志匹配），简而言之，需要对日志进行类似join的操作。</p><p>在没有专门用于日志分析的基础设施，并且没有实时性要求的情况下，写个脚本能很有效率地解决这类问题。这时，一个实用的ssh工具就很有用，连接服务器，远程awk几次就ok。</p><p>这本来是一个很小的需求，为什么要单独写一篇博客呢？<br>忍不住吐槽下，靠谱的ssh库其实并不多。刚开始想找java的库，试了几个，要么几年没人维护，要么star很多但是解决不了都<code>ssh_config</code>配置和tunnel的问题。</p><p>最后不得已，很不情愿但是没办法，还是回到python，使用paramiko。</p><h2 id="简单封装"><a href="#简单封装" class="headerlink" title="简单封装"></a>简单封装</h2><pre><code class="python">import osimport paramikoclass SSHSession(object):    def __init__(            self,            host,            port=22,            username=None,            password=None,            key_file_path=None,            config_file_path=&#39;~/.ssh/config&#39;    ):        self._host = host        self._port = port        self._username = username        self._password = password        self._key_file_path = [key_file_path] if key_file_path else None        self._config_file_path = config_file_path        self.client = self._connect()    def exec_command(self, command, timeout=None):        stdin, stdout, stderr = self.client.exec_command(command, timeout=timeout)        return stdout.readlines(), stderr.readlines()    def __enter__(self):        return self    def __exit__(self, exc_type, exc_val, exc_tb):        if self.client is not None:            self.client.close()    def _connect(self):        client = paramiko.SSHClient()        client._policy = paramiko.WarningPolicy()        client.load_system_host_keys()        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())        ssh_config = paramiko.SSHConfig()        user_config_file = os.path.expanduser(self._config_file_path)        with open(user_config_file) as f:            ssh_config.parse(f)        user_config = ssh_config.lookup(self._host)        cfg = {            &#39;username&#39;: self._username or user_config.get(&#39;user&#39;, None),            &#39;password&#39;: self._password,            &#39;port&#39;: self._port or user_config.get(&#39;port&#39;, None),            &#39;key_filename&#39;: self._key_file_path or user_config.get(&#39;identityfile&#39;, None),            &#39;hostname&#39;: user_config.get(&#39;hostname&#39;, None) or self._host,            &#39;sock&#39;: paramiko.ProxyCommand(user_config[&#39;proxycommand&#39;]) if &#39;proxycommand&#39; in user_config else None        }        client.connect(**cfg)        return client</code></pre><p>交互式shell（作者：<a href="https://stackoverflow.com/a/36948840/4886367" target="_blank" rel="noopener">misha</a>）:</p><pre><code class="python">import refrom ssh.client import SSHSessionclass ShellHandler:    def __init__(self, host, **kwargs):        self.session = SSHSession(host, **kwargs)        self.ssh = self.session.client        channel = self.ssh.invoke_shell()        self.stdin = channel.makefile(&#39;wb&#39;)        self.stdout = channel.makefile(&#39;r&#39;)    def __enter__(self):        return self    def __exit__(self, exc_type, exc_val, exc_tb):        if self.ssh is not None:            self.ssh.close()    def execute(self, cmd):        &quot;&quot;&quot;        :param cmd: the command to be executed on the remote computer        :examples:  execute(&#39;ls&#39;)                    execute(&#39;finger&#39;)                    execute(&#39;cd folder_name&#39;)        &quot;&quot;&quot;        cmd = cmd.strip(&#39;\n&#39;)        self.stdin.write(cmd + &#39;\n&#39;)        finish = &#39;End-Of-Command-by-ShellHandler&#39;        echo_cmd = &#39;echo {} $?&#39;.format(finish)        self.stdin.write(echo_cmd + &#39;\n&#39;)        shin = self.stdin        self.stdin.flush()        shout = []        sherr = []        for line in self.stdout:            if str(line).startswith(cmd) or str(line).startswith(echo_cmd):                shout = []            if str(line).startswith(finish):                exit_status = int(str(line).rsplit(None, 1)[1])                if exit_status:                    sherr = shout                    shout = []                break            else:                s = re.compile(r&#39;(\x9B|\x1B\[)[0-?]*[ -/]*[@-~]&#39;).sub(&#39;&#39;, line).replace(&#39;\b&#39;, &#39;&#39;).replace(&#39;\r&#39;, &#39;&#39;)                if not (finish in s):                    shout.append(s)        if shout and echo_cmd in shout[-1]:            shout.pop()        if shout and cmd in shout[0]:            shout.pop(0)        if sherr and echo_cmd in sherr[-1]:            sherr.pop()        if sherr and cmd in sherr[0]:            sherr.pop(0)        return shin, shout, sherr</code></pre><h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><pre><code class="python"># SSHSessionwith SSHSession(&quot;server0&quot;) as session:    print session.exec_command(&quot;ls&quot;)# ShellHandlerwith ShellHandler(&quot;server2&quot;) as shell:    shell.execute(&quot;cd /home&quot;)    shell.execute(&quot;ls -al&quot;)    _, out, err = shell.execute(&quot;date&quot;)    print out</code></pre>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> ssh </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Manacher算法</title>
+      <link href="/2020/02/26/Manacher%E7%AE%97%E6%B3%95/"/>
+      <url>/2020/02/26/Manacher%E7%AE%97%E6%B3%95/</url>
+      
+        <content type="html"><![CDATA[<p>复习（重新学习）了一遍Manacher算法，比较靠谱的一篇讲解：<br><a href="https://www.felix021.com/blog/read.php?2040。" target="_blank" rel="noopener">https://www.felix021.com/blog/read.php?2040。</a></p><p>主要思想：利用当前位置字符所在的已知最大回文串的对称性质，避免了对当前位置字符已知回文结构的检查。</p><pre><code class="python">C, R = 0, -1for i in range(0, len(t)):    rad = min(p[2*C-i], R-i) if i &lt;= R else 0    while i-rad-1&gt;=0 and i+rad+1&lt;len(t) and t[i-rad-1]==t[i+rad+1]:        rad += 1    p[i] = rad    if R &lt; i+rad:        R = i+rad        C = i</code></pre>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> 算法 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>pysftp 踩坑记</title>
+      <link href="/2020/02/13/pysftp%20%E8%B8%A9%E5%9D%91%E8%AE%B0/"/>
+      <url>/2020/02/13/pysftp%20%E8%B8%A9%E5%9D%91%E8%AE%B0/</url>
+      
+        <content type="html"><![CDATA[<p>出错客户端代码：</p><pre><code class="python">with pysftp.Connection(host, port, username, password, cnopts) as sftp:    # upload a 10M size file to sftp server    return True</code></pre><p><code>return True</code>这一行抛错：</p><pre><code>File &quot;/usr/lib/python2.7/contextlib.py&quot;, line 35, in __exit__ self.gen.throw(type, value, traceback)File &quot;/usr/local/lib/python2.7/dist-packages/pysftp/__init__.py&quot;, line 511, in cd self.cwd(original_path)File &quot;/usr/local/lib/python2.7/dist-packages/pysftp/__init__.py&quot;, line 524, in chdir self._sftp.chdir(remotepath)File &quot;/usr/local/lib/python2.7/dist-packages/paramiko/sftp_client.py&quot;, line 659, in chdir if not stat.S_ISDIR(self.stat(path).st_mode):File &quot;/usr/local/lib/python2.7/dist-packages/paramiko/sftp_client.py&quot;, line 493, in stat t, msg = self._request(CMD_STAT, path)File &quot;/usr/local/lib/python2.7/dist-packages/paramiko/sftp_client.py&quot;, line 812, in _request num = self._async_request(type(None), t, *arg)File &quot;/usr/local/lib/python2.7/dist-packages/paramiko/sftp_client.py&quot;, line 837, in _async_request self._send_packet(t, msg)File &quot;/usr/local/lib/python2.7/dist-packages/paramiko/sftp.py&quot;, line 198, in _send_packet self._write_all(out)File &quot;/usr/local/lib/python2.7/dist-packages/paramiko/sftp.py&quot;, line 162, in _write_all n = self.sock.send(out)File &quot;/usr/local/lib/python2.7/dist-packages/paramiko/channel.py&quot;, line 801, in send return self._send(s, m)File &quot;/usr/local/lib/python2.7/dist-packages/paramiko/channel.py&quot;, line 1180, in _send raise socket.error(&quot;Socket is closed&quot;)error: Socket is closed</code></pre><p>找到这几个有用的链接</p><ol><li><a href="https://www.cnblogs.com/Vooom/p/5820644.html" target="_blank" rel="noopener">https://www.cnblogs.com/Vooom/p/5820644.html</a><br>这篇说的是使用paramiko连接ssh时，可以通过ssh_client.invoke_shell()来keep alive</li><li><a href="https://gaomf.cn/2017/01/10/SSH_Broken_Pipe/" target="_blank" rel="noopener">https://gaomf.cn/2017/01/10/SSH_Broken_Pipe/</a><br>这篇说的是ssh连接可以分别通过客户端和服务端两个参数的配置实现连接keep alive</li><li><a href="http://docs.paramiko.org/en/latest/api/transport.html#paramiko.transport.Transport.set_keepalive" target="_blank" rel="noopener">http://docs.paramiko.org/en/latest/api/transport.html#paramiko.transport.Transport.set_keepalive</a><br>这是paramiko的官方文档中提到的客户端设置keepalive的配置</li><li><a href="https://programtalk.com/python-examples/pysftp.Connection/" target="_blank" rel="noopener">https://programtalk.com/python-examples/pysftp.Connection/</a><br>这篇提到pysftp可以通过sftp_connection._transport获得对应的paramiko连接，然后通过set_keepalive来设置</li></ol>]]></content>
+      
+      
+      <categories>
+          
+          <category> 实践 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> sftp </tag>
+            
+            <tag> 踩坑 </tag>
+            
+            <tag> 网络 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>限流实现套路</title>
+      <link href="/2019/12/27/%E9%99%90%E6%B5%81%E5%AE%9E%E7%8E%B0%E5%A5%97%E8%B7%AF/"/>
+      <url>/2019/12/27/%E9%99%90%E6%B5%81%E5%AE%9E%E7%8E%B0%E5%A5%97%E8%B7%AF/</url>
+      
+        <content type="html"><![CDATA[<p>实现效果：</p><ol><li>匀速/给定分布的速度</li><li>限速</li></ol><p>两种模型：漏桶、令牌桶</p><p>组件：<br>Sentinel, RateLimiter, Hystrix, resilience4j</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 读书 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 分布式系统 </tag>
+            
+            <tag> 限流 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>事务拆分方案</title>
+      <link href="/2019/12/26/%E4%BA%8B%E5%8A%A1%E6%8B%86%E5%88%86%E6%96%B9%E6%A1%88/"/>
+      <url>/2019/12/26/%E4%BA%8B%E5%8A%A1%E6%8B%86%E5%88%86%E6%96%B9%E6%A1%88/</url>
+      
+        <content type="html"><![CDATA[<p>先复习下分布式事务比较流行的几种方案。</p><p>考虑两个操作A和B，不放在一个事务内，怎么保证原子性（要么同时发生，要么同时不做/回滚）</p><h2 id="方案一：可靠消息"><a href="#方案一：可靠消息" class="headerlink" title="方案一：可靠消息"></a>方案一：可靠消息</h2><p>通过消息队列，操作A执行成功，同时发送对应事件，操作B通过消费该事件来进行，即收到该事件，执行对应动作。</p><p>首先，MQ必须保证不丢消息。</p><p>RocketMQ的可靠消息实现：发送prepare消息 =&gt; 执行本地事务 =&gt; 发送ack消息，MQ定期询问没有ack的消息状态，所以需要实现一个回查事务是否成功的接口。</p><p>本地消息表的实现是：本地事务中，加入写本地消息表。事务执行成功，消息表自然也有一条对应记录，需要有一个调度任务，去发送消息，并且仅当发送明确成功时，才标记消息。</p><p>消费者消费消息，执行B操作。</p><p>如果消费者消费失败，一种是消费者实现幂等，可以重复消费，直到成功。</p><p>如果消费者不幂等，即只能消费一次，可以考虑消费者的ack和回查接口（RocketMQ实现）。</p><p>如果是不可重试的失败，需要业务上给出补偿方案，例如通知A操作执行者执行相应补偿。</p><h2 id="方案二：tcc"><a href="#方案二：tcc" class="headerlink" title="方案二：tcc"></a>方案二：tcc</h2><p>tcc更多的是业务上的设计来保证最终一致性，不依赖数据库层面的事务或者某个特殊能力的组件。</p><p>将一个业务操作划分为try、commit/cancel三个动作。commit和cancel只会发生一个，即try阶段执行后，就能决定是cancel或者commit。</p><p>cancel和commit需要幂等，并且失败作补偿，或者走异常预案去处理。</p><h2 id="场景一：调第三方接口-更新本地"><a href="#场景一：调第三方接口-更新本地" class="headerlink" title="场景一：调第三方接口+更新本地"></a>场景一：调第三方接口+更新本地</h2><p>举个例子，退款请求，第三方提供退款接口和查询接口，查询接口有一定同步延时，即可能出现退款接口返回成功后，一段时间内查询接口没有查到。</p><p>一种简单方案：</p><ol><li>本地标记prepare</li><li>调用退款 =&gt; 根据结果执行本地事务，更新某些字段，同时更新prepare为acked</li><li>定期轮询处于prepare阶段的本地事务，调用第三方的查询接口，根据结果来作相应处理（包括标记prepare）。如果第三方没结果，可能是由于第三方的同步延迟，需要重试查询，直到有明确的结论（确实没有调用退款，或者调用了退款）。</li></ol><p>定期轮询时，需要有一定的时间差，比如5分钟前prepare的。</p><h2 id="场景二：水平分库后跨db事务"><a href="#场景二：水平分库后跨db事务" class="headerlink" title="场景二：水平分库后跨db事务"></a>场景二：水平分库后跨db事务</h2><p>举个例子，将一个db库拆分成两个，两个库中的表都一样。PM提了个需求，要实现一个批量原子操作，有可能会同时操作这两个库。</p><p>方案一：<br>改造业务，避免出现跨库的操作。缺点可能是，业务改造成本大，有可能时间来不及。</p><p>方案二：<br>嵌套事务：两个库的操作外层嵌套两个库的事务（例如@Transactional或者python的atomic(db)）。</p><p>这么做的原因是，两个事务的顺序是：开启库1事务 =&gt; 开启库2事务 =&gt; 执行跨库操作 =&gt; 提交库2事务 =&gt; 提交库1事务<br>回滚是：开启库1事务 =&gt; 开启库2事务 =&gt; 执行跨库操作 =&gt; 回滚库2事务 =&gt; 回滚库1事务</p><p>即只要两个库的提交操作和回滚操作之间没有出现异常，就能保证跨库的原子性。</p><p>如果两个库的提交操作和回滚操作之间出现问题（例如进程被强制杀掉/断电/数据库挂掉/超时等），就会出现不一致。</p><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ol><li>业务上和产品设计，要有完善和明确的异常流程来兜底各种异常，出现问题可以走预案，而不是让研发或者运维去救火。</li><li>日志和监控能够cover住各种分支，出了问题，能快速定位。</li><li>最终一致性，并不仅仅是技术层面，需要结合业务层面去定义，甚至是业务层面用流程去cover住，避免技术去思考分布式事务的问题。</li></ol>]]></content>
+      
+      
+      <categories>
+          
+          <category> CAP </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 一致性 </tag>
+            
+            <tag> 分布式事务 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>leetcode summary.md</title>
+      <link href="/2019/12/21/leetcode%20summary/"/>
+      <url>/2019/12/21/leetcode%20summary/</url>
+      
+        <content type="html"><![CDATA[<p><strong>两个有序数组的第k大</strong></p><p><a href="https://leetcode-cn.com/problems/median-of-two-sorted-arrays/" target="_blank" rel="noopener">https://leetcode-cn.com/problems/median-of-two-sorted-arrays/</a></p><p>二分，<code>lower_bound</code>和<code>upper_bound</code></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 算法 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 算法 </tag>
+            
+            <tag> 数据结构 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>ArchLinux 安装引导记录</title>
+      <link href="/2019/12/20/ArchLinux%20%E5%AE%89%E8%A3%85%E5%BC%95%E5%AF%BC%E8%AE%B0%E5%BD%95/"/>
+      <url>/2019/12/20/ArchLinux%20%E5%AE%89%E8%A3%85%E5%BC%95%E5%AF%BC%E8%AE%B0%E5%BD%95/</url>
+      
+        <content type="html"><![CDATA[<p>参考：</p><ol><li><a href="https://www.jianshu.com/p/7c78dc4c53e5" target="_blank" rel="noopener">https://www.jianshu.com/p/7c78dc4c53e5</a></li><li><a href="https://www.viseator.com/2017/05/17/arch_install/" target="_blank" rel="noopener">https://www.viseator.com/2017/05/17/arch_install/</a></li></ol><p>以下mvne0n1p5为boot分区。</p><p>/boot格式化：<code>mkfs.fat -F32 /dev/nvme0n1p5</code></p><p>挂载根目录/mnt后，需要挂载/boot/efi：</p><pre><code class="bash">mkdir -p /mnt/boot/efimount /dev/nvme0n1p5 /mnt/boot/efi</code></pre><p>切换到arch后，</p><pre><code class="bash">pacman -S intel-ucode os-prober grub efibootmgrgrub-install --target=i386-pc /dev/nvme0n1  # 失败加--force解决了，即grub-install --target=i386-pc --force /dev/nvme0n1grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=ArchLinuxgrub-mkconfig -o /boot/grub/grub.cfg</code></pre>]]></content>
+      
+      
+      <categories>
+          
+          <category> 实用 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> linux </tag>
+            
+            <tag> grub </tag>
+            
+            <tag> 笔记 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>linux 实用命令</title>
+      <link href="/2019/12/20/linux%20%E5%AE%9E%E7%94%A8%E5%91%BD%E4%BB%A4/"/>
+      <url>/2019/12/20/linux%20%E5%AE%9E%E7%94%A8%E5%91%BD%E4%BB%A4/</url>
+      
+        <content type="html"><![CDATA[<h1 id="sftp"><a href="#sftp" class="headerlink" title="sftp"></a>sftp</h1><p>upload local file to remote sftp:</p><pre><code class="bash">sftp -oPort=2201 user@host:${remote_path} &lt;&lt;&lt; $&#39;put {local_file_path}&#39;</code></pre><p>download remote file to local:</p><pre><code class="bash">sftp user@host:${remote_path} ${local_path}</code></pre><p>路径支持通配符来匹配多个文件</p><p>sftp常用命令有这些：<code>ls</code> <code>ls -lh</code> <code>rm</code> <code>put</code> <code>get</code>等。</p><h1 id="split"><a href="#split" class="headerlink" title="split"></a>split</h1><ul><li>mac安装gsplit: <code>brew install coreutils</code></li></ul><p>文件分割比较有用。例如把一个script.sql文件按每100行拆分，输出文件前缀为split_<br>mac上用的gsplit (GNU版本的split)</p><pre><code class="bash">gsplit -dl 400 --additional-suffix=.sql script.sql script_</code></pre><p>也支持按文件大小分割，同时支持按行分割</p><pre><code class="bash">gsplit -C 10M --additional-suffix=.sql script.sql script_</code></pre><h1 id="sed"><a href="#sed" class="headerlink" title="sed"></a>sed</h1><p>例如，script.sql文件每行一条insert语句，想要改成<code>on duplicate update</code>来同时支持插入和已有记录的更新（这个操作是幂等的），就可以用下面的方法：</p><p>第一步，去掉文件每行末的最后一个字符：</p><pre><code class="bash">sed &#39;s/.$//&#39; script.sql &gt; script_noprefix.sql</code></pre><p>然后，给每行加上指定字符串，这里是<code>ON DUPLICATE KEY</code>:</p><pre><code class="bash">sed &#39;s/.$/ ON DUPLICATE KEY UPDATE update_time=values(update_time);/&#39; script_noprefix.sql &gt; script_update_insert.sql</code></pre><p>sed支持直接替换，上面的例子也可以直接替最后一个字符为指定字符串。<br>一个替换的例子(mac版本)，<strong>注意：这里是原地替换，直接修改原文件内</strong>：</p><pre><code class="bash">sed -i &#39;&#39; -- &#39;s/.$/ ON DUPLICATE KEY UPDATE update_time=values(update_time);/g&#39; script.sql</code></pre><h1 id="awk-实用套路"><a href="#awk-实用套路" class="headerlink" title="awk 实用套路"></a>awk 实用套路</h1><p>其他学习文章</p><ul><li>AWK 简明教程 <a href="https://coolshell.cn/articles/9070.html" target="_blank" rel="noopener">https://coolshell.cn/articles/9070.html</a></li><li>awk 入门教程 <a href="http://www.ruanyifeng.com/blog/2018/11/awk.html" target="_blank" rel="noopener">http://www.ruanyifeng.com/blog/2018/11/awk.html</a></li></ul><h2 id="匹配"><a href="#匹配" class="headerlink" title="匹配"></a>匹配</h2><p><strong>包含某些关键词，但不包含其他关键词</strong></p><pre><code class="bash">awk -F &#39;|&#39; &#39;/error|warn/ &amp;&amp; !/system/&#39; error.log</code></pre><h2 id="统计"><a href="#统计" class="headerlink" title="统计"></a>统计</h2><p><strong>日志第一列是ip，数不同ip的日志行数</strong></p><pre><code class="bash">awk -v OFS=&#39;\t&#39; -F &#39;|&#39; &#39;{count[$1]++;} END {for (ip in count) print ip, count[ip]}&#39; info.log</code></pre><p><strong>按照ip数统计某个url的请求量</strong></p><pre><code class="bash">awk -F &#39;|&#39; &#39;/api\/service/ &amp;&amp; !/api\/service\/other/ {c[$1]++} END {for (ip in c) print ip,c[ip]}&#39; info.log</code></pre><p><strong>按照小时统计某个url的请求量</strong></p><p>sample log</p><pre><code>0.0.0.0|2019-12-19 13:01:02|elapsed=12ms,url=/api/service</code></pre><pre><code class="bash">awk -F &#39;|&#39; &#39;/api\/service/ {split($2, t, &quot;[-: ]&quot;); c[t[4]]++;} END {for (hour in c) print hour,c[hour]}&#39; info.log | sort -k1</code></pre><p><strong>按照小时统计某个url的请求量，并且包含占总量的百分比</strong></p><pre><code class="bash">awk -F &#39;|&#39; &#39;/api\/service/ {split($2, t, &quot;[-: ]&quot;); c[t[4]]++; s++} END {for (hour in c) printf &quot;%s\t%s\t%.2f\n&quot; hour,c[hour],100*c[hour]/s}&#39; info.log | sort -k1</code></pre><p><strong>统计错误日志中不同类型的种类</strong></p><pre><code class="bash">awk -F &#39;|&#39; &#39; /ERROR/ {c[$7]++;s++} END {for (r in c) printf &quot;%s\t%.2f\t%s\n&quot;, c[r],100*c[r]/s,r}&#39; error.log | sort -k2</code></pre><p><strong>连接状态统计</strong></p><pre><code class="bash">ss | awk &#39;NR!=1{c[$2]++} END {for (s in c) print s, c[s]}&#39;</code></pre><p><strong>统计不同目的ip的不同状态的连接数</strong></p><pre><code class="bash">netstat -t | awk -v OFS=&#39;\t\t&#39; &#39;NR&gt;2{c[$5,$6]++} END {for (x in c) {split(x, s, SUBSEP); print c[x],s[2],s[1]} }&#39;</code></pre><h2 id="远程awk重定向输出到本地文件"><a href="#远程awk重定向输出到本地文件" class="headerlink" title="远程awk重定向输出到本地文件"></a>远程awk重定向输出到本地文件</h2><p>这个需要在本地分析日志时很有用，heredoc可以避开escape的问题。</p><p>借助heredoc和ssh重定向</p><pre><code class="bash">ssh &gt; daemon.log aps-live-log &lt;&lt;-&#39;EOF&#39;awk -F &#39;|&#39; &#39;!/ktc_settlement_report/ &amp;&amp; !/txn_3ds/ &amp;&amp; $2&gt;&quot;[2020-01-05 01:00:00&quot; &amp;&amp; $2&lt;&quot;[2020-01-05 01:05:00&quot;&#39; /data/error.logEOF</code></pre><h2 id="awk-正则匹配筛选比较耗时的请求"><a href="#awk-正则匹配筛选比较耗时的请求" class="headerlink" title="awk 正则匹配筛选比较耗时的请求"></a>awk 正则匹配筛选比较耗时的请求</h2><p>正则匹配提取：</p><pre><code class="bash">awk -F&#39;|&#39; &#39;match($6, /elapsed=([0-9]+)/, ta) &amp;&amp; match($6, /id=([0-9]+)/, ka) {c[ka[1]]=ta[1]} END {for (k in c) {print t,c[t]}}&#39; data.log | sort -n -k 2</code></pre><p>数值比较（筛选出耗时超过2秒的请求）</p><pre><code class="bash"> awk -F&#39;|&#39; &#39;match($6, /elapsed=([0-9]+)/, ta) &amp;&amp; match($6, /id=([0-9]+)/, ka) {if ((ta[1]+0)&gt;2000) c[ka[1]]=ta[1]} END {for (t in c) {print t,c[t]}}&#39; data_log | sort -n -k 2</code></pre><h2 id="ss"><a href="#ss" class="headerlink" title="ss"></a>ss</h2><p>mac 下模拟ss: <code>alias ss=&#39;lsof -Pn -i4 | grep LISTEN&#39;</code></p><h2 id="ssh"><a href="#ssh" class="headerlink" title="ssh"></a>ssh</h2><p>ssh 转发： <a href="https://jin-yang.github.io/post/ssh-proxy.html" target="_blank" rel="noopener">https://jin-yang.github.io/post/ssh-proxy.html</a></p><h2 id="获取访问某个ip的本地接口"><a href="#获取访问某个ip的本地接口" class="headerlink" title="获取访问某个ip的本地接口"></a>获取访问某个ip的本地接口</h2><p>outgoing ip</p><p> ip route get 8.8.8.8<br>mac: brew install iproute2mac</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 实用 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> linux </tag>
+            
+            <tag> awk </tag>
+            
+            <tag> split </tag>
+            
+            <tag> sed </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>一些技术组件杂谈</title>
+      <link href="/2019/12/20/%E4%B8%80%E4%BA%9B%E6%8A%80%E6%9C%AF%E7%BB%84%E4%BB%B6%E6%9D%82%E8%B0%88/"/>
+      <url>/2019/12/20/%E4%B8%80%E4%BA%9B%E6%8A%80%E6%9C%AF%E7%BB%84%E4%BB%B6%E6%9D%82%E8%B0%88/</url>
+      
+        <content type="html"><![CDATA[<p>练手：</p><ol><li>mysql实现队列</li><li>xpath解析</li></ol><p>#长连接方案#<br>美图三年优化总结：Golang 实现单机百万长连接服务: <a href="https://www.infoq.cn/article/dFLJtPUs3G8SNikNty7o" target="_blank" rel="noopener">https://www.infoq.cn/article/dFLJtPUs3G8SNikNty7o</a></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 总结 </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>领域驱动设计（读书笔记）</title>
+      <link href="/2019/11/10/%E9%A2%86%E5%9F%9F%E9%A9%B1%E5%8A%A8%E8%AE%BE%E8%AE%A1%EF%BC%88%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%EF%BC%89/"/>
+      <url>/2019/11/10/%E9%A2%86%E5%9F%9F%E9%A9%B1%E5%8A%A8%E8%AE%BE%E8%AE%A1%EF%BC%88%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%EF%BC%89/</url>
+      
+        <content type="html"><![CDATA[<h1 id="一-运用领域模型"><a href="#一-运用领域模型" class="headerlink" title="一 运用领域模型"></a>一 运用领域模型</h1><ul><li>理解软件的核心</li><li>领域驱动建模解决什么问题？</li><li>软件复杂性有哪些？<ul><li>目标是什么？</li><li>受哪些因素的制约？</li><li>领域驱动设计的方法是怎么处理的？</li></ul></li></ul><h2 id="1-消化知识"><a href="#1-消化知识" class="headerlink" title="1. 消化知识"></a>1. 消化知识</h2><h3 id="1-1-有效建模的要素"><a href="#1-1-有效建模的要素" class="headerlink" title="1.1 有效建模的要素"></a>1.1 有效建模的要素</h3><ul><li>模型和实现的绑定：领域和实现和设计紧密绑定</li><li>模型语言：领域专家和开发人员之间的沟通语言</li><li>开发一个蕴含丰富知识的模型：模型不是静态的数据，而是包含了丰富的知识</li><li>提炼模型：整合模型（增删），丢弃不需要/不重要的概念</li><li>头脑风暴和实验：模型实验室，通过和领域专家之间的互动，借助语言和草图，创造出有价值的模型（不断的反馈和训练）</li></ul><p>评价一个软件团队的有效性</p><h3 id="1-2-知识消化"><a href="#1-2-知识消化" class="headerlink" title="1.2 知识消化"></a>1.2 知识消化</h3><p>传统的瀑布模型</p><ul><li>程序员只理解功能，而不理解背后的原理，所以通过重构来保持软件良好地扩展。</li></ul><p>模型必须是精确的</p><ul><li>模型是经过领域专家和开发团队消化、走查后确定下来的，不严谨的模型会导致返工、加班、扯皮、失败。</li><li>模型会经历演化</li></ul><h3 id="1-3-持续学习"><a href="#1-3-持续学习" class="headerlink" title="1.3 持续学习"></a>1.3 持续学习</h3><p>怎么保持团队的高效率</p><ul><li>随着时间变化，团队人员变动，领域知识会逐渐丢失</li><li>关键是形成组织，铁打的营盘，流水的兵。组织的关键是保持反馈闭环。</li><li>高效率的组织保证模型的及时演化</li></ul><p>领域驱动设计方法中，软件的参与方：</p><ol><li>开发人员</li><li>领域专家</li><li>用户</li></ol><p>软件的组成：</p><ol><li>核心领域：需要达成共识，并持续进行维护</li><li>基础设施</li></ol><h3 id="1-4-知识丰富的设计"><a href="#1-4-知识丰富的设计" class="headerlink" title="1.4 知识丰富的设计"></a>1.4 知识丰富的设计</h3><p>领域驱动方法中，模型的演化导致重构</p><p>领域的核型，不仅仅是一些名词概念，也包含业务规则和活动。<br>领域专家的脑袋中，业务规则的应用往往很复杂，领域专家可能会给出最常见场景的一些规则，仅使用这些规则来处理实际场景是不够的。</p><p><strong>领域专家也许不会意识到自己在应用规则来处理问题时，思考的过程会有多么的复杂</strong></p><p>例如：</p><ul><li>规则之间的矛盾</li><li>使用常识来弥补规则</li></ul><p>需要领域专家和开发人员的紧密合作来理清和提炼业务规则，消除其中的矛盾，去除无用的部分。</p><p>超卖规则的实现</p><ol><li>卫语句<ul><li>不明确的，不懂业务的开发人员很难把代码和需求关联起来</li><li>领域专家很难捕捉到这个规则（没有明确的业务含义）</li></ul></li><li>抽象一个OverBookingPolicy<ul><li>尽管命名中策略通常是策略模式时才会采用，这里策略也是业务中的术语，属于业务概念，因此仍然使用这个命名</li><li>明确超卖是一种策略</li><li>超卖的规则实现独立且明确</li><li>明确超卖是一种业务规则，并不是一个不起眼的卫语句</li><li>领域专家能捕捉到这个规则，因此容易形成反馈闭环</li></ul></li></ol><h3 id="1-5-深层模型"><a href="#1-5-深层模型" class="headerlink" title="1.5 深层模型"></a>1.5 深层模型</h3><blockquote><p>有用的模型很少停留在表面，随着对领域和需求的理解加深…一些开始时不可能发现的抽象就会浮出水面，而它们恰恰切中问题的要害。</p></blockquote><p><strong>知识消化是一种探索，它永无止境</strong></p><h2 id="2-语言的交流和使用"><a href="#2-语言的交流和使用" class="headerlink" title="2. 语言的交流和使用"></a>2. 语言的交流和使用</h2><p><strong>领域模型是软件项目的公共语言的核心</strong></p><p>模型是人们头脑中形成的与项目有关的概念集合，术语和相互关系提供了模型语言的语义。</p><p>模型语言十分精确，是专门为领域量身裁剪的。</p><p>模型与代码应当紧绑定。</p><h3 id="2-1-UBIQUITOUS-LANGUAGE"><a href="#2-1-UBIQUITOUS-LANGUAGE" class="headerlink" title="2.1 UBIQUITOUS LANGUAGE"></a>2.1 UBIQUITOUS LANGUAGE</h3><p>困难所在：</p><ol><li>每个开发人员形成自己的抽象，但领域专家不理解这些抽象</li><li>领域专家有自己的行话，但由于存在语言上的鸿沟，只能模糊地描述他们想要的东西</li><li>开发人员很努力去理解自己不熟悉的领域，但也只能形成模糊的认识</li><li>开发人员之间相互翻译，开发和领域专家之间相互翻译，造成概念上的混淆</li><li>同一个人讲话和写东西不是一个语言</li></ol><p>信息流上存在瓶颈，不准确，沟通词不达意。间接的沟通，导致分裂的形成，导致软件各部分不能浑然一体。</p><p><strong>如果语言支离破碎，项目必然遭遇严重问题</strong></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 读书 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 笔记 </tag>
+            
+            <tag> 读书 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>BigTable</title>
+      <link href="/2019/09/25/BigTable/"/>
+      <url>/2019/09/25/BigTable/</url>
+      
+        <content type="html"><![CDATA[<p>这个论文是2006年发表的，当时我还在读高二吧。据论文中所说，BigTable是在03年左右开始的，花了两年多时间，不包含测试的代码在10w行（应该是C++）。</p><p>BigTable是什么？分布式存储系统，设计目标是能够处理大到PT级别的数据量，能够支持数千台服务器的集群。应用场景包括不同数据量（url到网页到卫星图片），吞吐型（批处理），低延迟型（实时查询）。BigTable在处理这些各种各样的场景时，表现出了灵活性和高性能。</p><p>BigTable</p><ol><li>设计思路和特点</li><li>主要优势，怎么实现的<ul><li>怎么可靠可伸缩</li><li>高性能</li><li>多场景</li><li>高可用</li><li>一致性</li></ul></li><li>启发</li></ol><p>BigTabe特点：</p><ul><li>能够可靠地伸缩</li><li>简单的数据模型</li><li>非严格的关系型</li><li>数据结构和格式能够动态变化</li><li>客户端能够对数据底层存储的局部性作出合理推测</li><li>客户端参数能够指定是否从内存而不是硬盘中读</li></ul><h2 id="数据模型"><a href="#数据模型" class="headerlink" title="数据模型"></a>数据模型</h2><p>BigTable是稀疏的、分布式、持久化的、多维有序map（原文：A BigTable is a sparse, distributed, persistent multi-dimensional sorted map.）。map的key是row key、column key和timestamp，value是字节数组。</p><pre><code class="golang">(row:string, column:string, time:int64) -&gt; string</code></pre><p>论文中说采用这种数据模型，是在研究了多种可能的使用场景后确定的。最典型的网页存储，用url作row key、相关信息作column，网页内容放在content这一列下，包含带有时间戳的不同时间采集的各个版本。</p><h3 id="Rows"><a href="#Rows" class="headerlink" title="Rows"></a>Rows</h3><p>row key是字符串，最长支持到64kb。</p><p>在同一个row key下，对数据读写操作是原子的。</p><p>BigTable按照row key的字典序maintain data。</p><p>BigTable会按照row key的range来分区，一个range叫做一个table。tablet是负载均衡和分布式的最小单元。</p><h3 id="Column-Families"><a href="#Column-Families" class="headerlink" title="Column Families"></a>Column Families</h3><p>这里为了方便描述，要发明一些（自己的）术语。</p><p>列键标识一列，列族标识一组列键。列族是访问控制的基本单元。</p><p>列族中的数据通常是同一个类型，在BigTable中是压缩存储。</p><p>一个table下，列族最多支持数百个，列键数量则无限制。</p><p>列键的命名格式是：<code>familiy:qualifier</code></p><p>列族的名字必须是printable的，qualifier则可以是任意的。</p><p>访问控制、磁盘和内存审计都在列族层面。</p><h3 id="timestamp"><a href="#timestamp" class="headerlink" title="timestamp"></a>timestamp</h3><p>BigTable用时间戳标识数据的多个版本，各个版本按时间戳倒序存储。</p><p>时间戳的格式是64 bit整数，精确到微秒。</p><p>时间戳可以由客户端自己生成。</p><p>BigTable支持两个列族粒度的参数，来用不同策略对比较老的数据版本作垃圾回收：一是保留最近n个版本，二是保留最近某段时间，比如最近7天。</p><h2 id="API"><a href="#API" class="headerlink" title="API"></a>API</h2><p>BigTable提供了两种API，一是表和列族的操作，二是管理集群、表、列族的元数据，例如访问权限控制。</p><p>客户端支持，写/删除value，对单行查找value，遍历某个子集。</p><p><code>RowMutation</code>对单行数据作更新。</p><p><code>Scanner</code>支持遍历操作。</p><p>其他的复杂操作：</p><ol><li>单行事务</li><li>允许单个cell作计数器</li><li>支持在服务器上只读脚本（Sawzall语言）</li><li>和MapReduce集成，作为MapReduce的输入输出</li></ol><h2 id="构件"><a href="#构件" class="headerlink" title="构件"></a>构件</h2><p>BigTable使用GFS来存储日志和数据文件。</p><p>BigTable运行在Google的共享机器池中，依赖公共的集群管理系统（任务调度、资源分配、故障处理、监控）。</p><p>BigTable内部使用Google的SSTable结构来存储数据。SSTable是持久的、有序的immutable map，key和value都是任意字节串。<br>SSTable支持查找、特定key range的遍历。SSTable包含多个blocks，一个block包含64KB。SSTable包含一个block index来快速定位block。block index在SSTable打开时加载到内存中。一次查找只需要一次磁盘seek，首先在内存中找到block，然后读取该block。SSTable也可以配置成完全内存加载方式，避免磁盘操作。</p><h2 id="BigTable结构"><a href="#BigTable结构" class="headerlink" title="BigTable结构"></a>BigTable结构</h2><p>逻辑上是多维的有序map，维度包括：row, column family, timestamp。既然是map，维度就是key，value是字符串。其中column family可以有多个（最多数百个），每个column family可以不限数量。</p><p>论文中以一个存储网页数据的表WebTable为例，</p><ul><li>row是倒序的hostname，例如<code>com.yajunw.www</code></li><li>column family有两个<ol><li>第一个是<code>content:</code></li><li>第二个是<code>anchor:</code>，它下面有两个column: <code>a.com</code>, <code>b.com</code></li></ol></li><li>timestamp是在横向的，每个value都会有一个timestamp，可以标识数据的版本。</li><li>value是某个时刻的网页文档数据。</li></ul><p>权限控制是到column family这个粒度。</p><p>BigTable没有支持完整的关系型数据模型。<br>BigTable只支持行级事务。<br>BigTable最多支持2^61(2048PB)的数据量（猜测这个级别可能是不够用的）。</p><p>BigTable提供两个配置：保留最后多少个版本，或者保留最近多少时间的版本。有垃圾回收机制，去做清理和释放空间。</p><p>BigTable解决特定问题而发明的，并不是闭门造车的结果。BigTable不能替代关系型数据库。</p><p>BigTable依赖Chubby，可用性因此也有一定程度依赖Chubby。</p><p>BigTable某些特点似乎是针对网页存储而设计的。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 读书 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Google </tag>
+            
+            <tag> BigTable </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>实现线上服务低延迟</title>
+      <link href="/2019/09/24/%E5%AE%9E%E7%8E%B0%E7%BA%BF%E4%B8%8A%E6%9C%8D%E5%8A%A1%E4%BD%8E%E5%BB%B6%E8%BF%9F/"/>
+      <url>/2019/09/24/%E5%AE%9E%E7%8E%B0%E7%BA%BF%E4%B8%8A%E6%9C%8D%E5%8A%A1%E4%BD%8E%E5%BB%B6%E8%BF%9F/</url>
+      
+        <content type="html"><![CDATA[<p>这个ppt是2012年3月份，那时我大三下学期，刚好接触ACM吧。</p><p>很多大型系统都按照模块拆分成很多个后台服务，构成扇形结构（Fanout Services）。</p><p>这种结构下，一个顶层的请求会被拆分成很多对子系统的请求，这时就如水桶原理，整个请求的延时取决于最慢的那个。这里面是个概率分布问题，一个顶层请求分发给越多的机器，那么相应时间也就越可能变慢。假设单个机器的响应时间分布是独立的，考虑多台机器的相应时间的联合分布。</p><p>按照这个ppt所说，Google的机器是多个服务共享的，也就是一个机器可能部署很多个各种各样的服务。这个类似云计算的资源共享，能提升资源利用率，降低成本。但是对一个服务来说，这个环境的相应时间有些不可预测，因为需要去竞争有限的资源。那么云计算是如何解决资源调度的问题呢？这个问题等研究后再说。</p><p>相对于Fault Tolerating，这个ppt提出Variability Tolerating。Fault Tolerating是用多余的不可靠的组件来构建可靠的系统。variability Tolerating是用不可预测的部件来构造可预测的系统。提到了一些排队机制，精细地管理机器上的活动，更多是系统层面的。</p><p>下面才是干货，Latency Tolerating Techniques：</p><ol><li>服务层面的自适应<ul><li>收集相应指标，尽可能减少后面请求的延时</li><li>具体措施，动态负载均衡机制，例如熔断器之类的</li><li>分片：把服务分布在多台机器上</li><li>有选择备份：对重要的或者热点加更多的备份</li></ul></li><li>请求层面的自适应，一些pattern<ul><li>canary request: 尝试一个节点没问题，概率上对其他节点就有信心</li><li>backup requests：对付长尾效应，等2ms再发一个请求，并且在收到回复后取消另一个请求（降低资源消耗？）给出的数据还是蛮有说服力的。这里有个前提是请求要是幂等的。</li><li>根据业务需求，tradeoff准确性和延迟</li></ul></li></ol><p>读后感：方法很多，更多地要靠实践，具体问题具体分析，用好的结果来回答怎么降低延迟的问题，这个ppt整体也是这样的思路。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 读书 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Google </tag>
+            
+            <tag> 读书 </tag>
+            
+            <tag> 总结 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Gitment定制</title>
+      <link href="/2019/09/11/Gitment%E5%AE%9A%E5%88%B6/"/>
+      <url>/2019/09/11/Gitment%E5%AE%9A%E5%88%B6/</url>
+      
+        <content type="html"><![CDATA[<h2 id="评论倒序"><a href="#评论倒序" class="headerlink" title="评论倒序"></a>评论倒序</h2><p>github issue获取comments的api不支持倒序，替换下原有获取comments的逻辑即可。<br>具体是这个函数：<code>Gitment.loadComments</code>，改写代码如下：</p><pre><code class="js">{    key: &#39;loadComments&#39;,    value: function loadComments() {      var _this8 = this;      var page = arguments.length &gt; 0 &amp;&amp; arguments[0] !== undefined ? arguments[0] : this.state.currentPage;      var reverse = true      return this.getIssue().then(function (issue) {        if (!reverse) {            return _utils.http.get(issue.comments_url, { page: page, per_page: _this8.perPage }, &#39;&#39;);        } else {            var pageSize = Math.min(Math.max(_this8.perPage, 0), 50)            var total = issue.comments            var totalPageCount = Math.floor((total + pageSize - 1) / pageSize)            console.log(total, totalPageCount)            var pageNo = Math.min(Math.max(page, 0), totalPageCount)            var start = (pageNo - 1) * pageSize + 1            var end = Math.min(pageNo * pageSize, total)            var inverseStart = total + 1 - end            var inverseEnd = total + 1 - start            console.log(inverseStart, inverseEnd)            var inverseStartPageNo = Math.floor((inverseStart - 1) / pageSize + 1)            console.log(inverseStartPageNo)            var comments_url = issue.comments_url            return _utils.http.get(comments_url, {                    page: inverseStartPageNo,                     per_page: pageSize                 }, &#39;&#39;            ).then(function(startPageComments) {                var comments = []                var preCount = (inverseStartPageNo - 1) * pageSize                var to =  Math.min(startPageComments.length, inverseEnd-preCount)                for (var i = inverseStart-1-preCount; i &lt; to; i++) {                    comments.push(startPageComments[i])                }                if (startPageComments.length &lt; inverseEnd-preCount) {                    return _utils.http.get(comments_url, {                             page: inverseStartPageNo+1,                             per_page: pageSize                         }, &#39;&#39;                    ).then(function(nextPageComments) {                        var preCount = inverseStartPageNo * pageSize                        for (var i = 0; i &lt; inverseEnd-preCount; i++) {                            comments.push(nextPageComments[i])                        }                        return comments                    });                } else {                    return comments                }            }).then(function(comments) {                return comments.reverse()            });        }      }).then(function (comments) {        _this8.state.comments = comments;        return comments;      });    }  },</code></pre>]]></content>
+      
+      
+      <categories>
+          
+          <category> hexo </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> gitment </tag>
+            
+            <tag> hexo </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>hexo</title>
+      <link href="/2019/09/08/hexo/"/>
+      <url>/2019/09/08/hexo/</url>
+      
+        <content type="html"><![CDATA[<p>新公司不再加班，时间多了，不断有搭个博客的想法，因此有了这个站点。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> hexo </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> hexo </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+  
+  
+</search>

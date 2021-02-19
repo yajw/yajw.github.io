@@ -1,0 +1,399 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#202020">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+  
+  
+    <meta name="keywords" content="一致性,分布式事务,">
+  
+
+  
+    <meta name="description" content="事务拆分方案">
+  
+  
+  
+  <link rel="icon" type="image/x-icon" href="/images/footer-logo.png">
+  
+  <title>事务拆分方案</title>
+  
+    <!-- stylesheets list from config.yml -->
+    
+      <link rel="stylesheet" href="//cdn.bootcss.com/pure/1.0.0/pure-min.css">
+    
+      <link rel="stylesheet" href="/css/xoxo.css">
+    
+      <link rel="stylesheet" href="/css/gitment.css">
+    
+  
+</head>
+
+
+<body>
+  <div class="nav-container">
+    <nav class="home-menu pure-menu pure-menu-horizontal">
+  <a class="pure-menu-heading" href="/">
+    
+    <span class="title" style="text-transform:none">yajw</span>
+  </a>
+
+  <ul class="pure-menu-list clearfix">
+      
+          
+            
+              <li class="pure-menu-item"><a href="/" class="pure-menu-link">首页</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/whisper" class="pure-menu-link">片言</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/archives" class="pure-menu-link">归档</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/categories" class="pure-menu-link">分类</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/tags" class="pure-menu-link">标签</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/search" class="pure-menu-link">搜索</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/about" class="pure-menu-link">关于</a></li>
+            
+          
+      
+  </ul>
+   
+</nav>
+
+  </div>
+
+  <div class="container" id="content-outer">
+    <div class="inner" id="content-inner">
+      <div class="post-container">
+  <article class="post" id="post">
+    <header class="post-header text-center">
+      <h1 class="title">
+        事务拆分方案
+      </h1>
+      <span>
+        
+        <time class="time" datetime="2019-12-26T00:00:00.000Z">
+        2019-12-26
+      </time>
+        
+      </span>
+      <span class="slash">/</span>
+      <span class="post-meta">
+      <span class="post-tags">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/一致性/">一致性</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/分布式事务/">分布式事务</a></li></ul>
+      </span>
+    </span>
+      <span class="slash">/</span>
+      <span class="read">
+      <span id="busuanzi_value_page_pv"></span> 点击
+    </span>
+      <span class="slash">/</span>
+      <span class="read">阅读耗时 7 分钟</span>
+    </header>
+
+    <div class="post-content">
+      <p>先复习下分布式事务比较流行的几种方案。</p>
+<p>考虑两个操作A和B，不放在一个事务内，怎么保证原子性（要么同时发生，要么同时不做/回滚）</p>
+<h2 id="方案一：可靠消息"><a href="#方案一：可靠消息" class="headerlink" title="方案一：可靠消息"></a>方案一：可靠消息</h2><p>通过消息队列，操作A执行成功，同时发送对应事件，操作B通过消费该事件来进行，即收到该事件，执行对应动作。</p>
+<p>首先，MQ必须保证不丢消息。</p>
+<p>RocketMQ的可靠消息实现：发送prepare消息 =&gt; 执行本地事务 =&gt; 发送ack消息，MQ定期询问没有ack的消息状态，所以需要实现一个回查事务是否成功的接口。</p>
+<p>本地消息表的实现是：本地事务中，加入写本地消息表。事务执行成功，消息表自然也有一条对应记录，需要有一个调度任务，去发送消息，并且仅当发送明确成功时，才标记消息。</p>
+<p>消费者消费消息，执行B操作。</p>
+<p>如果消费者消费失败，一种是消费者实现幂等，可以重复消费，直到成功。</p>
+<p>如果消费者不幂等，即只能消费一次，可以考虑消费者的ack和回查接口（RocketMQ实现）。</p>
+<p>如果是不可重试的失败，需要业务上给出补偿方案，例如通知A操作执行者执行相应补偿。</p>
+<h2 id="方案二：tcc"><a href="#方案二：tcc" class="headerlink" title="方案二：tcc"></a>方案二：tcc</h2><p>tcc更多的是业务上的设计来保证最终一致性，不依赖数据库层面的事务或者某个特殊能力的组件。</p>
+<p>将一个业务操作划分为try、commit/cancel三个动作。commit和cancel只会发生一个，即try阶段执行后，就能决定是cancel或者commit。</p>
+<p>cancel和commit需要幂等，并且失败作补偿，或者走异常预案去处理。</p>
+<h2 id="场景一：调第三方接口-更新本地"><a href="#场景一：调第三方接口-更新本地" class="headerlink" title="场景一：调第三方接口+更新本地"></a>场景一：调第三方接口+更新本地</h2><p>举个例子，退款请求，第三方提供退款接口和查询接口，查询接口有一定同步延时，即可能出现退款接口返回成功后，一段时间内查询接口没有查到。</p>
+<p>一种简单方案：</p>
+<ol>
+<li>本地标记prepare</li>
+<li>调用退款 =&gt; 根据结果执行本地事务，更新某些字段，同时更新prepare为acked</li>
+<li>定期轮询处于prepare阶段的本地事务，调用第三方的查询接口，根据结果来作相应处理（包括标记prepare）。如果第三方没结果，可能是由于第三方的同步延迟，需要重试查询，直到有明确的结论（确实没有调用退款，或者调用了退款）。</li>
+</ol>
+<p>定期轮询时，需要有一定的时间差，比如5分钟前prepare的。</p>
+<h2 id="场景二：水平分库后跨db事务"><a href="#场景二：水平分库后跨db事务" class="headerlink" title="场景二：水平分库后跨db事务"></a>场景二：水平分库后跨db事务</h2><p>举个例子，将一个db库拆分成两个，两个库中的表都一样。PM提了个需求，要实现一个批量原子操作，有可能会同时操作这两个库。</p>
+<p>方案一：<br>改造业务，避免出现跨库的操作。缺点可能是，业务改造成本大，有可能时间来不及。</p>
+<p>方案二：<br>嵌套事务：两个库的操作外层嵌套两个库的事务（例如@Transactional或者python的atomic(db)）。</p>
+<p>这么做的原因是，两个事务的顺序是：开启库1事务 =&gt; 开启库2事务 =&gt; 执行跨库操作 =&gt; 提交库2事务 =&gt; 提交库1事务<br>回滚是：开启库1事务 =&gt; 开启库2事务 =&gt; 执行跨库操作 =&gt; 回滚库2事务 =&gt; 回滚库1事务</p>
+<p>即只要两个库的提交操作和回滚操作之间没有出现异常，就能保证跨库的原子性。</p>
+<p>如果两个库的提交操作和回滚操作之间出现问题（例如进程被强制杀掉/断电/数据库挂掉/超时等），就会出现不一致。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ol>
+<li>业务上和产品设计，要有完善和明确的异常流程来兜底各种异常，出现问题可以走预案，而不是让研发或者运维去救火。</li>
+<li>日志和监控能够cover住各种分支，出了问题，能快速定位。</li>
+<li>最终一致性，并不仅仅是技术层面，需要结合业务层面去定义，甚至是业务层面用流程去cover住，避免技术去思考分布式事务的问题。</li>
+</ol>
+
+    </div>
+
+  </article>
+  <div class="toc-container">
+    
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#方案一：可靠消息"><span class="toc-text">方案一：可靠消息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#方案二：tcc"><span class="toc-text">方案二：tcc</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#场景一：调第三方接口-更新本地"><span class="toc-text">场景一：调第三方接口+更新本地</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#场景二：水平分库后跨db事务"><span class="toc-text">场景二：水平分库后跨db事务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-text">总结</span></a></li></ol>
+  </div>
+
+
+  </div>
+</div>
+
+  <div class="comment-container">
+    <div class="post" id="gitment-container">
+      <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+  </div>
+
+  <script src="/js/gitment.browser.js"></script>
+  <link rel="stylesheet" href="/css/gitment.css"/>
+  
+  <script>
+      var gitment = new Gitment({
+        //评论issue唯一ID
+        id: '201912260000',
+        owner: 'yajw',
+        repo: 'yajw.github.io',
+        oauth: {
+          client_id: '22cdf46e2d6ccbe19c49',
+          client_secret: '7f84c5f9859178e872a55beea8705470b1b304ff',
+        },
+      })
+      gitment.render('gitment-container')
+  </script>
+
+<div class="copyright">
+    <span>本作品采用</span>
+    <a href="https://creativecommons.org/licenses/by/4.0/">知识共享署名 4.0 国际许可协议</a>
+    <span>进行许可。 转载时请注明原文链接。</span>
+</div>
+
+
+  
+    <div class="post-nav">
+      <div class="post-nav-item post-nav-next">
+        
+          <span>〈 </span>
+          <a href="/2019/12/21/leetcode summary/" rel="next" title="leetcode summary.md">
+          leetcode summary.md
+          </a>
+        
+      </div>
+  
+      <div class="post-nav-item post-nav-prev">
+          
+          <a href="/2019/12/27/限流实现套路/" rel="prev" title="限流实现套路">
+            限流实现套路
+          </a>
+          <span>〉</span>
+        
+      </div>
+    </div>
+  
+
+    </div>
+
+    
+
+  </div>
+  <footer class="footer text-center">
+    <div id="bottom-inner">
+        <a class="bottom-item" href="https://github.com/yajw" target="_blank">GitHub</a> |
+        <a class="bottom-item" href="/links">友情链接</a> |
+        <a class="bottom-item" href="https://hexo.io" target="_blank">Powered by hexo</a> |
+        <a class="bottom-item" href="https://github.com/fooying/hexo-theme-xoxo-plus" target="_blank">Theme xoxo-plus</a> |
+        <a class="bottom-item" href="/atom.xml">RSS</a>
+    </div>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.4.1/styles/github.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.4.1/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+</footer>
+
+  
+  <!-- scripts list from theme config.yml -->
+  
+    <script src="/js/xoxo.js"></script>
+  
+    <script src="/js/gitment.browser.js"></script>
+  
+
+
+<script>
+  (function(window, document, undefined) {
+
+    var timer = null;
+
+    function returnTop() {
+      cancelAnimationFrame(timer);
+      timer = requestAnimationFrame(function fn() {
+        var oTop = document.body.scrollTop || document.documentElement.scrollTop;
+        if (oTop > 0) {
+          document.body.scrollTop = document.documentElement.scrollTop = oTop - 50;
+          timer = requestAnimationFrame(fn);
+        } else {
+          cancelAnimationFrame(timer);
+        }
+      });
+    }
+
+    var hearts = [];
+    window.requestAnimationFrame = (function() {
+      return window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        function(callback) {
+          setTimeout(callback, 1000 / 60);
+        }
+    })();
+    init();
+
+    function init() {
+      css(".heart{z-index:9999;width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: absolute;}.heart:after{top: -5px;}.heart:before{left: -5px;}");
+      attachEvent();
+      gameloop();
+      addMenuEvent();
+    }
+
+    function gameloop() {
+      for (var i = 0; i < hearts.length; i++) {
+        if (hearts[i].alpha <= 0) {
+          document.body.removeChild(hearts[i].el);
+          hearts.splice(i, 1);
+          continue;
+        }
+        hearts[i].y--;
+        hearts[i].scale += 0.004;
+        hearts[i].alpha -= 0.013;
+        hearts[i].el.style.cssText = "left:" + hearts[i].x + "px;top:" + hearts[i].y + "px;opacity:" + hearts[i].alpha + ";transform:scale(" + hearts[i].scale + "," + hearts[i].scale + ") rotate(45deg);background:" + hearts[i].color;
+      }
+      requestAnimationFrame(gameloop);
+    }
+
+    /**
+     * 给logo设置点击事件
+     * 
+     * - 回到顶部
+     * - 出现爱心
+     */
+    function attachEvent() {
+      var old = typeof window.onclick === "function" && window.onclick;
+      var logo = document.getElementById("logo");
+      if (logo) {
+        logo.onclick = function(event) {
+          returnTop();
+          old && old();
+          createHeart(event);
+        }
+      }
+      
+    }
+
+    function createHeart(event) {
+      var d = document.createElement("div");
+      d.className = "heart";
+      hearts.push({
+        el: d,
+        x: event.clientX - 5,
+        y: event.clientY - 5,
+        scale: 1,
+        alpha: 1,
+        color: randomColor()
+      });
+      document.body.appendChild(d);
+    }
+
+    function css(css) {
+      var style = document.createElement("style");
+      style.type = "text/css";
+      try {
+        style.appendChild(document.createTextNode(css));
+      } catch (ex) {
+        style.styleSheet.cssText = css;
+      }
+      document.getElementsByTagName('head')[0].appendChild(style);
+    }
+
+    function randomColor() {
+      // return "rgb(" + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + ")";
+      return "#F44336";
+    }
+
+    function addMenuEvent() {
+      var menu = document.getElementById('menu-main-post');
+      if (menu) {
+        var toc = document.getElementById('toc');
+        if (toc) {
+          menu.onclick = function() {
+            if (toc) {
+              if (toc.style.display == 'block') {
+                toc.style.display = 'none';
+              } else {
+                toc.style.display = 'block';
+              }
+            }
+          };
+        } else {
+          menu.style.display = 'none';
+        }
+      }
+    }
+
+  })(window, document);
+</script>
+
+  
+
+
+
+  
+<script>
+  (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+          bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+      }
+      else {
+          bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+</script>
+
+
+</body>
+</html>

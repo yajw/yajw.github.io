@@ -1,0 +1,628 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#202020">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+  
+  
+    <meta name="keywords" content="笔记,react,frontend,">
+  
+
+  
+    <meta name="description" content="The road to react 笔记">
+  
+  
+  
+  <link rel="icon" type="image/x-icon" href="/images/footer-logo.png">
+  
+  <title>The road to react 笔记</title>
+  
+    <!-- stylesheets list from config.yml -->
+    
+      <link rel="stylesheet" href="//cdn.bootcss.com/pure/1.0.0/pure-min.css">
+    
+      <link rel="stylesheet" href="/css/xoxo.css">
+    
+      <link rel="stylesheet" href="/css/gitment.css">
+    
+  
+</head>
+
+
+<body>
+  <div class="nav-container">
+    <nav class="home-menu pure-menu pure-menu-horizontal">
+  <a class="pure-menu-heading" href="/">
+    
+    <span class="title" style="text-transform:none">yajw</span>
+  </a>
+
+  <ul class="pure-menu-list clearfix">
+      
+          
+            
+              <li class="pure-menu-item"><a href="/" class="pure-menu-link">首页</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/whisper" class="pure-menu-link">片言</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/archives" class="pure-menu-link">归档</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/categories" class="pure-menu-link">分类</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/tags" class="pure-menu-link">标签</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/search" class="pure-menu-link">搜索</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/about" class="pure-menu-link">关于</a></li>
+            
+          
+      
+  </ul>
+   
+</nav>
+
+  </div>
+
+  <div class="container" id="content-outer">
+    <div class="inner" id="content-inner">
+      <div class="post-container">
+  <article class="post" id="post">
+    <header class="post-header text-center">
+      <h1 class="title">
+        The road to react 笔记
+      </h1>
+      <span>
+        
+        <time class="time" datetime="2020-12-20T00:00:00.000Z">
+        2020-12-20
+      </time>
+        
+      </span>
+      <span class="slash">/</span>
+      <span class="post-meta">
+      <span class="post-tags">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/frontend/">frontend</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/react/">react</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
+      </span>
+    </span>
+      <span class="slash">/</span>
+      <span class="read">
+      <span id="busuanzi_value_page_pv"></span> 点击
+    </span>
+      <span class="slash">/</span>
+      <span class="read">阅读耗时 13 分钟</span>
+    </header>
+
+    <div class="post-content">
+      <h1 id="1-Fundamentals-of-React"><a href="#1-Fundamentals-of-React" class="headerlink" title="1. Fundamentals of React"></a>1. Fundamentals of React</h1><h2 id="1-1-Hello-React"><a href="#1-1-Hello-React" class="headerlink" title="1.1 Hello React"></a>1.1 Hello React</h2><p><strong>SPA</strong>: 相比每次从服务端请求一个完整的html文件，SPA使得一个js和一个html文件就能完成客户端的绝大部分功能。页面的切换通过js就能完成。<br><strong>React</strong>就是一种能够实现SPA应用或者遵循了SPA原则的技术。<br><strong>Component</strong>是React中的一个重要概念，一个Component定义了它的html/css/js即样式和交互，它能够被整个应用中灵活地复用。<br>作者认为的<strong>React的优势</strong>：稳定，且拥有强大的生态和社区。</p>
+<h2 id="1-2-Requirements"><a href="#1-2-Requirements" class="headerlink" title="1.2 Requirements"></a>1.2 Requirements</h2><p>编辑器: VSCode<br>运行环境：node<br>包管理：npm</p>
+<p>依赖包的定义：<code>package.json</code>和<code>package-lock.json</code><br>依赖包本地目录：<code>npm_modules/</code></p>
+<p>npm常用命令</p>
+<ul>
+<li><code>npm install -g &lt;module&gt;</code>: 全局安装</li>
+<li><code>npm install --save-dev</code>： 调试安装，不会写到<code>package.json</code></li>
+<li><code>npm uninstall &lt;module&gt;</code>：卸载</li>
+<li><code>npm init -y</code>：初始化</li>
+</ul>
+<p>参考：<a href="https://www.robinwieruch.de/npm-crash-course" target="_blank" rel="noopener">npm crash course</a></p>
+<h2 id="1-3-Setting-up-a-React-Project"><a href="#1-3-Setting-up-a-React-Project" class="headerlink" title="1.3 Setting up a React Project"></a>1.3 Setting up a React Project</h2><p>npx命令: <code>execute npm package binaries</code><br><code>create-react-app</code>： 一个创建/初始化react项目骨架的工具<br>通过<code>create-react-app</code>所创建的react项目基本结构：</p>
+<ul>
+<li><code>node_modules/</code>: 依赖目录</li>
+<li><code>public/index.html</code>: 默认<code>src/</code>下的js是处理这个文件</li>
+<li><code>package.json</code>和<code>package-lock.json</code>，同上，另外前者定义了<code>start</code>/<code>build</code>/<code>test</code>命令</li>
+<li><code>src/App.js</code>：应用的Components定义</li>
+<li><code>src/App.css</code>：Components样式</li>
+<li><code>src/index.js</code>：应用入口</li>
+</ul>
+<h2 id="1-4-Meet-the-React-Component"><a href="#1-4-Meet-the-React-Component" class="headerlink" title="1.4 Meet the React Component"></a>1.4 Meet the React Component</h2><pre><code class="javascript">import React from &#39;react&#39;;
+
+const target = &#39;React&#39;
+
+function App() {
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Hello {target}&lt;/h1&gt;
+    &lt;/div&gt;
+  )
+}
+
+export default App;</code></pre>
+<p>这个component叫做App，同时也是一个普通的js function，所以也叫做function component。<br>这个component返回一段类似html的叫做JSX的代码。<br>这个component就是一个普通的js function，可以定义变量以及任何符合js语法的逻辑。</p>
+<h2 id="1-5-React-JSX"><a href="#1-5-React-JSX" class="headerlink" title="1.5 React JSX"></a>1.5 React JSX</h2><p>JSX语法：结合html和js</p>
+<ul>
+<li>特殊关键字：<code>htmlfor</code>, <code>className</code>, <code>onClick</code></li>
+<li><code>{}</code>包含的是js表达式</li>
+</ul>
+<h2 id="1-6-Lists-in-React"><a href="#1-6-Lists-in-React" class="headerlink" title="1.6 Lists in React"></a>1.6 Lists in React</h2><p>js语法中list有<code>map</code>, <code>filter</code>等方法，也可以用在JSX中：</p>
+<pre><code class="javascript">const App = () =&gt; (
+  &lt;div&gt;
+  {items.map(item =&gt; (&lt;div key={item.objectID}&gt;{item.title}&lt;/div&gt;))}
+  &lt;/div&gt;
+)</code></pre>
+<p><code>key</code>用来标识一个node。</p>
+<p><code>return null</code> 表示不生成任何html。</p>
+<h2 id="1-7-Meet-another-React-Component"><a href="#1-7-Meet-another-React-Component" class="headerlink" title="1.7 Meet another React Component"></a>1.7 Meet another React Component</h2><p>一个定义好的component，可以作为JSX的标签来使用。</p>
+<pre><code class="javascript">const Item = ({item}) =&gt; (
+  &lt;div key={item.objectID}&gt;{item.title}&lt;/div&gt;
+)
+
+const App = () =&gt; (
+  &lt;div&gt;
+  {items.map(item =&gt; (&lt;Item item={item}/&gt;))}
+  &lt;/div&gt;
+)</code></pre>
+<p>一个react应用由此会形成一个组件树。</p>
+<h2 id="1-8-React-Component-instantiation"><a href="#1-8-React-Component-instantiation" class="headerlink" title="1.8 React Component instantiation"></a>1.8 React Component instantiation</h2><p>js中的class:</p>
+<pre><code class="javascript">class Item {
+  constructor(title) {
+    this.title = title
+  }
+}
+
+const item1 = new Item(&#39;test&#39;)</code></pre>
+<p>当使用JSX语法定义一个component的标签时，也就创建了一个component的实例。</p>
+<h2 id="1-9-React-DOM"><a href="#1-9-React-DOM" class="headerlink" title="1.9 React DOM"></a>1.9 React DOM</h2><pre><code class="javascript">ReactDOM.render(
+  &lt;App /&gt;,
+  document.getElementById(&#39;root&#39;)
+)</code></pre>
+<ol>
+<li><code>ReactDOM.render</code>将JSX渲染为真实的的DOM。</li>
+<li><code>root</code>是<code>public/index.html</code>中的id</li>
+</ol>
+<h2 id="1-10-React-Component-Definition-Advanced"><a href="#1-10-React-Component-Definition-Advanced" class="headerlink" title="1.10 React Component Definition (Advanced)"></a>1.10 React Component Definition (Advanced)</h2><p>定义componenet的几个pattern</p>
+<ol>
+<li>functional component 函数的方式定义component</li>
+<li>arrow function</li>
+<li>定义一个类，继承<code>React.Component</code></li>
+</ol>
+<h2 id="1-11-Handler-Function-in-JSX"><a href="#1-11-Handler-Function-in-JSX" class="headerlink" title="1.11 Handler Function in JSX"></a>1.11 Handler Function in JSX</h2><pre><code class="javascript">const App = () =&gt; {
+  const handleChange = event =&gt; {
+    console.log(event.target.value)
+  }
+
+  return (
+    &lt;div&gt;
+    &lt;label htmlFor=&quot;search&quot;&gt;Search: &lt;/label&gt;
+    &lt;input id=&quot;search&quot; type=&quot;text&quot; onChange={handleChange}&gt;
+    &lt;/div&gt;
+  )
+}</code></pre>
+<p><code>synthetic event</code>合成事件是对浏览器native event的封装，并且改变了某些行为（例如避免submit时刷新页面）。<br>JSX中event handler和js的语法十分相似。</p>
+<h2 id="1-12-React-Props"><a href="#1-12-React-Props" class="headerlink" title="1.12 React Props"></a>1.12 React Props</h2><p>props可以用来在父component到子component的传递参数。</p>
+<pre><code class="javascript">const App = () =&gt; (
+  &lt;div&gt;
+     {items.map(item =&gt; &lt;Item item={item}&gt;)}
+  &lt;/div&gt;
+)
+
+const Item = props =&gt; (
+  &lt;div&gt;
+     &lt;span&gt;{props.item.title}&lt;/span&gt;
+  &lt;/div&gt;
+) </code></pre>
+<h2 id="1-13-React-State"><a href="#1-13-React-State" class="headerlink" title="1.13 React State"></a>1.13 React State</h2><p>React State能够让component变得interactive。</p>
+<p><code>React.useState()</code></p>
+<ul>
+<li>是一个<code>React Hook</code></li>
+<li>返回一个二元素的数组，第一个是<code>current state</code>，第二个是<code>state updater function</code></li>
+<li>当<code>state updater</code>被调用后，component会重新render</li>
+</ul>
+<pre><code class="javascript">const App = () =&gt; {
+  const [searchTerm, setSearchTerm] = React.useState(&#39;&#39;);
+  ...
+}</code></pre>
+<h2 id="1-14-Callback-Handlers-in-JSX"><a href="#1-14-Callback-Handlers-in-JSX" class="headerlink" title="1.14 Callback Handlers in JSX"></a>1.14 Callback Handlers in JSX</h2><p>props是向下传递的。</p>
+<p>怎么才能让子component传递信息给父component呢？</p>
+<ul>
+<li>父component定义一个callback函数，通过props传递给子component</li>
+<li>子component在处理事件时，调用这个callback函数，实现通知</li>
+</ul>
+<h2 id="1-15-Lifting-State-in-React"><a href="#1-15-Lifting-State-in-React" class="headerlink" title="1.15 Lifting State in React"></a>1.15 Lifting State in React</h2><p><code>lift state up</code>:</p>
+<ul>
+<li><ol>
+<li>state定义在多个子component都需要访问的component中（state和面向对象中类的属性有明显的不同）</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>子component通过props和callback来显示和更新state</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>state和<code>state updater</code>更像是event和event handler</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>state的”作用域”是整个app的生命周期，所以更像是事件</li>
+</ol>
+</li>
+</ul>
+<h2 id="1-16-React-Controlled-Components"><a href="#1-16-React-Controlled-Components" class="headerlink" title="1.16 React Controlled Components"></a>1.16 React Controlled Components</h2><p><code>controlled component</code>：把state通过props传递给组件，这时能够拿到state的初始值，同时component变得和普通的html元素几乎一样（除了使用JSX语法表示外）。</p>
+<p><code>component lifecycle</code>：最开始是组件树初始化，同时hooks也用初始值实例化，然后ui就接受各种交互事件，更新state，调用<code>state updater</code>，然后所有相关的component重新render</p>
+<p>特别注意一点：通过各种方式（函数式）定义的component，并不会重新实例化。而Hook也只实例化一次。react内部会去track所有的state。</p>
+<h2 id="1-17-Props-Handling-Advanced"><a href="#1-17-Props-Handling-Advanced" class="headerlink" title="1.17 Props Handling (Advanced)"></a>1.17 Props Handling (Advanced)</h2><p>props借助js的descruction语法能够更加简洁。</p>
+<pre><code class="javascript">
+const Item = ({title}) =&gt; (
+  &lt;div&gt;&lt;span&gt;{title}&lt;/span&gt;&lt;/div&gt;
+)
+</code></pre>
+<p>js支持嵌套解耦（nested descructuing）</p>
+<p><code>spread operator</code>: <code>&lt;Item {...item} /&gt;</code><br><code>rest operator</code>: <code>const List = ({list}) =&gt; list.map(({objectID, ...item}) =&gt; &lt;Item key={objectID} {...item} /&gt;);</code></p>
+<h2 id="1-18-React-Side-Effects"><a href="#1-18-React-Side-Effects" class="headerlink" title="1.18 React Side-Effects"></a>1.18 React Side-Effects</h2><pre><code class="javascript">const [searchTerm, setSearchTerm] = React.useState(
+  localStorage.getItem(&#39;search&#39;) || &#39;React&#39;
+)
+
+React.useEffect(() =&gt; {
+  localStorage.setItem(&#39;search&#39;, searchTerm);
+}, [searchTerm])
+
+const handleSearch = event =&gt; {
+  setSearchTerm(event.target.value);
+}</code></pre>
+<p>类似注册一个<code>state</code>的”事件”处理器。</p>
+<p>和handler区别：</p>
+<ol>
+<li>handler似乎更专注ui</li>
+<li>useEffect更专注处理逻辑（非ui，更接近业务）</li>
+</ol>
+<h2 id="1-19-React-Custom-Hooks-Advanced"><a href="#1-19-React-Custom-Hooks-Advanced" class="headerlink" title="1.19 React Custom Hooks (Advanced)"></a>1.19 React Custom Hooks (Advanced)</h2><p><code>useSemiPersistentState</code>封装了一些特定的逻辑，构成一个custom hook</p>
+<pre><code class="javascript">const useSemiPersistentState = (key, initialState) =&gt; {
+  const [value, setValue] = React.useState(
+    localStorage.getItem(key) || initialState
+  );
+
+  React.useEffect(() =&gt; {
+    localStorage.setItem(key, value);
+  }, [value]);  // 此处应该是笔误，书中是传递[value, key]
+
+  return [value, setValue];
+}</code></pre>
+<h2 id="1-20-React-Fragments"><a href="#1-20-React-Fragments" class="headerlink" title="1.20 React Fragments"></a>1.20 React Fragments</h2><p>component返回时如果不想要<code>&lt;div&gt;</code>包着，需要定义每个元素的key，react支持<code>&lt;&gt;</code>即所谓fragment，来表示top-level element，但是不会有rendered output。</p>
+<pre><code class="javascript">const Search = ({search, onSearch}) = (
+  &lt;&gt;
+    &lt;label ... /&gt;
+    &lt;input ... /&gt;
+  &lt;/&gt;
+)</code></pre>
+<h2 id="1-21-Resuable-React-Component"><a href="#1-21-Resuable-React-Component" class="headerlink" title="1.21 Resuable React Component"></a>1.21 Resuable React Component</h2><p>从search box抽象出<code>InputWithLabel</code>，结合js的<code>default parameter</code>语法，能够让component容易复用。</p>
+<h2 id="1-22-React-Component-Composition"><a href="#1-22-React-Component-Composition" class="headerlink" title="1.22 React Component Composition"></a>1.22 React Component Composition</h2><p><code>children</code> prop是react的一个特殊的prop，能够支持react component像html element那样嵌套组合：</p>
+<pre><code class="javascript">const Input = ({id, children}) =&gt; (
+  &lt;&gt;
+    &lt;input id={id} ... /&gt;
+  &lt;/&gt;
+)
+
+const App = () =&gt; (
+  &lt;div&gt;
+    &lt;Input id=&quot;search&quot;&gt;
+      &lt;strong&gt;Search:&lt;/strong&gt;
+    &lt;/Input&gt;
+  &lt;/div&gt;
+)</code></pre>
+<h2 id="1-23-Imperative-React"><a href="#1-23-Imperative-React" class="headerlink" title="1.23 Imperative React"></a>1.23 Imperative React</h2><p><code>imperative</code>和<code>declarative</code></p>
+<p>react也支持直接访问dom element，来做一些事：</p>
+<pre><code class="javascript">
+const Input = (isFocused=false) =&gt; {
+  const ref = React.useRef()
+
+  React.useEffect(() =&gt; {
+    if (isFocused &amp;&amp; ref.current) {
+      ref.current.focus();
+    };
+  }, [isFocused]);
+
+  return (
+    &lt;&gt;
+      &lt;input ref={ref}/&gt;
+    &lt;/&gt;
+  )
+}</code></pre>
+<h2 id="1-24-Inline-Handler-in-JSX"><a href="#1-24-Inline-Handler-in-JSX" class="headerlink" title="1.24 Inline Handler in JSX"></a>1.24 Inline Handler in JSX</h2><pre><code class="javascript">const Item = ({item, onRemoveItem}) =&gt; (
+  &lt;&gt;
+    &lt;button onClick={() =&gt; onRemoveItem(item)}&gt;
+  &lt;/&gt;
+)</code></pre>
+<h2 id="1-25-React-Asynchronous-Data"><a href="#1-25-React-Asynchronous-Data" class="headerlink" title="1.25 React Asynchronous Data"></a>1.25 React Asynchronous Data</h2><p><code>Promise</code>的使用：<code>.then</code>, <code>.catch</code></p>
+<h2 id="1-26-React-Conditional-Rendering"><a href="#1-26-React-Conditional-Rendering" class="headerlink" title="1.26 React Conditional Rendering"></a>1.26 React Conditional Rendering</h2><pre><code class="javascript">{isLoading ? (&lt;p&gt;Loading...&lt;/p&gt;):()}</code></pre>
+<h2 id="1-27-React-Advanced-State"><a href="#1-27-React-Advanced-State" class="headerlink" title="1.27 React Advanced State"></a>1.27 React Advanced State</h2><p><code>React.useReducer</code></p>
+<p>类似发布事件：</p>
+<ol>
+<li>定义reducer，根据current state,type,action计算下一个状态</li>
+<li>dispatchFunc: 发布action</li>
+</ol>
+<h2 id="1-28-React-Impossible-States"><a href="#1-28-React-Impossible-States" class="headerlink" title="1.28 React Impossible States"></a>1.28 React Impossible States</h2><p>使用useReducer hook封装多个相关的状态，减少<code>impossible states</code>发生的概率。<code>impossible state</code>发生表示bug，或者带来错误的用户体验。</p>
+<h2 id="1-29-Data-Fetching-with-React"><a href="#1-29-Data-Fetching-with-React" class="headerlink" title="1.29 Data Fetching with React"></a>1.29 Data Fetching with React</h2><p><code>fetch</code> api: <code>fetch(url).then(resp =&gt; resp.json()).then...</code></p>
+<h2 id="1-30-Data-Re-Fetching-in-React"><a href="#1-30-Data-Re-Fetching-in-React" class="headerlink" title="1.30 Data Re-Fetching in React"></a>1.30 Data Re-Fetching in React</h2><p>useEffect绑定一个state，当state变化时会执行对应逻辑，更新或者发布action</p>
+<h2 id="1-31-Memorized-Handler-in-React-Advanced"><a href="#1-31-Memorized-Handler-in-React-Advanced" class="headerlink" title="1.31 Memorized Handler in React (Advanced)"></a>1.31 Memorized Handler in React (Advanced)</h2><p><code>React.useCallback</code>: 状态发生变化时，直接调用该callback</p>
+<p>死循环？没太看懂</p>
+<h2 id="1-32-Explicit-Data-Fetching-with-React"><a href="#1-32-Explicit-Data-Fetching-with-React" class="headerlink" title="1.32 Explicit Data Fetching with React"></a>1.32 Explicit Data Fetching with React</h2><p>使用”按钮按下”的side effect来发api请求，而不是每次input change。</p>
+<p>想清楚ui是如何交互的，何时发生什么事件，然后再设计state。</p>
+<h2 id="1-33-Third-Party-Libraries-in-React"><a href="#1-33-Third-Party-Libraries-in-React" class="headerlink" title="1.33 Third-Party Libraries in React"></a>1.33 Third-Party Libraries in React</h2><p><code>fetch</code>是浏览器的api，<code>axios</code>是一个library，用来发异步的请求。</p>
+<pre><code>npm install axios
+
+import axios from &#39;axios&#39;
+
+axios.get(url).then(...)</code></pre><h2 id="1-34-Async-Await-in-React-Advanced"><a href="#1-34-Async-Await-in-React-Advanced" class="headerlink" title="1.34 Async/Await in React(Advanced)"></a>1.34 Async/Await in React(Advanced)</h2><pre><code class="javascript">async () =&gt; {
+  const result = await axios.get(url)  // wait
+}
+</code></pre>
+<h2 id="1-35-Forms-in-React"><a href="#1-35-Forms-in-React" class="headerlink" title="1.35 Forms in React"></a>1.35 Forms in React</h2><p><code>event.preventDefault()</code>: prevent browser reload</p>
+<p><code>onSubmit</code>handler: react中处理表单提交的事件</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ol>
+<li>熟悉JSX语法</li>
+<li>熟悉javascript的一些语法，例如arrow function, destructuring, promise, async/await</li>
+<li>熟悉几个react hooks的用法</li>
+</ol>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ul>
+<li>不熟悉前端的必读:<a href="https://www.robinwieruch.de/javascript-fundamentals-react-requirements" target="_blank" rel="noopener">https://www.robinwieruch.de/javascript-fundamentals-react-requirements</a></li>
+</ul>
+
+    </div>
+
+  </article>
+  <div class="toc-container">
+    
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-Fundamentals-of-React"><span class="toc-text">1. Fundamentals of React</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-1-Hello-React"><span class="toc-text">1.1 Hello React</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-2-Requirements"><span class="toc-text">1.2 Requirements</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-3-Setting-up-a-React-Project"><span class="toc-text">1.3 Setting up a React Project</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-4-Meet-the-React-Component"><span class="toc-text">1.4 Meet the React Component</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-5-React-JSX"><span class="toc-text">1.5 React JSX</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-6-Lists-in-React"><span class="toc-text">1.6 Lists in React</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-7-Meet-another-React-Component"><span class="toc-text">1.7 Meet another React Component</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-8-React-Component-instantiation"><span class="toc-text">1.8 React Component instantiation</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-9-React-DOM"><span class="toc-text">1.9 React DOM</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-10-React-Component-Definition-Advanced"><span class="toc-text">1.10 React Component Definition (Advanced)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-11-Handler-Function-in-JSX"><span class="toc-text">1.11 Handler Function in JSX</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-12-React-Props"><span class="toc-text">1.12 React Props</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-13-React-State"><span class="toc-text">1.13 React State</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-14-Callback-Handlers-in-JSX"><span class="toc-text">1.14 Callback Handlers in JSX</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-15-Lifting-State-in-React"><span class="toc-text">1.15 Lifting State in React</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-16-React-Controlled-Components"><span class="toc-text">1.16 React Controlled Components</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-17-Props-Handling-Advanced"><span class="toc-text">1.17 Props Handling (Advanced)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-18-React-Side-Effects"><span class="toc-text">1.18 React Side-Effects</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-19-React-Custom-Hooks-Advanced"><span class="toc-text">1.19 React Custom Hooks (Advanced)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-20-React-Fragments"><span class="toc-text">1.20 React Fragments</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-21-Resuable-React-Component"><span class="toc-text">1.21 Resuable React Component</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-22-React-Component-Composition"><span class="toc-text">1.22 React Component Composition</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-23-Imperative-React"><span class="toc-text">1.23 Imperative React</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-24-Inline-Handler-in-JSX"><span class="toc-text">1.24 Inline Handler in JSX</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-25-React-Asynchronous-Data"><span class="toc-text">1.25 React Asynchronous Data</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-26-React-Conditional-Rendering"><span class="toc-text">1.26 React Conditional Rendering</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-27-React-Advanced-State"><span class="toc-text">1.27 React Advanced State</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-28-React-Impossible-States"><span class="toc-text">1.28 React Impossible States</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-29-Data-Fetching-with-React"><span class="toc-text">1.29 Data Fetching with React</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-30-Data-Re-Fetching-in-React"><span class="toc-text">1.30 Data Re-Fetching in React</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-31-Memorized-Handler-in-React-Advanced"><span class="toc-text">1.31 Memorized Handler in React (Advanced)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-32-Explicit-Data-Fetching-with-React"><span class="toc-text">1.32 Explicit Data Fetching with React</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-33-Third-Party-Libraries-in-React"><span class="toc-text">1.33 Third-Party Libraries in React</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-34-Async-Await-in-React-Advanced"><span class="toc-text">1.34 Async/Await in React(Advanced)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-35-Forms-in-React"><span class="toc-text">1.35 Forms in React</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-text">总结</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#参考"><span class="toc-text">参考</span></a></li></ol>
+  </div>
+
+
+  </div>
+</div>
+
+  <div class="comment-container">
+    <div class="post" id="gitment-container">
+      <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+  </div>
+
+  <script src="/js/gitment.browser.js"></script>
+  <link rel="stylesheet" href="/css/gitment.css"/>
+  
+  <script>
+      var gitment = new Gitment({
+        //评论issue唯一ID
+        id: '202012200000',
+        owner: 'yajw',
+        repo: 'yajw.github.io',
+        oauth: {
+          client_id: '22cdf46e2d6ccbe19c49',
+          client_secret: '7f84c5f9859178e872a55beea8705470b1b304ff',
+        },
+      })
+      gitment.render('gitment-container')
+  </script>
+
+<div class="copyright">
+    <span>本作品采用</span>
+    <a href="https://creativecommons.org/licenses/by/4.0/">知识共享署名 4.0 国际许可协议</a>
+    <span>进行许可。 转载时请注明原文链接。</span>
+</div>
+
+
+  
+    <div class="post-nav">
+      <div class="post-nav-item post-nav-next">
+        
+          <span>〈 </span>
+          <a href="/2020/11/09/LC 秋叶收藏集/" rel="next" title="LC 秋叶收藏集">
+          LC 秋叶收藏集
+          </a>
+        
+      </div>
+  
+      <div class="post-nav-item post-nav-prev">
+          
+          <a href="/2021/01/21/MyRocks 非正式压测/" rel="prev" title="MyRocks 非正式压测">
+            MyRocks 非正式压测
+          </a>
+          <span>〉</span>
+        
+      </div>
+    </div>
+  
+
+    </div>
+
+    
+
+  </div>
+  <footer class="footer text-center">
+    <div id="bottom-inner">
+        <a class="bottom-item" href="https://github.com/yajw" target="_blank">GitHub</a> |
+        <a class="bottom-item" href="/links">友情链接</a> |
+        <a class="bottom-item" href="https://hexo.io" target="_blank">Powered by hexo</a> |
+        <a class="bottom-item" href="https://github.com/fooying/hexo-theme-xoxo-plus" target="_blank">Theme xoxo-plus</a> |
+        <a class="bottom-item" href="/atom.xml">RSS</a>
+    </div>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.4.1/styles/github.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.4.1/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+</footer>
+
+  
+  <!-- scripts list from theme config.yml -->
+  
+    <script src="/js/xoxo.js"></script>
+  
+    <script src="/js/gitment.browser.js"></script>
+  
+
+
+<script>
+  (function(window, document, undefined) {
+
+    var timer = null;
+
+    function returnTop() {
+      cancelAnimationFrame(timer);
+      timer = requestAnimationFrame(function fn() {
+        var oTop = document.body.scrollTop || document.documentElement.scrollTop;
+        if (oTop > 0) {
+          document.body.scrollTop = document.documentElement.scrollTop = oTop - 50;
+          timer = requestAnimationFrame(fn);
+        } else {
+          cancelAnimationFrame(timer);
+        }
+      });
+    }
+
+    var hearts = [];
+    window.requestAnimationFrame = (function() {
+      return window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        function(callback) {
+          setTimeout(callback, 1000 / 60);
+        }
+    })();
+    init();
+
+    function init() {
+      css(".heart{z-index:9999;width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: absolute;}.heart:after{top: -5px;}.heart:before{left: -5px;}");
+      attachEvent();
+      gameloop();
+      addMenuEvent();
+    }
+
+    function gameloop() {
+      for (var i = 0; i < hearts.length; i++) {
+        if (hearts[i].alpha <= 0) {
+          document.body.removeChild(hearts[i].el);
+          hearts.splice(i, 1);
+          continue;
+        }
+        hearts[i].y--;
+        hearts[i].scale += 0.004;
+        hearts[i].alpha -= 0.013;
+        hearts[i].el.style.cssText = "left:" + hearts[i].x + "px;top:" + hearts[i].y + "px;opacity:" + hearts[i].alpha + ";transform:scale(" + hearts[i].scale + "," + hearts[i].scale + ") rotate(45deg);background:" + hearts[i].color;
+      }
+      requestAnimationFrame(gameloop);
+    }
+
+    /**
+     * 给logo设置点击事件
+     * 
+     * - 回到顶部
+     * - 出现爱心
+     */
+    function attachEvent() {
+      var old = typeof window.onclick === "function" && window.onclick;
+      var logo = document.getElementById("logo");
+      if (logo) {
+        logo.onclick = function(event) {
+          returnTop();
+          old && old();
+          createHeart(event);
+        }
+      }
+      
+    }
+
+    function createHeart(event) {
+      var d = document.createElement("div");
+      d.className = "heart";
+      hearts.push({
+        el: d,
+        x: event.clientX - 5,
+        y: event.clientY - 5,
+        scale: 1,
+        alpha: 1,
+        color: randomColor()
+      });
+      document.body.appendChild(d);
+    }
+
+    function css(css) {
+      var style = document.createElement("style");
+      style.type = "text/css";
+      try {
+        style.appendChild(document.createTextNode(css));
+      } catch (ex) {
+        style.styleSheet.cssText = css;
+      }
+      document.getElementsByTagName('head')[0].appendChild(style);
+    }
+
+    function randomColor() {
+      // return "rgb(" + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + ")";
+      return "#F44336";
+    }
+
+    function addMenuEvent() {
+      var menu = document.getElementById('menu-main-post');
+      if (menu) {
+        var toc = document.getElementById('toc');
+        if (toc) {
+          menu.onclick = function() {
+            if (toc) {
+              if (toc.style.display == 'block') {
+                toc.style.display = 'none';
+              } else {
+                toc.style.display = 'block';
+              }
+            }
+          };
+        } else {
+          menu.style.display = 'none';
+        }
+      }
+    }
+
+  })(window, document);
+</script>
+
+  
+
+
+
+  
+<script>
+  (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+          bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+      }
+      else {
+          bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+</script>
+
+
+</body>
+</html>

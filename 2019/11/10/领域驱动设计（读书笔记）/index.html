@@ -1,0 +1,454 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#202020">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+  
+  
+    <meta name="keywords" content="笔记,读书,">
+  
+
+  
+    <meta name="description" content="领域驱动设计（读书笔记）">
+  
+  
+  
+  <link rel="icon" type="image/x-icon" href="/images/footer-logo.png">
+  
+  <title>领域驱动设计（读书笔记）</title>
+  
+    <!-- stylesheets list from config.yml -->
+    
+      <link rel="stylesheet" href="//cdn.bootcss.com/pure/1.0.0/pure-min.css">
+    
+      <link rel="stylesheet" href="/css/xoxo.css">
+    
+      <link rel="stylesheet" href="/css/gitment.css">
+    
+  
+</head>
+
+
+<body>
+  <div class="nav-container">
+    <nav class="home-menu pure-menu pure-menu-horizontal">
+  <a class="pure-menu-heading" href="/">
+    
+    <span class="title" style="text-transform:none">yajw</span>
+  </a>
+
+  <ul class="pure-menu-list clearfix">
+      
+          
+            
+              <li class="pure-menu-item"><a href="/" class="pure-menu-link">首页</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/whisper" class="pure-menu-link">片言</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/archives" class="pure-menu-link">归档</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/categories" class="pure-menu-link">分类</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/tags" class="pure-menu-link">标签</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/search" class="pure-menu-link">搜索</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/about" class="pure-menu-link">关于</a></li>
+            
+          
+      
+  </ul>
+   
+</nav>
+
+  </div>
+
+  <div class="container" id="content-outer">
+    <div class="inner" id="content-inner">
+      <div class="post-container">
+  <article class="post" id="post">
+    <header class="post-header text-center">
+      <h1 class="title">
+        领域驱动设计（读书笔记）
+      </h1>
+      <span>
+        
+        <time class="time" datetime="2019-11-10T17:40:01.000Z">
+        2019-11-10
+      </time>
+        
+      </span>
+      <span class="slash">/</span>
+      <span class="post-meta">
+      <span class="post-tags">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/读书/">读书</a></li></ul>
+      </span>
+    </span>
+      <span class="slash">/</span>
+      <span class="read">
+      <span id="busuanzi_value_page_pv"></span> 点击
+    </span>
+      <span class="slash">/</span>
+      <span class="read">阅读耗时 8 分钟</span>
+    </header>
+
+    <div class="post-content">
+      <h1 id="一-运用领域模型"><a href="#一-运用领域模型" class="headerlink" title="一 运用领域模型"></a>一 运用领域模型</h1><ul>
+<li>理解软件的核心</li>
+<li>领域驱动建模解决什么问题？</li>
+<li>软件复杂性有哪些？<ul>
+<li>目标是什么？</li>
+<li>受哪些因素的制约？</li>
+<li>领域驱动设计的方法是怎么处理的？</li>
+</ul>
+</li>
+</ul>
+<h2 id="1-消化知识"><a href="#1-消化知识" class="headerlink" title="1. 消化知识"></a>1. 消化知识</h2><h3 id="1-1-有效建模的要素"><a href="#1-1-有效建模的要素" class="headerlink" title="1.1 有效建模的要素"></a>1.1 有效建模的要素</h3><ul>
+<li>模型和实现的绑定：领域和实现和设计紧密绑定</li>
+<li>模型语言：领域专家和开发人员之间的沟通语言</li>
+<li>开发一个蕴含丰富知识的模型：模型不是静态的数据，而是包含了丰富的知识</li>
+<li>提炼模型：整合模型（增删），丢弃不需要/不重要的概念</li>
+<li>头脑风暴和实验：模型实验室，通过和领域专家之间的互动，借助语言和草图，创造出有价值的模型（不断的反馈和训练）</li>
+</ul>
+<p>评价一个软件团队的有效性</p>
+<h3 id="1-2-知识消化"><a href="#1-2-知识消化" class="headerlink" title="1.2 知识消化"></a>1.2 知识消化</h3><p>传统的瀑布模型</p>
+<ul>
+<li>程序员只理解功能，而不理解背后的原理，所以通过重构来保持软件良好地扩展。</li>
+</ul>
+<p>模型必须是精确的</p>
+<ul>
+<li>模型是经过领域专家和开发团队消化、走查后确定下来的，不严谨的模型会导致返工、加班、扯皮、失败。</li>
+<li>模型会经历演化</li>
+</ul>
+<h3 id="1-3-持续学习"><a href="#1-3-持续学习" class="headerlink" title="1.3 持续学习"></a>1.3 持续学习</h3><p>怎么保持团队的高效率</p>
+<ul>
+<li>随着时间变化，团队人员变动，领域知识会逐渐丢失</li>
+<li>关键是形成组织，铁打的营盘，流水的兵。组织的关键是保持反馈闭环。</li>
+<li>高效率的组织保证模型的及时演化</li>
+</ul>
+<p>领域驱动设计方法中，软件的参与方：</p>
+<ol>
+<li>开发人员</li>
+<li>领域专家</li>
+<li>用户</li>
+</ol>
+<p>软件的组成：</p>
+<ol>
+<li>核心领域：需要达成共识，并持续进行维护</li>
+<li>基础设施</li>
+</ol>
+<h3 id="1-4-知识丰富的设计"><a href="#1-4-知识丰富的设计" class="headerlink" title="1.4 知识丰富的设计"></a>1.4 知识丰富的设计</h3><p>领域驱动方法中，模型的演化导致重构</p>
+<p>领域的核型，不仅仅是一些名词概念，也包含业务规则和活动。<br>领域专家的脑袋中，业务规则的应用往往很复杂，领域专家可能会给出最常见场景的一些规则，仅使用这些规则来处理实际场景是不够的。</p>
+<p><strong>领域专家也许不会意识到自己在应用规则来处理问题时，思考的过程会有多么的复杂</strong></p>
+<p>例如：</p>
+<ul>
+<li>规则之间的矛盾</li>
+<li>使用常识来弥补规则</li>
+</ul>
+<p>需要领域专家和开发人员的紧密合作来理清和提炼业务规则，消除其中的矛盾，去除无用的部分。</p>
+<p>超卖规则的实现</p>
+<ol>
+<li>卫语句<ul>
+<li>不明确的，不懂业务的开发人员很难把代码和需求关联起来</li>
+<li>领域专家很难捕捉到这个规则（没有明确的业务含义）</li>
+</ul>
+</li>
+<li>抽象一个OverBookingPolicy<ul>
+<li>尽管命名中策略通常是策略模式时才会采用，这里策略也是业务中的术语，属于业务概念，因此仍然使用这个命名</li>
+<li>明确超卖是一种策略</li>
+<li>超卖的规则实现独立且明确</li>
+<li>明确超卖是一种业务规则，并不是一个不起眼的卫语句</li>
+<li>领域专家能捕捉到这个规则，因此容易形成反馈闭环</li>
+</ul>
+</li>
+</ol>
+<h3 id="1-5-深层模型"><a href="#1-5-深层模型" class="headerlink" title="1.5 深层模型"></a>1.5 深层模型</h3><blockquote>
+<p>有用的模型很少停留在表面，随着对领域和需求的理解加深…一些开始时不可能发现的抽象就会浮出水面，而它们恰恰切中问题的要害。</p>
+</blockquote>
+<p><strong>知识消化是一种探索，它永无止境</strong></p>
+<h2 id="2-语言的交流和使用"><a href="#2-语言的交流和使用" class="headerlink" title="2. 语言的交流和使用"></a>2. 语言的交流和使用</h2><p><strong>领域模型是软件项目的公共语言的核心</strong></p>
+<p>模型是人们头脑中形成的与项目有关的概念集合，术语和相互关系提供了模型语言的语义。</p>
+<p>模型语言十分精确，是专门为领域量身裁剪的。</p>
+<p>模型与代码应当紧绑定。</p>
+<h3 id="2-1-UBIQUITOUS-LANGUAGE"><a href="#2-1-UBIQUITOUS-LANGUAGE" class="headerlink" title="2.1 UBIQUITOUS LANGUAGE"></a>2.1 UBIQUITOUS LANGUAGE</h3><p>困难所在：</p>
+<ol>
+<li>每个开发人员形成自己的抽象，但领域专家不理解这些抽象</li>
+<li>领域专家有自己的行话，但由于存在语言上的鸿沟，只能模糊地描述他们想要的东西</li>
+<li>开发人员很努力去理解自己不熟悉的领域，但也只能形成模糊的认识</li>
+<li>开发人员之间相互翻译，开发和领域专家之间相互翻译，造成概念上的混淆</li>
+<li>同一个人讲话和写东西不是一个语言</li>
+</ol>
+<p>信息流上存在瓶颈，不准确，沟通词不达意。间接的沟通，导致分裂的形成，导致软件各部分不能浑然一体。</p>
+<p><strong>如果语言支离破碎，项目必然遭遇严重问题</strong></p>
+
+    </div>
+
+  </article>
+  <div class="toc-container">
+    
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#一-运用领域模型"><span class="toc-text">一 运用领域模型</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-消化知识"><span class="toc-text">1. 消化知识</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-有效建模的要素"><span class="toc-text">1.1 有效建模的要素</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-知识消化"><span class="toc-text">1.2 知识消化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-持续学习"><span class="toc-text">1.3 持续学习</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-4-知识丰富的设计"><span class="toc-text">1.4 知识丰富的设计</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-5-深层模型"><span class="toc-text">1.5 深层模型</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-语言的交流和使用"><span class="toc-text">2. 语言的交流和使用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-UBIQUITOUS-LANGUAGE"><span class="toc-text">2.1 UBIQUITOUS LANGUAGE</span></a></li></ol></li></ol></li></ol>
+  </div>
+
+
+  </div>
+</div>
+
+  <div class="comment-container">
+    <div class="post" id="gitment-container">
+      <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+  </div>
+
+  <script src="/js/gitment.browser.js"></script>
+  <link rel="stylesheet" href="/css/gitment.css"/>
+  
+  <script>
+      var gitment = new Gitment({
+        //评论issue唯一ID
+        id: '201911101740',
+        owner: 'yajw',
+        repo: 'yajw.github.io',
+        oauth: {
+          client_id: '22cdf46e2d6ccbe19c49',
+          client_secret: '7f84c5f9859178e872a55beea8705470b1b304ff',
+        },
+      })
+      gitment.render('gitment-container')
+  </script>
+
+<div class="copyright">
+    <span>本作品采用</span>
+    <a href="https://creativecommons.org/licenses/by/4.0/">知识共享署名 4.0 国际许可协议</a>
+    <span>进行许可。 转载时请注明原文链接。</span>
+</div>
+
+
+  
+    <div class="post-nav">
+      <div class="post-nav-item post-nav-next">
+        
+          <span>〈 </span>
+          <a href="/2019/09/25/BigTable/" rel="next" title="BigTable">
+          BigTable
+          </a>
+        
+      </div>
+  
+      <div class="post-nav-item post-nav-prev">
+          
+          <a href="/2019/12/20/一些技术组件杂谈/" rel="prev" title="一些技术组件杂谈">
+            一些技术组件杂谈
+          </a>
+          <span>〉</span>
+        
+      </div>
+    </div>
+  
+
+    </div>
+
+    
+
+  </div>
+  <footer class="footer text-center">
+    <div id="bottom-inner">
+        <a class="bottom-item" href="https://github.com/yajw" target="_blank">GitHub</a> |
+        <a class="bottom-item" href="/links">友情链接</a> |
+        <a class="bottom-item" href="https://hexo.io" target="_blank">Powered by hexo</a> |
+        <a class="bottom-item" href="https://github.com/fooying/hexo-theme-xoxo-plus" target="_blank">Theme xoxo-plus</a> |
+        <a class="bottom-item" href="/atom.xml">RSS</a>
+    </div>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.4.1/styles/github.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.4.1/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+</footer>
+
+  
+  <!-- scripts list from theme config.yml -->
+  
+    <script src="/js/xoxo.js"></script>
+  
+    <script src="/js/gitment.browser.js"></script>
+  
+
+
+<script>
+  (function(window, document, undefined) {
+
+    var timer = null;
+
+    function returnTop() {
+      cancelAnimationFrame(timer);
+      timer = requestAnimationFrame(function fn() {
+        var oTop = document.body.scrollTop || document.documentElement.scrollTop;
+        if (oTop > 0) {
+          document.body.scrollTop = document.documentElement.scrollTop = oTop - 50;
+          timer = requestAnimationFrame(fn);
+        } else {
+          cancelAnimationFrame(timer);
+        }
+      });
+    }
+
+    var hearts = [];
+    window.requestAnimationFrame = (function() {
+      return window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        function(callback) {
+          setTimeout(callback, 1000 / 60);
+        }
+    })();
+    init();
+
+    function init() {
+      css(".heart{z-index:9999;width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: absolute;}.heart:after{top: -5px;}.heart:before{left: -5px;}");
+      attachEvent();
+      gameloop();
+      addMenuEvent();
+    }
+
+    function gameloop() {
+      for (var i = 0; i < hearts.length; i++) {
+        if (hearts[i].alpha <= 0) {
+          document.body.removeChild(hearts[i].el);
+          hearts.splice(i, 1);
+          continue;
+        }
+        hearts[i].y--;
+        hearts[i].scale += 0.004;
+        hearts[i].alpha -= 0.013;
+        hearts[i].el.style.cssText = "left:" + hearts[i].x + "px;top:" + hearts[i].y + "px;opacity:" + hearts[i].alpha + ";transform:scale(" + hearts[i].scale + "," + hearts[i].scale + ") rotate(45deg);background:" + hearts[i].color;
+      }
+      requestAnimationFrame(gameloop);
+    }
+
+    /**
+     * 给logo设置点击事件
+     * 
+     * - 回到顶部
+     * - 出现爱心
+     */
+    function attachEvent() {
+      var old = typeof window.onclick === "function" && window.onclick;
+      var logo = document.getElementById("logo");
+      if (logo) {
+        logo.onclick = function(event) {
+          returnTop();
+          old && old();
+          createHeart(event);
+        }
+      }
+      
+    }
+
+    function createHeart(event) {
+      var d = document.createElement("div");
+      d.className = "heart";
+      hearts.push({
+        el: d,
+        x: event.clientX - 5,
+        y: event.clientY - 5,
+        scale: 1,
+        alpha: 1,
+        color: randomColor()
+      });
+      document.body.appendChild(d);
+    }
+
+    function css(css) {
+      var style = document.createElement("style");
+      style.type = "text/css";
+      try {
+        style.appendChild(document.createTextNode(css));
+      } catch (ex) {
+        style.styleSheet.cssText = css;
+      }
+      document.getElementsByTagName('head')[0].appendChild(style);
+    }
+
+    function randomColor() {
+      // return "rgb(" + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + ")";
+      return "#F44336";
+    }
+
+    function addMenuEvent() {
+      var menu = document.getElementById('menu-main-post');
+      if (menu) {
+        var toc = document.getElementById('toc');
+        if (toc) {
+          menu.onclick = function() {
+            if (toc) {
+              if (toc.style.display == 'block') {
+                toc.style.display = 'none';
+              } else {
+                toc.style.display = 'block';
+              }
+            }
+          };
+        } else {
+          menu.style.display = 'none';
+        }
+      }
+    }
+
+  })(window, document);
+</script>
+
+  
+
+
+
+  
+<script>
+  (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+          bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+      }
+      else {
+          bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,441 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#202020">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+  
+  
+    <meta name="keywords" content="Google,BigTable,">
+  
+
+  
+    <meta name="description" content="BigTable">
+  
+  
+  
+  <link rel="icon" type="image/x-icon" href="/images/footer-logo.png">
+  
+  <title>BigTable</title>
+  
+    <!-- stylesheets list from config.yml -->
+    
+      <link rel="stylesheet" href="//cdn.bootcss.com/pure/1.0.0/pure-min.css">
+    
+      <link rel="stylesheet" href="/css/xoxo.css">
+    
+      <link rel="stylesheet" href="/css/gitment.css">
+    
+  
+</head>
+
+
+<body>
+  <div class="nav-container">
+    <nav class="home-menu pure-menu pure-menu-horizontal">
+  <a class="pure-menu-heading" href="/">
+    
+    <span class="title" style="text-transform:none">yajw</span>
+  </a>
+
+  <ul class="pure-menu-list clearfix">
+      
+          
+            
+              <li class="pure-menu-item"><a href="/" class="pure-menu-link">首页</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/whisper" class="pure-menu-link">片言</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/archives" class="pure-menu-link">归档</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/categories" class="pure-menu-link">分类</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/tags" class="pure-menu-link">标签</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/search" class="pure-menu-link">搜索</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/about" class="pure-menu-link">关于</a></li>
+            
+          
+      
+  </ul>
+   
+</nav>
+
+  </div>
+
+  <div class="container" id="content-outer">
+    <div class="inner" id="content-inner">
+      <div class="post-container">
+  <article class="post" id="post">
+    <header class="post-header text-center">
+      <h1 class="title">
+        BigTable
+      </h1>
+      <span>
+        
+        <time class="time" datetime="2019-09-25T00:05:00.000Z">
+        2019-09-25
+      </time>
+        
+      </span>
+      <span class="slash">/</span>
+      <span class="post-meta">
+      <span class="post-tags">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/BigTable/">BigTable</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Google/">Google</a></li></ul>
+      </span>
+    </span>
+      <span class="slash">/</span>
+      <span class="read">
+      <span id="busuanzi_value_page_pv"></span> 点击
+    </span>
+      <span class="slash">/</span>
+      <span class="read">阅读耗时 9 分钟</span>
+    </header>
+
+    <div class="post-content">
+      <p>这个论文是2006年发表的，当时我还在读高二吧。据论文中所说，BigTable是在03年左右开始的，花了两年多时间，不包含测试的代码在10w行（应该是C++）。</p>
+<p>BigTable是什么？分布式存储系统，设计目标是能够处理大到PT级别的数据量，能够支持数千台服务器的集群。应用场景包括不同数据量（url到网页到卫星图片），吞吐型（批处理），低延迟型（实时查询）。BigTable在处理这些各种各样的场景时，表现出了灵活性和高性能。</p>
+<p>BigTable</p>
+<ol>
+<li>设计思路和特点</li>
+<li>主要优势，怎么实现的<ul>
+<li>怎么可靠可伸缩</li>
+<li>高性能</li>
+<li>多场景</li>
+<li>高可用</li>
+<li>一致性</li>
+</ul>
+</li>
+<li>启发</li>
+</ol>
+<p>BigTabe特点：</p>
+<ul>
+<li>能够可靠地伸缩</li>
+<li>简单的数据模型</li>
+<li>非严格的关系型</li>
+<li>数据结构和格式能够动态变化</li>
+<li>客户端能够对数据底层存储的局部性作出合理推测</li>
+<li>客户端参数能够指定是否从内存而不是硬盘中读</li>
+</ul>
+<h2 id="数据模型"><a href="#数据模型" class="headerlink" title="数据模型"></a>数据模型</h2><p>BigTable是稀疏的、分布式、持久化的、多维有序map（原文：A BigTable is a sparse, distributed, persistent multi-dimensional sorted map.）。map的key是row key、column key和timestamp，value是字节数组。</p>
+<pre><code class="golang">(row:string, column:string, time:int64) -&gt; string</code></pre>
+<p>论文中说采用这种数据模型，是在研究了多种可能的使用场景后确定的。最典型的网页存储，用url作row key、相关信息作column，网页内容放在content这一列下，包含带有时间戳的不同时间采集的各个版本。</p>
+<h3 id="Rows"><a href="#Rows" class="headerlink" title="Rows"></a>Rows</h3><p>row key是字符串，最长支持到64kb。</p>
+<p>在同一个row key下，对数据读写操作是原子的。</p>
+<p>BigTable按照row key的字典序maintain data。</p>
+<p>BigTable会按照row key的range来分区，一个range叫做一个table。tablet是负载均衡和分布式的最小单元。</p>
+<h3 id="Column-Families"><a href="#Column-Families" class="headerlink" title="Column Families"></a>Column Families</h3><p>这里为了方便描述，要发明一些（自己的）术语。</p>
+<p>列键标识一列，列族标识一组列键。列族是访问控制的基本单元。</p>
+<p>列族中的数据通常是同一个类型，在BigTable中是压缩存储。</p>
+<p>一个table下，列族最多支持数百个，列键数量则无限制。</p>
+<p>列键的命名格式是：<code>familiy:qualifier</code></p>
+<p>列族的名字必须是printable的，qualifier则可以是任意的。</p>
+<p>访问控制、磁盘和内存审计都在列族层面。</p>
+<h3 id="timestamp"><a href="#timestamp" class="headerlink" title="timestamp"></a>timestamp</h3><p>BigTable用时间戳标识数据的多个版本，各个版本按时间戳倒序存储。</p>
+<p>时间戳的格式是64 bit整数，精确到微秒。</p>
+<p>时间戳可以由客户端自己生成。</p>
+<p>BigTable支持两个列族粒度的参数，来用不同策略对比较老的数据版本作垃圾回收：一是保留最近n个版本，二是保留最近某段时间，比如最近7天。</p>
+<h2 id="API"><a href="#API" class="headerlink" title="API"></a>API</h2><p>BigTable提供了两种API，一是表和列族的操作，二是管理集群、表、列族的元数据，例如访问权限控制。</p>
+<p>客户端支持，写/删除value，对单行查找value，遍历某个子集。</p>
+<p><code>RowMutation</code>对单行数据作更新。</p>
+<p><code>Scanner</code>支持遍历操作。</p>
+<p>其他的复杂操作：</p>
+<ol>
+<li>单行事务</li>
+<li>允许单个cell作计数器</li>
+<li>支持在服务器上只读脚本（Sawzall语言）</li>
+<li>和MapReduce集成，作为MapReduce的输入输出</li>
+</ol>
+<h2 id="构件"><a href="#构件" class="headerlink" title="构件"></a>构件</h2><p>BigTable使用GFS来存储日志和数据文件。</p>
+<p>BigTable运行在Google的共享机器池中，依赖公共的集群管理系统（任务调度、资源分配、故障处理、监控）。</p>
+<p>BigTable内部使用Google的SSTable结构来存储数据。SSTable是持久的、有序的immutable map，key和value都是任意字节串。<br>SSTable支持查找、特定key range的遍历。SSTable包含多个blocks，一个block包含64KB。SSTable包含一个block index来快速定位block。block index在SSTable打开时加载到内存中。一次查找只需要一次磁盘seek，首先在内存中找到block，然后读取该block。SSTable也可以配置成完全内存加载方式，避免磁盘操作。</p>
+<h2 id="BigTable结构"><a href="#BigTable结构" class="headerlink" title="BigTable结构"></a>BigTable结构</h2><p>逻辑上是多维的有序map，维度包括：row, column family, timestamp。既然是map，维度就是key，value是字符串。其中column family可以有多个（最多数百个），每个column family可以不限数量。</p>
+<p>论文中以一个存储网页数据的表WebTable为例，</p>
+<ul>
+<li>row是倒序的hostname，例如<code>com.yajunw.www</code></li>
+<li>column family有两个<ol>
+<li>第一个是<code>content:</code></li>
+<li>第二个是<code>anchor:</code>，它下面有两个column: <code>a.com</code>, <code>b.com</code></li>
+</ol>
+</li>
+<li>timestamp是在横向的，每个value都会有一个timestamp，可以标识数据的版本。</li>
+<li>value是某个时刻的网页文档数据。</li>
+</ul>
+<p>权限控制是到column family这个粒度。</p>
+<p>BigTable没有支持完整的关系型数据模型。<br>BigTable只支持行级事务。<br>BigTable最多支持2^61(2048PB)的数据量（猜测这个级别可能是不够用的）。</p>
+<p>BigTable提供两个配置：保留最后多少个版本，或者保留最近多少时间的版本。有垃圾回收机制，去做清理和释放空间。</p>
+<p>BigTable解决特定问题而发明的，并不是闭门造车的结果。BigTable不能替代关系型数据库。</p>
+<p>BigTable依赖Chubby，可用性因此也有一定程度依赖Chubby。</p>
+<p>BigTable某些特点似乎是针对网页存储而设计的。</p>
+
+    </div>
+
+  </article>
+  <div class="toc-container">
+    
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#数据模型"><span class="toc-text">数据模型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Rows"><span class="toc-text">Rows</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Column-Families"><span class="toc-text">Column Families</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#timestamp"><span class="toc-text">timestamp</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#API"><span class="toc-text">API</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#构件"><span class="toc-text">构件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#BigTable结构"><span class="toc-text">BigTable结构</span></a></li></ol>
+  </div>
+
+
+  </div>
+</div>
+
+  <div class="comment-container">
+    <div class="post" id="gitment-container">
+      <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+  </div>
+
+  <script src="/js/gitment.browser.js"></script>
+  <link rel="stylesheet" href="/css/gitment.css"/>
+  
+  <script>
+      var gitment = new Gitment({
+        //评论issue唯一ID
+        id: '201909250005',
+        owner: 'yajw',
+        repo: 'yajw.github.io',
+        oauth: {
+          client_id: '22cdf46e2d6ccbe19c49',
+          client_secret: '7f84c5f9859178e872a55beea8705470b1b304ff',
+        },
+      })
+      gitment.render('gitment-container')
+  </script>
+
+<div class="copyright">
+    <span>本作品采用</span>
+    <a href="https://creativecommons.org/licenses/by/4.0/">知识共享署名 4.0 国际许可协议</a>
+    <span>进行许可。 转载时请注明原文链接。</span>
+</div>
+
+
+  
+    <div class="post-nav">
+      <div class="post-nav-item post-nav-next">
+        
+          <span>〈 </span>
+          <a href="/2019/09/24/实现线上服务低延迟/" rel="next" title="实现线上服务低延迟">
+          实现线上服务低延迟
+          </a>
+        
+      </div>
+  
+      <div class="post-nav-item post-nav-prev">
+          
+          <a href="/2019/11/10/领域驱动设计（读书笔记）/" rel="prev" title="领域驱动设计（读书笔记）">
+            领域驱动设计（读书笔记）
+          </a>
+          <span>〉</span>
+        
+      </div>
+    </div>
+  
+
+    </div>
+
+    
+
+  </div>
+  <footer class="footer text-center">
+    <div id="bottom-inner">
+        <a class="bottom-item" href="https://github.com/yajw" target="_blank">GitHub</a> |
+        <a class="bottom-item" href="/links">友情链接</a> |
+        <a class="bottom-item" href="https://hexo.io" target="_blank">Powered by hexo</a> |
+        <a class="bottom-item" href="https://github.com/fooying/hexo-theme-xoxo-plus" target="_blank">Theme xoxo-plus</a> |
+        <a class="bottom-item" href="/atom.xml">RSS</a>
+    </div>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.4.1/styles/github.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.4.1/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+</footer>
+
+  
+  <!-- scripts list from theme config.yml -->
+  
+    <script src="/js/xoxo.js"></script>
+  
+    <script src="/js/gitment.browser.js"></script>
+  
+
+
+<script>
+  (function(window, document, undefined) {
+
+    var timer = null;
+
+    function returnTop() {
+      cancelAnimationFrame(timer);
+      timer = requestAnimationFrame(function fn() {
+        var oTop = document.body.scrollTop || document.documentElement.scrollTop;
+        if (oTop > 0) {
+          document.body.scrollTop = document.documentElement.scrollTop = oTop - 50;
+          timer = requestAnimationFrame(fn);
+        } else {
+          cancelAnimationFrame(timer);
+        }
+      });
+    }
+
+    var hearts = [];
+    window.requestAnimationFrame = (function() {
+      return window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        function(callback) {
+          setTimeout(callback, 1000 / 60);
+        }
+    })();
+    init();
+
+    function init() {
+      css(".heart{z-index:9999;width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: absolute;}.heart:after{top: -5px;}.heart:before{left: -5px;}");
+      attachEvent();
+      gameloop();
+      addMenuEvent();
+    }
+
+    function gameloop() {
+      for (var i = 0; i < hearts.length; i++) {
+        if (hearts[i].alpha <= 0) {
+          document.body.removeChild(hearts[i].el);
+          hearts.splice(i, 1);
+          continue;
+        }
+        hearts[i].y--;
+        hearts[i].scale += 0.004;
+        hearts[i].alpha -= 0.013;
+        hearts[i].el.style.cssText = "left:" + hearts[i].x + "px;top:" + hearts[i].y + "px;opacity:" + hearts[i].alpha + ";transform:scale(" + hearts[i].scale + "," + hearts[i].scale + ") rotate(45deg);background:" + hearts[i].color;
+      }
+      requestAnimationFrame(gameloop);
+    }
+
+    /**
+     * 给logo设置点击事件
+     * 
+     * - 回到顶部
+     * - 出现爱心
+     */
+    function attachEvent() {
+      var old = typeof window.onclick === "function" && window.onclick;
+      var logo = document.getElementById("logo");
+      if (logo) {
+        logo.onclick = function(event) {
+          returnTop();
+          old && old();
+          createHeart(event);
+        }
+      }
+      
+    }
+
+    function createHeart(event) {
+      var d = document.createElement("div");
+      d.className = "heart";
+      hearts.push({
+        el: d,
+        x: event.clientX - 5,
+        y: event.clientY - 5,
+        scale: 1,
+        alpha: 1,
+        color: randomColor()
+      });
+      document.body.appendChild(d);
+    }
+
+    function css(css) {
+      var style = document.createElement("style");
+      style.type = "text/css";
+      try {
+        style.appendChild(document.createTextNode(css));
+      } catch (ex) {
+        style.styleSheet.cssText = css;
+      }
+      document.getElementsByTagName('head')[0].appendChild(style);
+    }
+
+    function randomColor() {
+      // return "rgb(" + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + ")";
+      return "#F44336";
+    }
+
+    function addMenuEvent() {
+      var menu = document.getElementById('menu-main-post');
+      if (menu) {
+        var toc = document.getElementById('toc');
+        if (toc) {
+          menu.onclick = function() {
+            if (toc) {
+              if (toc.style.display == 'block') {
+                toc.style.display = 'none';
+              } else {
+                toc.style.display = 'block';
+              }
+            }
+          };
+        } else {
+          menu.style.display = 'none';
+        }
+      }
+    }
+
+  })(window, document);
+</script>
+
+  
+
+
+
+  
+<script>
+  (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+          bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+      }
+      else {
+          bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+</script>
+
+
+</body>
+</html>

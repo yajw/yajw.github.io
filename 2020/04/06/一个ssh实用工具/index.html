@@ -1,0 +1,507 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#202020">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+  
+  
+    <meta name="keywords" content="ssh,">
+  
+
+  
+    <meta name="description" content="一个ssh实用工具">
+  
+  
+  
+  <link rel="icon" type="image/x-icon" href="/images/footer-logo.png">
+  
+  <title>一个ssh实用工具</title>
+  
+    <!-- stylesheets list from config.yml -->
+    
+      <link rel="stylesheet" href="//cdn.bootcss.com/pure/1.0.0/pure-min.css">
+    
+      <link rel="stylesheet" href="/css/xoxo.css">
+    
+      <link rel="stylesheet" href="/css/gitment.css">
+    
+  
+</head>
+
+
+<body>
+  <div class="nav-container">
+    <nav class="home-menu pure-menu pure-menu-horizontal">
+  <a class="pure-menu-heading" href="/">
+    
+    <span class="title" style="text-transform:none">yajw</span>
+  </a>
+
+  <ul class="pure-menu-list clearfix">
+      
+          
+            
+              <li class="pure-menu-item"><a href="/" class="pure-menu-link">首页</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/whisper" class="pure-menu-link">片言</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/archives" class="pure-menu-link">归档</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/categories" class="pure-menu-link">分类</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/tags" class="pure-menu-link">标签</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/search" class="pure-menu-link">搜索</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/about" class="pure-menu-link">关于</a></li>
+            
+          
+      
+  </ul>
+   
+</nav>
+
+  </div>
+
+  <div class="container" id="content-outer">
+    <div class="inner" id="content-inner">
+      <div class="post-container">
+  <article class="post" id="post">
+    <header class="post-header text-center">
+      <h1 class="title">
+        一个ssh实用工具
+      </h1>
+      <span>
+        
+        <time class="time" datetime="2020-04-06T18:45:40.000Z">
+        2020-04-06
+      </time>
+        
+      </span>
+      <span class="slash">/</span>
+      <span class="post-meta">
+      <span class="post-tags">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ssh/">ssh</a></li></ul>
+      </span>
+    </span>
+      <span class="slash">/</span>
+      <span class="read">
+      <span id="busuanzi_value_page_pv"></span> 点击
+    </span>
+      <span class="slash">/</span>
+      <span class="read">阅读耗时 5 分钟</span>
+    </header>
+
+    <div class="post-content">
+      <h2 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h2><p>公司电脑连接很多环境都是通过<code>./ssh/config</code>配置的，并且用到了ssh tunnel。</p>
+<p>每次on duty时，经常需要到日志服务器上抓一些特定的日志。例如拉取一些失败的交易数据，包括请求和响应，给运营去找银行线下处理。</p>
+<p>当然，运营希望看到的是关心的字段都要有，并且最好是excel格式。</p>
+<p>写excel格式还好，关键是有些字段可能要匹配多个不通的日志（例如不同服务的日志匹配），简而言之，需要对日志进行类似join的操作。</p>
+<p>在没有专门用于日志分析的基础设施，并且没有实时性要求的情况下，写个脚本能很有效率地解决这类问题。这时，一个实用的ssh工具就很有用，连接服务器，远程awk几次就ok。</p>
+<p>这本来是一个很小的需求，为什么要单独写一篇博客呢？<br>忍不住吐槽下，靠谱的ssh库其实并不多。刚开始想找java的库，试了几个，要么几年没人维护，要么star很多但是解决不了都<code>ssh_config</code>配置和tunnel的问题。</p>
+<p>最后不得已，很不情愿但是没办法，还是回到python，使用paramiko。</p>
+<h2 id="简单封装"><a href="#简单封装" class="headerlink" title="简单封装"></a>简单封装</h2><pre><code class="python">import os
+
+import paramiko
+
+
+class SSHSession(object):
+    def __init__(
+            self,
+            host,
+            port=22,
+            username=None,
+            password=None,
+            key_file_path=None,
+            config_file_path=&#39;~/.ssh/config&#39;
+    ):
+        self._host = host
+        self._port = port
+        self._username = username
+        self._password = password
+        self._key_file_path = [key_file_path] if key_file_path else None
+        self._config_file_path = config_file_path
+        self.client = self._connect()
+
+    def exec_command(self, command, timeout=None):
+        stdin, stdout, stderr = self.client.exec_command(command, timeout=timeout)
+        return stdout.readlines(), stderr.readlines()
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if self.client is not None:
+            self.client.close()
+
+    def _connect(self):
+        client = paramiko.SSHClient()
+        client._policy = paramiko.WarningPolicy()
+        client.load_system_host_keys()
+        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+
+        ssh_config = paramiko.SSHConfig()
+        user_config_file = os.path.expanduser(self._config_file_path)
+        with open(user_config_file) as f:
+            ssh_config.parse(f)
+
+        user_config = ssh_config.lookup(self._host)
+
+        cfg = {
+            &#39;username&#39;: self._username or user_config.get(&#39;user&#39;, None),
+            &#39;password&#39;: self._password,
+            &#39;port&#39;: self._port or user_config.get(&#39;port&#39;, None),
+            &#39;key_filename&#39;: self._key_file_path or user_config.get(&#39;identityfile&#39;, None),
+            &#39;hostname&#39;: user_config.get(&#39;hostname&#39;, None) or self._host,
+            &#39;sock&#39;: paramiko.ProxyCommand(user_config[&#39;proxycommand&#39;]) if &#39;proxycommand&#39; in user_config else None
+        }
+
+        client.connect(**cfg)
+        return client</code></pre>
+<p>交互式shell（作者：<a href="https://stackoverflow.com/a/36948840/4886367" target="_blank" rel="noopener">misha</a>）:</p>
+<pre><code class="python">import re
+
+from ssh.client import SSHSession
+
+
+
+class ShellHandler:
+
+    def __init__(self, host, **kwargs):
+        self.session = SSHSession(host, **kwargs)
+        self.ssh = self.session.client
+        channel = self.ssh.invoke_shell()
+        self.stdin = channel.makefile(&#39;wb&#39;)
+        self.stdout = channel.makefile(&#39;r&#39;)
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if self.ssh is not None:
+            self.ssh.close()
+
+    def execute(self, cmd):
+        &quot;&quot;&quot;
+
+        :param cmd: the command to be executed on the remote computer
+        :examples:  execute(&#39;ls&#39;)
+                    execute(&#39;finger&#39;)
+                    execute(&#39;cd folder_name&#39;)
+        &quot;&quot;&quot;
+        cmd = cmd.strip(&#39;\n&#39;)
+        self.stdin.write(cmd + &#39;\n&#39;)
+        finish = &#39;End-Of-Command-by-ShellHandler&#39;
+        echo_cmd = &#39;echo {} $?&#39;.format(finish)
+        self.stdin.write(echo_cmd + &#39;\n&#39;)
+        shin = self.stdin
+        self.stdin.flush()
+
+        shout = []
+        sherr = []
+        for line in self.stdout:
+            if str(line).startswith(cmd) or str(line).startswith(echo_cmd):
+                shout = []
+            if str(line).startswith(finish):
+                exit_status = int(str(line).rsplit(None, 1)[1])
+                if exit_status:
+                    sherr = shout
+                    shout = []
+                break
+            else:
+                s = re.compile(r&#39;(\x9B|\x1B\[)[0-?]*[ -/]*[@-~]&#39;).sub(&#39;&#39;, line).replace(&#39;\b&#39;, &#39;&#39;).replace(&#39;\r&#39;, &#39;&#39;)
+                if not (finish in s):
+                    shout.append(s)
+
+        if shout and echo_cmd in shout[-1]:
+            shout.pop()
+        if shout and cmd in shout[0]:
+            shout.pop(0)
+        if sherr and echo_cmd in sherr[-1]:
+            sherr.pop()
+        if sherr and cmd in sherr[0]:
+            sherr.pop(0)
+
+        return shin, shout, sherr</code></pre>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><pre><code class="python"># SSHSession
+with SSHSession(&quot;server0&quot;) as session:
+    print session.exec_command(&quot;ls&quot;)
+
+# ShellHandler
+with ShellHandler(&quot;server2&quot;) as shell:
+    shell.execute(&quot;cd /home&quot;)
+    shell.execute(&quot;ls -al&quot;)
+    _, out, err = shell.execute(&quot;date&quot;)
+    print out</code></pre>
+
+    </div>
+
+  </article>
+  <div class="toc-container">
+    
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#需求"><span class="toc-text">需求</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#简单封装"><span class="toc-text">简单封装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用"><span class="toc-text">使用</span></a></li></ol>
+  </div>
+
+
+  </div>
+</div>
+
+  <div class="comment-container">
+    <div class="post" id="gitment-container">
+      <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+  </div>
+
+  <script src="/js/gitment.browser.js"></script>
+  <link rel="stylesheet" href="/css/gitment.css"/>
+  
+  <script>
+      var gitment = new Gitment({
+        //评论issue唯一ID
+        id: '202004061845',
+        owner: 'yajw',
+        repo: 'yajw.github.io',
+        oauth: {
+          client_id: '22cdf46e2d6ccbe19c49',
+          client_secret: '7f84c5f9859178e872a55beea8705470b1b304ff',
+        },
+      })
+      gitment.render('gitment-container')
+  </script>
+
+<div class="copyright">
+    <span>本作品采用</span>
+    <a href="https://creativecommons.org/licenses/by/4.0/">知识共享署名 4.0 国际许可协议</a>
+    <span>进行许可。 转载时请注明原文链接。</span>
+</div>
+
+
+  
+    <div class="post-nav">
+      <div class="post-nav-item post-nav-next">
+        
+          <span>〈 </span>
+          <a href="/2020/02/26/Manacher算法/" rel="next" title="Manacher算法">
+          Manacher算法
+          </a>
+        
+      </div>
+  
+      <div class="post-nav-item post-nav-prev">
+          
+          <a href="/2020/04/07/python2-的编码问题/" rel="prev" title="python2 的编码问题">
+            python2 的编码问题
+          </a>
+          <span>〉</span>
+        
+      </div>
+    </div>
+  
+
+    </div>
+
+    
+
+  </div>
+  <footer class="footer text-center">
+    <div id="bottom-inner">
+        <a class="bottom-item" href="https://github.com/yajw" target="_blank">GitHub</a> |
+        <a class="bottom-item" href="/links">友情链接</a> |
+        <a class="bottom-item" href="https://hexo.io" target="_blank">Powered by hexo</a> |
+        <a class="bottom-item" href="https://github.com/fooying/hexo-theme-xoxo-plus" target="_blank">Theme xoxo-plus</a> |
+        <a class="bottom-item" href="/atom.xml">RSS</a>
+    </div>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.4.1/styles/github.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.4.1/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+</footer>
+
+  
+  <!-- scripts list from theme config.yml -->
+  
+    <script src="/js/xoxo.js"></script>
+  
+    <script src="/js/gitment.browser.js"></script>
+  
+
+
+<script>
+  (function(window, document, undefined) {
+
+    var timer = null;
+
+    function returnTop() {
+      cancelAnimationFrame(timer);
+      timer = requestAnimationFrame(function fn() {
+        var oTop = document.body.scrollTop || document.documentElement.scrollTop;
+        if (oTop > 0) {
+          document.body.scrollTop = document.documentElement.scrollTop = oTop - 50;
+          timer = requestAnimationFrame(fn);
+        } else {
+          cancelAnimationFrame(timer);
+        }
+      });
+    }
+
+    var hearts = [];
+    window.requestAnimationFrame = (function() {
+      return window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        function(callback) {
+          setTimeout(callback, 1000 / 60);
+        }
+    })();
+    init();
+
+    function init() {
+      css(".heart{z-index:9999;width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: absolute;}.heart:after{top: -5px;}.heart:before{left: -5px;}");
+      attachEvent();
+      gameloop();
+      addMenuEvent();
+    }
+
+    function gameloop() {
+      for (var i = 0; i < hearts.length; i++) {
+        if (hearts[i].alpha <= 0) {
+          document.body.removeChild(hearts[i].el);
+          hearts.splice(i, 1);
+          continue;
+        }
+        hearts[i].y--;
+        hearts[i].scale += 0.004;
+        hearts[i].alpha -= 0.013;
+        hearts[i].el.style.cssText = "left:" + hearts[i].x + "px;top:" + hearts[i].y + "px;opacity:" + hearts[i].alpha + ";transform:scale(" + hearts[i].scale + "," + hearts[i].scale + ") rotate(45deg);background:" + hearts[i].color;
+      }
+      requestAnimationFrame(gameloop);
+    }
+
+    /**
+     * 给logo设置点击事件
+     * 
+     * - 回到顶部
+     * - 出现爱心
+     */
+    function attachEvent() {
+      var old = typeof window.onclick === "function" && window.onclick;
+      var logo = document.getElementById("logo");
+      if (logo) {
+        logo.onclick = function(event) {
+          returnTop();
+          old && old();
+          createHeart(event);
+        }
+      }
+      
+    }
+
+    function createHeart(event) {
+      var d = document.createElement("div");
+      d.className = "heart";
+      hearts.push({
+        el: d,
+        x: event.clientX - 5,
+        y: event.clientY - 5,
+        scale: 1,
+        alpha: 1,
+        color: randomColor()
+      });
+      document.body.appendChild(d);
+    }
+
+    function css(css) {
+      var style = document.createElement("style");
+      style.type = "text/css";
+      try {
+        style.appendChild(document.createTextNode(css));
+      } catch (ex) {
+        style.styleSheet.cssText = css;
+      }
+      document.getElementsByTagName('head')[0].appendChild(style);
+    }
+
+    function randomColor() {
+      // return "rgb(" + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + ")";
+      return "#F44336";
+    }
+
+    function addMenuEvent() {
+      var menu = document.getElementById('menu-main-post');
+      if (menu) {
+        var toc = document.getElementById('toc');
+        if (toc) {
+          menu.onclick = function() {
+            if (toc) {
+              if (toc.style.display == 'block') {
+                toc.style.display = 'none';
+              } else {
+                toc.style.display = 'block';
+              }
+            }
+          };
+        } else {
+          menu.style.display = 'none';
+        }
+      }
+    }
+
+  })(window, document);
+</script>
+
+  
+
+
+
+  
+<script>
+  (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+          bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+      }
+      else {
+          bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+</script>
+
+
+</body>
+</html>
