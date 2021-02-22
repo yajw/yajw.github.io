@@ -1,6 +1,9 @@
 language: node_js
 node_js: 
-  - 12
+  - 15
+
+env:
+  - LIBSASS_EXT=no
 
 branches:
   only:

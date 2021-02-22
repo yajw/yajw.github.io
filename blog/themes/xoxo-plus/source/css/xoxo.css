@@ -1,3 +1,8 @@
+h2 {
+  font-family: "Avenir", "Microsoft Yahei", "Hiragino Sans GB", "Microsoft Sans Serif", "WenQuanYi Micro Hei", "sans-serif";
+  font-weight: 400;
+}
+
 .text-center {
   text-align: center !important;
 }
