@@ -8,6 +8,8 @@ stream是指字节流
 
 `InputStream` 核心方法：`int read()` 读取下一个字节
 
+jdk11中提供了像nullInputStream, nullWriter的工厂方法，方便创建啥也不干的工具类。
+
 
 ## FileInputStream
 例如通过`FileInputStream`读取text文件的过程是，打开一个文件，返回一个字节流，这个字节流可以append到`StringBuilder`，`StringBuilder`会按照charset返回一个String对象。
@@ -50,3 +52,5 @@ jdk的一个可以CAS替换某个对象Field的工具: `class AtomicReferenceFie
         !bufUpdater.compareAndSet(this, buffer, nbuf)
 ```
 原理：计算对应field的地址然后替换。
+
+
