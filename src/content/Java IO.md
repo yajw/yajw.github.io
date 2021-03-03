@@ -49,4 +49,4 @@ jdk的一个可以CAS替换某个对象Field的工具: `class AtomicReferenceFie
 ...
         !bufUpdater.compareAndSet(this, buffer, nbuf)
 ```
-
+原理：计算对应field的地址然后替换。
