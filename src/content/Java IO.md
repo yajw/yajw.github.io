@@ -52,3 +52,28 @@ jdk的一个可以CAS替换某个对象Field的工具: `class AtomicReferenceFie
         !bufUpdater.compareAndSet(this, buffer, nbuf)
 ```
 原理：计算对应field的地址然后替换, 用到cmpxchg这个指令。
+
+
+### FilterInputStream
+所谓装饰者模式, BufferedInputStream继承了FilterInputStream，能够装饰FileInputStream。
+
+```
+class FilterInputStream extends InputStream {
+    /**
+     * The input stream to be filtered.
+     */
+    protected volatile InputStream in;
+
+    /**
+     * Creates a <code>FilterInputStream</code>
+     * by assigning the  argument <code>in</code>
+     * to the field <code>this.in</code> so as
+     * to remember it for later use.
+     *
+     * @param   in   the underlying input stream, or <code>null</code> if
+     *          this instance is to be created without an underlying stream.
+     */
+    protected FilterInputStream(InputStream in) {
+        this.in = in;
+    }
+```
