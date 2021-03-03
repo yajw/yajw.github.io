@@ -38,7 +38,7 @@ apache commons-io的实现：
 `StringBuilderWriter`是对StringBuilder的封装.
 
 
-## BufferedFileInputStream
+## BufferedInputStream
 
 核心功能：读缓冲，每次读固定8M的字节数，用一个自动扩容的byte[]来保存当前读到的所有字节，如果已经读到了就直接返回。这种方法减少io次数（底层系统调用）。
 
