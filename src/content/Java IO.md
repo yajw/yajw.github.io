@@ -32,6 +32,3 @@ apache commons-io的实现：
     }
 ```
 `StringBuilderWriter`是对StringBuilder的封装.
-
-另外FileInputStream打开或者关闭文件是多线程安全的。
-
