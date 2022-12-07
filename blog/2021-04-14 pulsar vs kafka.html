@@ -1,0 +1,60 @@
+<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width"/><meta charSet="utf-8"/><title>blog -  pulsar vs kafka</title><link rel="icon" href="/favicon.ico"/><link rel="stylesheet" href="/static/css/androidstudio.min.css"/><script src="/static/js/highlight.min.js"></script><script>hljs.highlightAll();</script><meta name="next-head-count" content="7"/><link rel="preload" href="/_next/static/css/3c5946e20da2cc20d075.css" as="style"/><link rel="stylesheet" href="/_next/static/css/3c5946e20da2cc20d075.css" data-n-g=""/><link rel="preload" href="/_next/static/css/e2e6dc732d39303ab748.css" as="style"/><link rel="stylesheet" href="/_next/static/css/e2e6dc732d39303ab748.css" data-n-p=""/><link rel="preload" href="/_next/static/css/4b5ef9ffeb729d4f1c31.css" as="style"/><link rel="stylesheet" href="/_next/static/css/4b5ef9ffeb729d4f1c31.css" data-n-p=""/><noscript data-n-css=""></noscript><link rel="preload" href="/_next/static/chunks/main-c006ee6087559bbd65e3.js" as="script"/><link rel="preload" href="/_next/static/chunks/webpack-50bee04d1dc61f8adf5b.js" as="script"/><link rel="preload" href="/_next/static/chunks/framework.15878d4e523f86636251.js" as="script"/><link rel="preload" href="/_next/static/chunks/99f422a92ff7083adb8a7d840734144fa7589f68.e37cca09058b1656d546.js" as="script"/><link rel="preload" href="/_next/static/chunks/pages/_app-86af5e0fcdd51c9c3a66.js" as="script"/><link rel="preload" href="/_next/static/chunks/314642ff.81d3755a1df95fed9f2f.js" as="script"/><link rel="preload" href="/_next/static/chunks/762e22088df2ca7ea97d3f731b2a7315c482f91e.cb9acb13aef2b3683e00.js" as="script"/><link rel="preload" href="/_next/static/chunks/pages/blog/%5Blink%5D-87cd50cf458654f0c030.js" as="script"/></head><body><div id="__next"><div class="Home_container__1EcsU"><main class="Home_main__1x8gC"><div class="ui text container"><h1 class="ui header"> pulsar vs kafka</h1><span></span><section><h1>消息模型</h1>
+<p>消息模型的要点：发布和订阅，ack，消息何时删除。</p>
+<p>流模型和队列模型区别：消费方是否关心顺序</p>
+<p>Kafka：流模式
+RabbitMQ：共享队列，不保证顺序</p>
+<h2>Apache Bookkeeper</h2>
+<p>Kafka</p>
+<ul>
+<li>Consumer partition rebalance</li>
+</ul>
+<h1>Pulsar</h1>
+<p>pulsar是yahoo的项目。</p>
+<p>几种消费模式：独占，failover，共享。对比kafka提供只独占，RabbitMQ只提供共享。</p>
+<p>ack：有选择提交特性（提交一个特定的），独占和failover可以单个或者累积确认，共享只能选择提交。类似selective ack，不过是单点。而kafka只能累积确认(offset)。</p>
+<p>pulsar实现的是游标的方式管理ack（游标如何实现单个确认？）。</p>
+<p>消息保留：</p>
+<ol>
+<li>TTL：超出TTL才会被删除</li>
+<li>没有TTL，等所有订阅(subscription)都确认了就可以删除</li>
+</ol>
+<p>分层架构：有点类似mysql的存储引擎架构，存储借助bookkeeper实现多副本分布式一致性存储，一个具体的topic交给broker负责。</p>
+<p>topic发生故障时，只需要把topic的控制权移交给其他节点，无须数据复制。</p>
+<p>存储节点故障时，借助bookkeeper能够平滑切换。对比kafka需要partition备份完成后才能可用。</p>
+<p>分区和分区路由：segment方式分片（简单理解为相比kafka的partition有更灵活的分片粒度控制），支持hash（保证有序）</p>
+<p>持久化：</p>
+<ol>
+<li>broker写多个节点，大多数节点构成的quorum返回成功后才发ack给生产者。每个节点强制写日志到磁盘后才返回成功，断电也能保证不丢。</li>
+</ol>
+<p>bookkeeper和broker都需要依赖zk：
+<img src="https://pulsar.apache.org/docs/assets/pulsar-system-architecture.png" alt=""></p>
+<p>对比：
+<img src="https://static.geekbang.org/infoq/5beae774be269.png" alt=""></p>
+<p>总结卖点：</p>
+<ol>
+<li>
+<p>既能提供高性能的流模型（kafka拥有的），也能够提供队列模型（RabbitMQ提供的）</p>
+</li>
+<li>
+<p>借助Bookkeeper实现存储的扩展（对比kafka受到单机partition的限制），这也是pulsar解决的kafka很难处理的问题（更好的存储能力）</p>
+</li>
+<li>
+<p>借助分层架构实现处理能力的扩展（负责计算的broker和底层负责存储的bookkeepr分离，计算是无状态的可以水平扩展）</p>
+</li>
+<li>
+<p>多租户，有业务(property)/命名空间(namespace)区分</p>
+</li>
+<li>
+<p>查询：能够借助pulsar SQL查询，或者借助presto直接查询bookkeeper</p>
+</li>
+<li>
+<p><a href="https://www.infoq.cn/article/1uaxfkwuhukty1t_5gpq">比拼 Kafka, 大数据分析新秀 Pulsar 到底好在哪</a></p>
+</li>
+<li>
+<p><a href="https://www.infoq.cn/article/2017/11/Apache-Pulsar-brief-introduction?utm_source=related_read&#x26;utm_medium=article">发布订阅消息系统 Apache Pulsar 简介</a></p>
+</li>
+<li>
+<p><a href="https://www.infoq.cn/profile/C100E54DC3C5D0/publish/all">infoq作者主页</a></p>
+</li>
+</ol>
+</section><div role="list" class="ui list"><div role="listitem" class="item">2021-04-14 12:07:52 +0800<!-- --> <!-- -->yajw<!-- --> <!-- -->Update 2021-04-14 pulsar vs kafka.md<!-- --> <!-- -->M</div><div role="listitem" class="item">2021-04-14 12:03:02 +0800<!-- --> <!-- -->yajw<!-- --> <!-- -->Update 2021-04-14 pulsar vs kafka.md<!-- --> <!-- -->M</div><div role="listitem" class="item">2021-04-14 11:47:41 +0800<!-- --> <!-- -->yajw<!-- --> <!-- -->Update 2021-04-14 pulsar vs kafka.md<!-- --> <!-- -->M</div><div role="listitem" class="item">2021-04-14 11:46:22 +0800<!-- --> <!-- -->yajw<!-- --> <!-- -->Update 2021-04-14 pulsar vs kafka.md<!-- --> <!-- -->M</div><div role="listitem" class="item">2021-04-14 11:32:07 +0800<!-- --> <!-- -->yajw<!-- --> <!-- -->Update 2021-04-14 pulsar vs kafka.md<!-- --> <!-- -->M</div><div role="listitem" class="item">2021-04-14 10:28:53 +0800<!-- --> <!-- -->yajw<!-- --> <!-- -->Create 2021-04-14 pulsar vs kafka.md<!-- --> <!-- -->A</div></div><div id="comments"></div></div></main><footer class="Home_footer__1WdhD"><div class="Home_powered__2GdUA">Powered by<!-- --> <a href="https://nextjs.org/" target="_blank" rel="noopener noreferrer">Next.js</a>.</div></footer></div></div><script id="__NEXT_DATA__" type="application/json">{"props":{"pageProps":{"post":{"tags":["kafka","pulsar","架构"],"categories":["开源组件"],"title":" pulsar vs kafka","modifyTime":"2021-04-14 10:28:53 +0800","createTime":"2021-04-14 12:07:52 +0800","logs":[{"status":["M"],"files":["2021-04-14 pulsar vs kafka.md"],"abbrevHash":"1e0a4d2","hash":"1e0a4d2cacedf5890b8f03257325b71c6179d6ed","subject":"Update 2021-04-14 pulsar vs kafka.md","authorName":"yajw","authorDate":"2021-04-14 12:07:52 +0800"},{"status":["M"],"files":["2021-04-14 pulsar vs kafka.md"],"abbrevHash":"36135c3","hash":"36135c3a3c85a6687079496471ade5d581756ba9","subject":"Update 2021-04-14 pulsar vs kafka.md","authorName":"yajw","authorDate":"2021-04-14 12:03:02 +0800"},{"status":["M"],"files":["2021-04-14 pulsar vs kafka.md"],"abbrevHash":"79652fa","hash":"79652fa09479fb5bbd2c2240888f7d6be1d94d9d","subject":"Update 2021-04-14 pulsar vs kafka.md","authorName":"yajw","authorDate":"2021-04-14 11:47:41 +0800"},{"status":["M"],"files":["2021-04-14 pulsar vs kafka.md"],"abbrevHash":"29d70ca","hash":"29d70ca829f6a0cc9f8c947bea9610c1b903cc06","subject":"Update 2021-04-14 pulsar vs kafka.md","authorName":"yajw","authorDate":"2021-04-14 11:46:22 +0800"},{"status":["M"],"files":["2021-04-14 pulsar vs kafka.md"],"abbrevHash":"5fe1500","hash":"5fe15007126f5505f85a1762909f7545468284ad","subject":"Update 2021-04-14 pulsar vs kafka.md","authorName":"yajw","authorDate":"2021-04-14 11:32:07 +0800"},{"status":["A"],"files":["2021-04-14 pulsar vs kafka.md"],"abbrevHash":"a5065e7","hash":"a5065e7e6e831d3a43af5d1737a06d381986f8d2","subject":"Create 2021-04-14 pulsar vs kafka.md","authorName":"yajw","authorDate":"2021-04-14 10:28:53 +0800"}],"link":"2021-04-14%20pulsar%20vs%20kafka","id":"47f3eff4-63a6-450b-a444-d727b20ae697","comments":false,"content":"\u003ch1\u003e消息模型\u003c/h1\u003e\n\u003cp\u003e消息模型的要点：发布和订阅，ack，消息何时删除。\u003c/p\u003e\n\u003cp\u003e流模型和队列模型区别：消费方是否关心顺序\u003c/p\u003e\n\u003cp\u003eKafka：流模式\nRabbitMQ：共享队列，不保证顺序\u003c/p\u003e\n\u003ch2\u003eApache Bookkeeper\u003c/h2\u003e\n\u003cp\u003eKafka\u003c/p\u003e\n\u003cul\u003e\n\u003cli\u003eConsumer partition rebalance\u003c/li\u003e\n\u003c/ul\u003e\n\u003ch1\u003ePulsar\u003c/h1\u003e\n\u003cp\u003epulsar是yahoo的项目。\u003c/p\u003e\n\u003cp\u003e几种消费模式：独占，failover，共享。对比kafka提供只独占，RabbitMQ只提供共享。\u003c/p\u003e\n\u003cp\u003eack：有选择提交特性（提交一个特定的），独占和failover可以单个或者累积确认，共享只能选择提交。类似selective ack，不过是单点。而kafka只能累积确认(offset)。\u003c/p\u003e\n\u003cp\u003epulsar实现的是游标的方式管理ack（游标如何实现单个确认？）。\u003c/p\u003e\n\u003cp\u003e消息保留：\u003c/p\u003e\n\u003col\u003e\n\u003cli\u003eTTL：超出TTL才会被删除\u003c/li\u003e\n\u003cli\u003e没有TTL，等所有订阅(subscription)都确认了就可以删除\u003c/li\u003e\n\u003c/ol\u003e\n\u003cp\u003e分层架构：有点类似mysql的存储引擎架构，存储借助bookkeeper实现多副本分布式一致性存储，一个具体的topic交给broker负责。\u003c/p\u003e\n\u003cp\u003etopic发生故障时，只需要把topic的控制权移交给其他节点，无须数据复制。\u003c/p\u003e\n\u003cp\u003e存储节点故障时，借助bookkeeper能够平滑切换。对比kafka需要partition备份完成后才能可用。\u003c/p\u003e\n\u003cp\u003e分区和分区路由：segment方式分片（简单理解为相比kafka的partition有更灵活的分片粒度控制），支持hash（保证有序）\u003c/p\u003e\n\u003cp\u003e持久化：\u003c/p\u003e\n\u003col\u003e\n\u003cli\u003ebroker写多个节点，大多数节点构成的quorum返回成功后才发ack给生产者。每个节点强制写日志到磁盘后才返回成功，断电也能保证不丢。\u003c/li\u003e\n\u003c/ol\u003e\n\u003cp\u003ebookkeeper和broker都需要依赖zk：\n\u003cimg src=\"https://pulsar.apache.org/docs/assets/pulsar-system-architecture.png\" alt=\"\"\u003e\u003c/p\u003e\n\u003cp\u003e对比：\n\u003cimg src=\"https://static.geekbang.org/infoq/5beae774be269.png\" alt=\"\"\u003e\u003c/p\u003e\n\u003cp\u003e总结卖点：\u003c/p\u003e\n\u003col\u003e\n\u003cli\u003e\n\u003cp\u003e既能提供高性能的流模型（kafka拥有的），也能够提供队列模型（RabbitMQ提供的）\u003c/p\u003e\n\u003c/li\u003e\n\u003cli\u003e\n\u003cp\u003e借助Bookkeeper实现存储的扩展（对比kafka受到单机partition的限制），这也是pulsar解决的kafka很难处理的问题（更好的存储能力）\u003c/p\u003e\n\u003c/li\u003e\n\u003cli\u003e\n\u003cp\u003e借助分层架构实现处理能力的扩展（负责计算的broker和底层负责存储的bookkeepr分离，计算是无状态的可以水平扩展）\u003c/p\u003e\n\u003c/li\u003e\n\u003cli\u003e\n\u003cp\u003e多租户，有业务(property)/命名空间(namespace)区分\u003c/p\u003e\n\u003c/li\u003e\n\u003cli\u003e\n\u003cp\u003e查询：能够借助pulsar SQL查询，或者借助presto直接查询bookkeeper\u003c/p\u003e\n\u003c/li\u003e\n\u003cli\u003e\n\u003cp\u003e\u003ca href=\"https://www.infoq.cn/article/1uaxfkwuhukty1t_5gpq\"\u003e比拼 Kafka, 大数据分析新秀 Pulsar 到底好在哪\u003c/a\u003e\u003c/p\u003e\n\u003c/li\u003e\n\u003cli\u003e\n\u003cp\u003e\u003ca href=\"https://www.infoq.cn/article/2017/11/Apache-Pulsar-brief-introduction?utm_source=related_read\u0026#x26;utm_medium=article\"\u003e发布订阅消息系统 Apache Pulsar 简介\u003c/a\u003e\u003c/p\u003e\n\u003c/li\u003e\n\u003cli\u003e\n\u003cp\u003e\u003ca href=\"https://www.infoq.cn/profile/C100E54DC3C5D0/publish/all\"\u003einfoq作者主页\u003c/a\u003e\u003c/p\u003e\n\u003c/li\u003e\n\u003c/ol\u003e\n"}},"__N_SSG":true},"page":"/blog/[link]","query":{"link":"2021-04-14 pulsar vs kafka"},"buildId":"ravzvVxRlFE3_IAU4jdd7","nextExport":false,"isFallback":false,"gsp":true}</script><script nomodule="" src="/_next/static/chunks/polyfills-ff94e68042added27a93.js"></script><script src="/_next/static/chunks/main-c006ee6087559bbd65e3.js" async=""></script><script src="/_next/static/chunks/webpack-50bee04d1dc61f8adf5b.js" async=""></script><script src="/_next/static/chunks/framework.15878d4e523f86636251.js" async=""></script><script src="/_next/static/chunks/99f422a92ff7083adb8a7d840734144fa7589f68.e37cca09058b1656d546.js" async=""></script><script src="/_next/static/chunks/pages/_app-86af5e0fcdd51c9c3a66.js" async=""></script><script src="/_next/static/chunks/314642ff.81d3755a1df95fed9f2f.js" async=""></script><script src="/_next/static/chunks/762e22088df2ca7ea97d3f731b2a7315c482f91e.cb9acb13aef2b3683e00.js" async=""></script><script src="/_next/static/chunks/pages/blog/%5Blink%5D-87cd50cf458654f0c030.js" async=""></script><script src="/_next/static/ravzvVxRlFE3_IAU4jdd7/_buildManifest.js" async=""></script><script src="/_next/static/ravzvVxRlFE3_IAU4jdd7/_ssgManifest.js" async=""></script></body></html>

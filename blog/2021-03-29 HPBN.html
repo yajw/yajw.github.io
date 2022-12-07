@@ -1,0 +1,59 @@
+<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width"/><meta charSet="utf-8"/><title>blog -  HPBN</title><link rel="icon" href="/favicon.ico"/><link rel="stylesheet" href="/static/css/androidstudio.min.css"/><script src="/static/js/highlight.min.js"></script><script>hljs.highlightAll();</script><meta name="next-head-count" content="7"/><link rel="preload" href="/_next/static/css/3c5946e20da2cc20d075.css" as="style"/><link rel="stylesheet" href="/_next/static/css/3c5946e20da2cc20d075.css" data-n-g=""/><link rel="preload" href="/_next/static/css/e2e6dc732d39303ab748.css" as="style"/><link rel="stylesheet" href="/_next/static/css/e2e6dc732d39303ab748.css" data-n-p=""/><link rel="preload" href="/_next/static/css/4b5ef9ffeb729d4f1c31.css" as="style"/><link rel="stylesheet" href="/_next/static/css/4b5ef9ffeb729d4f1c31.css" data-n-p=""/><noscript data-n-css=""></noscript><link rel="preload" href="/_next/static/chunks/main-c006ee6087559bbd65e3.js" as="script"/><link rel="preload" href="/_next/static/chunks/webpack-50bee04d1dc61f8adf5b.js" as="script"/><link rel="preload" href="/_next/static/chunks/framework.15878d4e523f86636251.js" as="script"/><link rel="preload" href="/_next/static/chunks/99f422a92ff7083adb8a7d840734144fa7589f68.e37cca09058b1656d546.js" as="script"/><link rel="preload" href="/_next/static/chunks/pages/_app-86af5e0fcdd51c9c3a66.js" as="script"/><link rel="preload" href="/_next/static/chunks/314642ff.81d3755a1df95fed9f2f.js" as="script"/><link rel="preload" href="/_next/static/chunks/762e22088df2ca7ea97d3f731b2a7315c482f91e.cb9acb13aef2b3683e00.js" as="script"/><link rel="preload" href="/_next/static/chunks/pages/blog/%5Blink%5D-87cd50cf458654f0c030.js" as="script"/></head><body><div id="__next"><div class="Home_container__1EcsU"><main class="Home_main__1x8gC"><div class="ui text container"><h1 class="ui header"> HPBN</h1><span></span><section><h1>Networking 101</h1>
+<h2>Primer on Latency and Bandwidth</h2>
+<p><strong>Speed is a feature.</strong>
+更快的页面响应速度能够提升</p>
+<ol>
+<li>用户活跃度</li>
+<li>用户留存</li>
+<li>转化率</li>
+</ol>
+<p>衡量性能的两个指标：延迟和带宽（吞吐量）</p>
+<p>通信延迟的几个组成部分：</p>
+<ol>
+<li>传播延迟（地理距离）</li>
+<li>传输延迟（介质的传输速率，数据包的大小）</li>
+<li>处理延迟（校验，编解码，处理）</li>
+<li>排队延迟（包排队等待）</li>
+</ol>
+<p>Bufferbloat和CoDel算法</p>
+<ol>
+<li>很多tcp的拥塞控制算法依赖丢包率</li>
+<li>Bufferbloat降低了丢包率，增加了延迟</li>
+<li>CoDel算法可以对缓冲区包的延迟做限制</li>
+</ol>
+<p>光纤中光的传播速度大概是真空中的70%。</p>
+<p>按照光纤的传输速率，绕地球赤道一周需要200ms。</p>
+<p>可察觉的延迟：100~200ms</p>
+<p>CDN: 通过减少地理距离来降低延迟。</p>
+<p>traceroute命令，原理，<code>-q</code>参数。</p>
+<p>光纤的速度：400个不同波长，170Gbps，总的可以达到70Tbps，一般4条光纤组成一个cable，所以最高能达到280Tbps。</p>
+<p>Akamai的报告: State of the Internet, average broadband speeds；2017 年数据：7.2Mbps, 44.6Mbps peek。</p>
+<h2>Building Blocks of TCP</h2>
+<p>1981年v4版本的TCP/IP发布。</p>
+<p>TCP特性：可靠、准确，但不一定及时</p>
+<ol>
+<li>在不可靠的介质和协议上进行可靠传输</li>
+<li>丢包重传</li>
+<li>有序传输</li>
+<li>拥塞控制和避免</li>
+<li>数据完整性保证</li>
+</ol>
+<p>应用层所采用的方案能够代表传输性能。</p>
+<p><em>TCP/IP的版本号历史：为什么是v4和v6，v1/2/3/5哪去了？</em></p>
+<p>TCP握手意味着多1个rtt的延迟。</p>
+<p>TCP Fast Open (TFO):</p>
+<ul>
+<li>客户端发送一个 Cookie Option</li>
+<li>服务器返回Cookie值，客户端缓存</li>
+<li>客户端使用Cookie发送数据时，服务端校验这个cookie是否有效，如果有效就绕过了三次握手，直接建立了连接</li>
+</ul>
+<p>拥塞崩溃（congestion collapse）：当一个包失败时，会重发这个包，导致网络上包的数量增加，各个节点缓冲区慢，导致更多的包失败，进而导致网络完全拥堵。（John Nagle RFC 896）</p>
+<p>拥塞控制和拥塞避免</p>
+<ol>
+<li>流控： rwnd, window scaling, 代表了接受方的处理速度和容量</li>
+<li>慢启动，拥塞避免，快速重传，快速恢复：cwnd，慢启动意味着新的连接没办法最大化利用可用带宽</li>
+<li>slow start restart: keep alive的连接会被重置cwnd，同时也限制了发送带宽</li>
+<li>丢包反馈，丢包会极大影响吞吐量。快速恢复算法的改进（PRR）</li>
+</ol>
+<p>BDP: 发送窗口多大才能达到理想吞吐？带宽*延迟</p>
+</section><div role="list" class="ui list"><div role="listitem" class="item">2021-03-31 15:58:25 +0800<!-- --> <!-- -->yajw<!-- --> <!-- -->Update 2021-03-29 HPBN.md<!-- --> <!-- -->M</div><div role="listitem" class="item">2021-03-30 10:29:18 +0800<!-- --> <!-- -->yajw<!-- --> <!-- -->Update 2021-03-29 HPBN.md<!-- --> <!-- -->M</div><div role="listitem" class="item">2021-03-29 18:58:51 +0800<!-- --> <!-- -->yajw<!-- --> <!-- -->Update 2021-03-29 HPBN.md<!-- --> <!-- -->M</div><div role="listitem" class="item">2021-03-29 17:55:10 +0800<!-- --> <!-- -->yajw<!-- --> <!-- -->Update 2021-03-29 HPBN.md<!-- --> <!-- -->M</div><div role="listitem" class="item">2021-03-29 16:21:33 +0800<!-- --> <!-- -->yajw<!-- --> <!-- -->Update 2021-03-29 HPBN.md<!-- --> <!-- -->M</div><div role="listitem" class="item">2021-03-29 16:10:47 +0800<!-- --> <!-- -->yajw<!-- --> <!-- -->Update 2021-03-29 HPBN.md<!-- --> <!-- -->M</div><div role="listitem" class="item">2021-03-29 15:39:13 +0800<!-- --> <!-- -->yajw<!-- --> <!-- -->Update 2021-03-29 HPBN.md<!-- --> <!-- -->M</div><div role="listitem" class="item">2021-03-29 15:24:03 +0800<!-- --> <!-- -->yajw<!-- --> <!-- -->Update 2021-03-29 HPBN.md<!-- --> <!-- -->M</div><div role="listitem" class="item">2021-03-29 15:04:13 +0800<!-- --> <!-- -->yajw<!-- --> <!-- -->Create 2021-03-29 HPBN.md<!-- --> <!-- -->A</div></div><div id="comments"></div></div></main><footer class="Home_footer__1WdhD"><div class="Home_powered__2GdUA">Powered by<!-- --> <a href="https://nextjs.org/" target="_blank" rel="noopener noreferrer">Next.js</a>.</div></footer></div></div><script id="__NEXT_DATA__" type="application/json">{"props":{"pageProps":{"post":{"commments":true,"title":" HPBN","modifyTime":"2021-03-29 15:04:13 +0800","createTime":"2021-03-31 15:58:25 +0800","logs":[{"status":["M"],"files":["2021-03-29 HPBN.md"],"abbrevHash":"af33bd7","hash":"af33bd712536c62fb3e8e60480381768a732c594","subject":"Update 2021-03-29 HPBN.md","authorName":"yajw","authorDate":"2021-03-31 15:58:25 +0800"},{"status":["M"],"files":["2021-03-29 HPBN.md"],"abbrevHash":"0e4ce69","hash":"0e4ce698c4120146a414b9c4a6f80034eff8e91e","subject":"Update 2021-03-29 HPBN.md","authorName":"yajw","authorDate":"2021-03-30 10:29:18 +0800"},{"status":["M"],"files":["2021-03-29 HPBN.md"],"abbrevHash":"c41718b","hash":"c41718b2d4147f61b988a06ebde739f934201948","subject":"Update 2021-03-29 HPBN.md","authorName":"yajw","authorDate":"2021-03-29 18:58:51 +0800"},{"status":["M"],"files":["2021-03-29 HPBN.md"],"abbrevHash":"0e68b8e","hash":"0e68b8eadcd8660ec1861db633add9c68edb0526","subject":"Update 2021-03-29 HPBN.md","authorName":"yajw","authorDate":"2021-03-29 17:55:10 +0800"},{"status":["M"],"files":["2021-03-29 HPBN.md"],"abbrevHash":"546a540","hash":"546a5404513ff75a7a85b40e9fabdfe35a2fc04c","subject":"Update 2021-03-29 HPBN.md","authorName":"yajw","authorDate":"2021-03-29 16:21:33 +0800"},{"status":["M"],"files":["2021-03-29 HPBN.md"],"abbrevHash":"8520f25","hash":"8520f251e5ccb5e247290a80f78c8700deadadbd","subject":"Update 2021-03-29 HPBN.md","authorName":"yajw","authorDate":"2021-03-29 16:10:47 +0800"},{"status":["M"],"files":["2021-03-29 HPBN.md"],"abbrevHash":"4f62485","hash":"4f62485adbe96a5f15901f10b073f93d659bc998","subject":"Update 2021-03-29 HPBN.md","authorName":"yajw","authorDate":"2021-03-29 15:39:13 +0800"},{"status":["M"],"files":["2021-03-29 HPBN.md"],"abbrevHash":"73bb46c","hash":"73bb46cb8d642791918509592e99069afec9e4ba","subject":"Update 2021-03-29 HPBN.md","authorName":"yajw","authorDate":"2021-03-29 15:24:03 +0800"},{"status":["A"],"files":["2021-03-29 HPBN.md"],"abbrevHash":"e06c63e","hash":"e06c63e8ef6b71dcf6d9b53f036b2e9076dab753","subject":"Create 2021-03-29 HPBN.md","authorName":"yajw","authorDate":"2021-03-29 15:04:13 +0800"}],"link":"2021-03-29%20HPBN","id":"1f301049-d129-44cf-bde4-86014c8038a5","tags":[],"categories":[],"comments":false,"content":"\u003ch1\u003eNetworking 101\u003c/h1\u003e\n\u003ch2\u003ePrimer on Latency and Bandwidth\u003c/h2\u003e\n\u003cp\u003e\u003cstrong\u003eSpeed is a feature.\u003c/strong\u003e\n更快的页面响应速度能够提升\u003c/p\u003e\n\u003col\u003e\n\u003cli\u003e用户活跃度\u003c/li\u003e\n\u003cli\u003e用户留存\u003c/li\u003e\n\u003cli\u003e转化率\u003c/li\u003e\n\u003c/ol\u003e\n\u003cp\u003e衡量性能的两个指标：延迟和带宽（吞吐量）\u003c/p\u003e\n\u003cp\u003e通信延迟的几个组成部分：\u003c/p\u003e\n\u003col\u003e\n\u003cli\u003e传播延迟（地理距离）\u003c/li\u003e\n\u003cli\u003e传输延迟（介质的传输速率，数据包的大小）\u003c/li\u003e\n\u003cli\u003e处理延迟（校验，编解码，处理）\u003c/li\u003e\n\u003cli\u003e排队延迟（包排队等待）\u003c/li\u003e\n\u003c/ol\u003e\n\u003cp\u003eBufferbloat和CoDel算法\u003c/p\u003e\n\u003col\u003e\n\u003cli\u003e很多tcp的拥塞控制算法依赖丢包率\u003c/li\u003e\n\u003cli\u003eBufferbloat降低了丢包率，增加了延迟\u003c/li\u003e\n\u003cli\u003eCoDel算法可以对缓冲区包的延迟做限制\u003c/li\u003e\n\u003c/ol\u003e\n\u003cp\u003e光纤中光的传播速度大概是真空中的70%。\u003c/p\u003e\n\u003cp\u003e按照光纤的传输速率，绕地球赤道一周需要200ms。\u003c/p\u003e\n\u003cp\u003e可察觉的延迟：100~200ms\u003c/p\u003e\n\u003cp\u003eCDN: 通过减少地理距离来降低延迟。\u003c/p\u003e\n\u003cp\u003etraceroute命令，原理，\u003ccode\u003e-q\u003c/code\u003e参数。\u003c/p\u003e\n\u003cp\u003e光纤的速度：400个不同波长，170Gbps，总的可以达到70Tbps，一般4条光纤组成一个cable，所以最高能达到280Tbps。\u003c/p\u003e\n\u003cp\u003eAkamai的报告: State of the Internet, average broadband speeds；2017 年数据：7.2Mbps, 44.6Mbps peek。\u003c/p\u003e\n\u003ch2\u003eBuilding Blocks of TCP\u003c/h2\u003e\n\u003cp\u003e1981年v4版本的TCP/IP发布。\u003c/p\u003e\n\u003cp\u003eTCP特性：可靠、准确，但不一定及时\u003c/p\u003e\n\u003col\u003e\n\u003cli\u003e在不可靠的介质和协议上进行可靠传输\u003c/li\u003e\n\u003cli\u003e丢包重传\u003c/li\u003e\n\u003cli\u003e有序传输\u003c/li\u003e\n\u003cli\u003e拥塞控制和避免\u003c/li\u003e\n\u003cli\u003e数据完整性保证\u003c/li\u003e\n\u003c/ol\u003e\n\u003cp\u003e应用层所采用的方案能够代表传输性能。\u003c/p\u003e\n\u003cp\u003e\u003cem\u003eTCP/IP的版本号历史：为什么是v4和v6，v1/2/3/5哪去了？\u003c/em\u003e\u003c/p\u003e\n\u003cp\u003eTCP握手意味着多1个rtt的延迟。\u003c/p\u003e\n\u003cp\u003eTCP Fast Open (TFO):\u003c/p\u003e\n\u003cul\u003e\n\u003cli\u003e客户端发送一个 Cookie Option\u003c/li\u003e\n\u003cli\u003e服务器返回Cookie值，客户端缓存\u003c/li\u003e\n\u003cli\u003e客户端使用Cookie发送数据时，服务端校验这个cookie是否有效，如果有效就绕过了三次握手，直接建立了连接\u003c/li\u003e\n\u003c/ul\u003e\n\u003cp\u003e拥塞崩溃（congestion collapse）：当一个包失败时，会重发这个包，导致网络上包的数量增加，各个节点缓冲区慢，导致更多的包失败，进而导致网络完全拥堵。（John Nagle RFC 896）\u003c/p\u003e\n\u003cp\u003e拥塞控制和拥塞避免\u003c/p\u003e\n\u003col\u003e\n\u003cli\u003e流控： rwnd, window scaling, 代表了接受方的处理速度和容量\u003c/li\u003e\n\u003cli\u003e慢启动，拥塞避免，快速重传，快速恢复：cwnd，慢启动意味着新的连接没办法最大化利用可用带宽\u003c/li\u003e\n\u003cli\u003eslow start restart: keep alive的连接会被重置cwnd，同时也限制了发送带宽\u003c/li\u003e\n\u003cli\u003e丢包反馈，丢包会极大影响吞吐量。快速恢复算法的改进（PRR）\u003c/li\u003e\n\u003c/ol\u003e\n\u003cp\u003eBDP: 发送窗口多大才能达到理想吞吐？带宽*延迟\u003c/p\u003e\n"}},"__N_SSG":true},"page":"/blog/[link]","query":{"link":"2021-03-29 HPBN"},"buildId":"ravzvVxRlFE3_IAU4jdd7","nextExport":false,"isFallback":false,"gsp":true}</script><script nomodule="" src="/_next/static/chunks/polyfills-ff94e68042added27a93.js"></script><script src="/_next/static/chunks/main-c006ee6087559bbd65e3.js" async=""></script><script src="/_next/static/chunks/webpack-50bee04d1dc61f8adf5b.js" async=""></script><script src="/_next/static/chunks/framework.15878d4e523f86636251.js" async=""></script><script src="/_next/static/chunks/99f422a92ff7083adb8a7d840734144fa7589f68.e37cca09058b1656d546.js" async=""></script><script src="/_next/static/chunks/pages/_app-86af5e0fcdd51c9c3a66.js" async=""></script><script src="/_next/static/chunks/314642ff.81d3755a1df95fed9f2f.js" async=""></script><script src="/_next/static/chunks/762e22088df2ca7ea97d3f731b2a7315c482f91e.cb9acb13aef2b3683e00.js" async=""></script><script src="/_next/static/chunks/pages/blog/%5Blink%5D-87cd50cf458654f0c030.js" async=""></script><script src="/_next/static/ravzvVxRlFE3_IAU4jdd7/_buildManifest.js" async=""></script><script src="/_next/static/ravzvVxRlFE3_IAU4jdd7/_ssgManifest.js" async=""></script></body></html>

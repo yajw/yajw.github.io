@@ -1,0 +1,216 @@
+<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width"/><meta charSet="utf-8"/><title>blog -  MyRocks 非正式压测</title><link rel="icon" href="/favicon.ico"/><link rel="stylesheet" href="/static/css/androidstudio.min.css"/><script src="/static/js/highlight.min.js"></script><script>hljs.highlightAll();</script><meta name="next-head-count" content="7"/><link rel="preload" href="/_next/static/css/3c5946e20da2cc20d075.css" as="style"/><link rel="stylesheet" href="/_next/static/css/3c5946e20da2cc20d075.css" data-n-g=""/><link rel="preload" href="/_next/static/css/e2e6dc732d39303ab748.css" as="style"/><link rel="stylesheet" href="/_next/static/css/e2e6dc732d39303ab748.css" data-n-p=""/><link rel="preload" href="/_next/static/css/4b5ef9ffeb729d4f1c31.css" as="style"/><link rel="stylesheet" href="/_next/static/css/4b5ef9ffeb729d4f1c31.css" data-n-p=""/><noscript data-n-css=""></noscript><link rel="preload" href="/_next/static/chunks/main-c006ee6087559bbd65e3.js" as="script"/><link rel="preload" href="/_next/static/chunks/webpack-50bee04d1dc61f8adf5b.js" as="script"/><link rel="preload" href="/_next/static/chunks/framework.15878d4e523f86636251.js" as="script"/><link rel="preload" href="/_next/static/chunks/99f422a92ff7083adb8a7d840734144fa7589f68.e37cca09058b1656d546.js" as="script"/><link rel="preload" href="/_next/static/chunks/pages/_app-86af5e0fcdd51c9c3a66.js" as="script"/><link rel="preload" href="/_next/static/chunks/314642ff.81d3755a1df95fed9f2f.js" as="script"/><link rel="preload" href="/_next/static/chunks/762e22088df2ca7ea97d3f731b2a7315c482f91e.cb9acb13aef2b3683e00.js" as="script"/><link rel="preload" href="/_next/static/chunks/pages/blog/%5Blink%5D-87cd50cf458654f0c030.js" as="script"/></head><body><div id="__next"><div class="Home_container__1EcsU"><main class="Home_main__1x8gC"><div class="ui text container"><h1 class="ui header"> MyRocks 非正式压测</h1><span></span><section><p>“非正式”：开发环境有个docker容器要过期了，刚好对MyRocks和MySQL性能对比感兴趣，就拿来简单不专业地测下，仅对比下同样环境下两个版本的结果，测试工具是sysbench，场景是olap_read_write.lua。</p>
+<p>简单的压测发现，同样配置下，MyRocks包括读写、事务的性能是MySQL的3倍。</p>
+<p>percona官方的一个性能对比：<a href="https://www.percona.com/blog/2018/04/30/a-look-at-myrocks-performance/">MyRocks Performance</a></p>
+<h1>1. 配置</h1>
+<p>机器配置：<code>32core,32GB,ubuntu 16.04,docker容器</code>
+sysbench: <code>sysbench 1.0.20 (using bundled LuaJIT 2.1.0-beta2)</code></p>
+<p>my.cnf:</p>
+<pre><code>[mysqld]
+bind-address    = 0.0.0.0
+# SAFETY #
+max_allowed_packet             = 16M
+max_connect_errors             = 1000000
+innodb                         = FORCE
+# BINARY LOGGING #
+log_bin                        = /var/lib/mysql/mysql-bin
+expire_logs_days               = 14
+sync_binlog                    = 100000
+server-id  = 1
+open_files_limit               = 65535
+max_connections = 10000
+innodb_buffer_pool_size        = 26G
+# LOGGING #
+log_error                      = /var/lib/mysql/mysql-error.log
+log_queries_not_using_indexes  = 1
+slow_query_log                 = 1
+slow_query_log_file            = /var/lib/mysql/mysql-slow.log
+# query_response_time_stats = on
+# innodb_monitor_enable = all
+innodb_log_buffer_size          = 512M
+innodb_log_file_size            = 1024M
+innodb_flush_log_at_trx_commit = 0
+sync_binlog = 100000
+innodb_write_io_threads=16
+innodb_read_io_threads=16
+innodb_flush_method=O_DIRECT
+</code></pre>
+<h2>1.1 MySQL</h2>
+<p>版本：<code>mysql  Ver 14.14 Distrib 5.7.31-34, for debian-linux-gnu (x86_64) using  6.3</code></p>
+<p>percona server 5.7</p>
+<h2>1.2 MyRocks</h2>
+<p>安装：<a href="https://www.percona.com/doc/percona-server/5.7/myrocks/install.html">Percona MyRocks 5.7</a></p>
+<pre><code>sudo apt-get install -y wget gnupg2 lsb-release curl
+wget https://repo.percona.com/apt/percona-release_latest.generic_all.deb
+sudo dpkg -i percona-release_latest.generic_all.deb
+sudo apt-get install --fix-broken
+sudo percona-release setup ps80
+sudo apt-get update
+sudo apt-get install percona-server-rocksdb-5.7
+</code></pre>
+<p>版本: <code>mysql  Ver 14.14 Distrib 5.7.32-35, for debian-linux-gnu (x86_64) using  6.3</code></p>
+<h1>2. 测试 oltp_read_write.lua</h1>
+<h2>2.1 prepare</h2>
+<p>首先创建test db，然后执行：</p>
+<pre><code>sysbench /usr/share/sysbench/oltp_read_write.lua --threads=32 --mysql-host=127.0.0.1 --mysql-db=test --tables=20 --table_size=1000000 --mysql-user=root --mysql-password=passw0rd prepare
+</code></pre>
+<h2>2.2 run</h2>
+<pre><code>sysbench /usr/share/sysbench/oltp_read_write.lua --threads=32 --mysql-host=127.0.0.1 --mysql-db=test --tables=20 --table_size=1000000 --mysql-user=root --mysql-password=passw0rd run
+</code></pre>
+<h2>2.3 cleanup</h2>
+<pre><code>sysbench /usr/share/sysbench/oltp_read_write.lua --threads=32 --mysql-host=127.0.0.1 --mysql-db=test --tables=20 --table_size=1000000 --mysql-user=root --mysql-password=passw0rd cleanup
+</code></pre>
+<h1>3. 测试结果</h1>
+<h2>3.1 percona MySQL 5.7 (innodb_buffer_pool_size=26G)</h2>
+<p>oltp read write</p>
+<pre><code>sysbench 1.0.20 (using bundled LuaJIT 2.1.0-beta2)
+
+Running the test with following options:
+Number of threads: 32
+Initializing random number generator from current time
+
+
+Initializing worker threads...
+
+Threads started!
+
+SQL statistics:
+    queries performed:
+        read:                            53088
+        write:                           15168
+        other:                           7584
+        total:                           75840
+    transactions:                        3792   (374.42 per sec.)
+    queries:                             75840  (7488.42 per sec.)
+    ignored errors:                      0      (0.00 per sec.)
+    reconnects:                          0      (0.00 per sec.)
+
+General statistics:
+    total time:                          10.1240s
+    total number of events:              3792
+
+Latency (ms):
+         min:                                    2.60
+         avg:                                   84.53
+         max:                                  520.82
+         95th percentile:                      186.54
+         sum:                               320521.06
+
+Threads fairness:
+    events (avg/stddev):           118.5000/7.16
+    execution time (avg/stddev):   10.0163/0.01
+</code></pre>
+<h2>3.3 MyRocks (innodb_buffer_pool_size=26G)</h2>
+<pre><code>sysbench 1.0.20 (using bundled LuaJIT 2.1.0-beta2)
+
+Running the test with following options:
+Number of threads: 32
+Initializing random number generator from current time
+
+
+Initializing worker threads...
+
+Threads started!
+
+SQL statistics:
+    queries performed:
+        read:                            135940
+        write:                           38840
+        other:                           19420
+        total:                           194200
+    transactions:                        9710   (962.99 per sec.)
+    queries:                             194200 (19259.75 per sec.)
+    ignored errors:                      0      (0.00 per sec.)
+    reconnects:                          0      (0.00 per sec.)
+
+General statistics:
+    total time:                          10.0805s
+    total number of events:              9710
+
+Latency (ms):
+         min:                                    1.89
+         avg:                                   32.85
+         max:                                  345.30
+         95th percentile:                       94.10
+         sum:                               318990.98
+
+Threads fairness:
+    events (avg/stddev):           303.4375/49.73
+    execution time (avg/stddev):   9.9685/0.03
+</code></pre>
+<h2>3.3 MyRocks (innodb_buffer_pool_size=4G)</h2>
+<pre><code>sysbench 1.0.20 (using bundled LuaJIT 2.1.0-beta2)
+
+Running the test with following options:
+Number of threads: 32
+Initializing random number generator from current time
+
+
+Initializing worker threads...
+
+Threads started!
+
+SQL statistics:
+    queries performed:
+        read:                            140994
+        write:                           40284
+        other:                           20142
+        total:                           201420
+    transactions:                        10071  (1001.71 per sec.)
+    queries:                             201420 (20034.23 per sec.)
+    ignored errors:                      0      (0.00 per sec.)
+    reconnects:                          0      (0.00 per sec.)
+
+General statistics:
+    total time:                          10.0523s
+    total number of events:              10071
+
+Latency (ms):
+         min:                                    1.80
+         avg:                                   31.67
+         max:                                  332.13
+         95th percentile:                       90.78
+         sum:                               318995.75
+
+Threads fairness:
+    events (avg/stddev):           314.7188/71.47
+    execution time (avg/stddev):   9.9686/0.02
+</code></pre>
+<h2>3.4 MyRocks (innodb_buffer_pool_size=16G)</h2>
+<pre><code>sysbench 1.0.20 (using bundled LuaJIT 2.1.0-beta2)
+
+Running the test with following options:
+Number of threads: 32
+Initializing random number generator from current time
+
+
+Initializing worker threads...
+
+Threads started!
+
+SQL statistics:
+    queries performed:
+        read:                            165508
+        write:                           47288
+        other:                           23644
+        total:                           236440
+    transactions:                        11822  (1173.39 per sec.)
+    queries:                             236440 (23467.75 per sec.)
+    ignored errors:                      0      (0.00 per sec.)
+    reconnects:                          0      (0.00 per sec.)
+
+General statistics:
+    total time:                          10.0721s
+    total number of events:              11822
+
+Latency (ms):
+         min:                                    1.83
+         avg:                                   26.81
+         max:                                  687.19
+         95th percentile:                       71.83
+         sum:                               316940.56
+
+Threads fairness:
+    events (avg/stddev):           369.4375/29.95
+    execution time (avg/stddev):   9.9044/0.05
+</code></pre>
+</section><div role="list" class="ui list"><div role="listitem" class="item">2021-03-27 14:49:15 +0800<!-- --> <!-- -->yajw<!-- --> <!-- -->Copy old posts<!-- --> <!-- -->A</div></div><div id="comments"></div></div></main><footer class="Home_footer__1WdhD"><div class="Home_powered__2GdUA">Powered by<!-- --> <a href="https://nextjs.org/" target="_blank" rel="noopener noreferrer">Next.js</a>.</div></footer></div></div><script id="__NEXT_DATA__" type="application/json">{"props":{"pageProps":{"post":{"title":" MyRocks 非正式压测","comments":true,"date":"2021-01-21T00:00:00.000Z","tags":["压测","rocksdb","MyRocks"],"categories":["实用"],"modifyTime":"2021-03-27 14:49:15 +0800","createTime":"2021-03-27 14:49:15 +0800","logs":[{"status":["A"],"files":["\"2021-03-27 MyRocks \\351\\235\\236\\346\\255\\243\\345\\274\\217\\345\\216\\213\\346\\265\\213.md\""],"abbrevHash":"f4f4061","hash":"f4f406175bde5279c552d8bac1c05cf7bb72d58e","subject":"Copy old posts","authorName":"yajw","authorDate":"2021-03-27 14:49:15 +0800"}],"link":"2021-03-27%20MyRocks%20%E9%9D%9E%E6%AD%A3%E5%BC%8F%E5%8E%8B%E6%B5%8B","id":"8ec8a9ca-6790-4c8c-b986-7cc9adabc2ca","content":"\u003cp\u003e“非正式”：开发环境有个docker容器要过期了，刚好对MyRocks和MySQL性能对比感兴趣，就拿来简单不专业地测下，仅对比下同样环境下两个版本的结果，测试工具是sysbench，场景是olap_read_write.lua。\u003c/p\u003e\n\u003cp\u003e简单的压测发现，同样配置下，MyRocks包括读写、事务的性能是MySQL的3倍。\u003c/p\u003e\n\u003cp\u003epercona官方的一个性能对比：\u003ca href=\"https://www.percona.com/blog/2018/04/30/a-look-at-myrocks-performance/\"\u003eMyRocks Performance\u003c/a\u003e\u003c/p\u003e\n\u003ch1\u003e1. 配置\u003c/h1\u003e\n\u003cp\u003e机器配置：\u003ccode\u003e32core,32GB,ubuntu 16.04,docker容器\u003c/code\u003e\nsysbench: \u003ccode\u003esysbench 1.0.20 (using bundled LuaJIT 2.1.0-beta2)\u003c/code\u003e\u003c/p\u003e\n\u003cp\u003emy.cnf:\u003c/p\u003e\n\u003cpre\u003e\u003ccode\u003e[mysqld]\nbind-address    = 0.0.0.0\n# SAFETY #\nmax_allowed_packet             = 16M\nmax_connect_errors             = 1000000\ninnodb                         = FORCE\n# BINARY LOGGING #\nlog_bin                        = /var/lib/mysql/mysql-bin\nexpire_logs_days               = 14\nsync_binlog                    = 100000\nserver-id  = 1\nopen_files_limit               = 65535\nmax_connections = 10000\ninnodb_buffer_pool_size        = 26G\n# LOGGING #\nlog_error                      = /var/lib/mysql/mysql-error.log\nlog_queries_not_using_indexes  = 1\nslow_query_log                 = 1\nslow_query_log_file            = /var/lib/mysql/mysql-slow.log\n# query_response_time_stats = on\n# innodb_monitor_enable = all\ninnodb_log_buffer_size          = 512M\ninnodb_log_file_size            = 1024M\ninnodb_flush_log_at_trx_commit = 0\nsync_binlog = 100000\ninnodb_write_io_threads=16\ninnodb_read_io_threads=16\ninnodb_flush_method=O_DIRECT\n\u003c/code\u003e\u003c/pre\u003e\n\u003ch2\u003e1.1 MySQL\u003c/h2\u003e\n\u003cp\u003e版本：\u003ccode\u003emysql  Ver 14.14 Distrib 5.7.31-34, for debian-linux-gnu (x86_64) using  6.3\u003c/code\u003e\u003c/p\u003e\n\u003cp\u003epercona server 5.7\u003c/p\u003e\n\u003ch2\u003e1.2 MyRocks\u003c/h2\u003e\n\u003cp\u003e安装：\u003ca href=\"https://www.percona.com/doc/percona-server/5.7/myrocks/install.html\"\u003ePercona MyRocks 5.7\u003c/a\u003e\u003c/p\u003e\n\u003cpre\u003e\u003ccode\u003esudo apt-get install -y wget gnupg2 lsb-release curl\nwget https://repo.percona.com/apt/percona-release_latest.generic_all.deb\nsudo dpkg -i percona-release_latest.generic_all.deb\nsudo apt-get install --fix-broken\nsudo percona-release setup ps80\nsudo apt-get update\nsudo apt-get install percona-server-rocksdb-5.7\n\u003c/code\u003e\u003c/pre\u003e\n\u003cp\u003e版本: \u003ccode\u003emysql  Ver 14.14 Distrib 5.7.32-35, for debian-linux-gnu (x86_64) using  6.3\u003c/code\u003e\u003c/p\u003e\n\u003ch1\u003e2. 测试 oltp_read_write.lua\u003c/h1\u003e\n\u003ch2\u003e2.1 prepare\u003c/h2\u003e\n\u003cp\u003e首先创建test db，然后执行：\u003c/p\u003e\n\u003cpre\u003e\u003ccode\u003esysbench /usr/share/sysbench/oltp_read_write.lua --threads=32 --mysql-host=127.0.0.1 --mysql-db=test --tables=20 --table_size=1000000 --mysql-user=root --mysql-password=passw0rd prepare\n\u003c/code\u003e\u003c/pre\u003e\n\u003ch2\u003e2.2 run\u003c/h2\u003e\n\u003cpre\u003e\u003ccode\u003esysbench /usr/share/sysbench/oltp_read_write.lua --threads=32 --mysql-host=127.0.0.1 --mysql-db=test --tables=20 --table_size=1000000 --mysql-user=root --mysql-password=passw0rd run\n\u003c/code\u003e\u003c/pre\u003e\n\u003ch2\u003e2.3 cleanup\u003c/h2\u003e\n\u003cpre\u003e\u003ccode\u003esysbench /usr/share/sysbench/oltp_read_write.lua --threads=32 --mysql-host=127.0.0.1 --mysql-db=test --tables=20 --table_size=1000000 --mysql-user=root --mysql-password=passw0rd cleanup\n\u003c/code\u003e\u003c/pre\u003e\n\u003ch1\u003e3. 测试结果\u003c/h1\u003e\n\u003ch2\u003e3.1 percona MySQL 5.7 (innodb_buffer_pool_size=26G)\u003c/h2\u003e\n\u003cp\u003eoltp read write\u003c/p\u003e\n\u003cpre\u003e\u003ccode\u003esysbench 1.0.20 (using bundled LuaJIT 2.1.0-beta2)\n\nRunning the test with following options:\nNumber of threads: 32\nInitializing random number generator from current time\n\n\nInitializing worker threads...\n\nThreads started!\n\nSQL statistics:\n    queries performed:\n        read:                            53088\n        write:                           15168\n        other:                           7584\n        total:                           75840\n    transactions:                        3792   (374.42 per sec.)\n    queries:                             75840  (7488.42 per sec.)\n    ignored errors:                      0      (0.00 per sec.)\n    reconnects:                          0      (0.00 per sec.)\n\nGeneral statistics:\n    total time:                          10.1240s\n    total number of events:              3792\n\nLatency (ms):\n         min:                                    2.60\n         avg:                                   84.53\n         max:                                  520.82\n         95th percentile:                      186.54\n         sum:                               320521.06\n\nThreads fairness:\n    events (avg/stddev):           118.5000/7.16\n    execution time (avg/stddev):   10.0163/0.01\n\u003c/code\u003e\u003c/pre\u003e\n\u003ch2\u003e3.3 MyRocks (innodb_buffer_pool_size=26G)\u003c/h2\u003e\n\u003cpre\u003e\u003ccode\u003esysbench 1.0.20 (using bundled LuaJIT 2.1.0-beta2)\n\nRunning the test with following options:\nNumber of threads: 32\nInitializing random number generator from current time\n\n\nInitializing worker threads...\n\nThreads started!\n\nSQL statistics:\n    queries performed:\n        read:                            135940\n        write:                           38840\n        other:                           19420\n        total:                           194200\n    transactions:                        9710   (962.99 per sec.)\n    queries:                             194200 (19259.75 per sec.)\n    ignored errors:                      0      (0.00 per sec.)\n    reconnects:                          0      (0.00 per sec.)\n\nGeneral statistics:\n    total time:                          10.0805s\n    total number of events:              9710\n\nLatency (ms):\n         min:                                    1.89\n         avg:                                   32.85\n         max:                                  345.30\n         95th percentile:                       94.10\n         sum:                               318990.98\n\nThreads fairness:\n    events (avg/stddev):           303.4375/49.73\n    execution time (avg/stddev):   9.9685/0.03\n\u003c/code\u003e\u003c/pre\u003e\n\u003ch2\u003e3.3 MyRocks (innodb_buffer_pool_size=4G)\u003c/h2\u003e\n\u003cpre\u003e\u003ccode\u003esysbench 1.0.20 (using bundled LuaJIT 2.1.0-beta2)\n\nRunning the test with following options:\nNumber of threads: 32\nInitializing random number generator from current time\n\n\nInitializing worker threads...\n\nThreads started!\n\nSQL statistics:\n    queries performed:\n        read:                            140994\n        write:                           40284\n        other:                           20142\n        total:                           201420\n    transactions:                        10071  (1001.71 per sec.)\n    queries:                             201420 (20034.23 per sec.)\n    ignored errors:                      0      (0.00 per sec.)\n    reconnects:                          0      (0.00 per sec.)\n\nGeneral statistics:\n    total time:                          10.0523s\n    total number of events:              10071\n\nLatency (ms):\n         min:                                    1.80\n         avg:                                   31.67\n         max:                                  332.13\n         95th percentile:                       90.78\n         sum:                               318995.75\n\nThreads fairness:\n    events (avg/stddev):           314.7188/71.47\n    execution time (avg/stddev):   9.9686/0.02\n\u003c/code\u003e\u003c/pre\u003e\n\u003ch2\u003e3.4 MyRocks (innodb_buffer_pool_size=16G)\u003c/h2\u003e\n\u003cpre\u003e\u003ccode\u003esysbench 1.0.20 (using bundled LuaJIT 2.1.0-beta2)\n\nRunning the test with following options:\nNumber of threads: 32\nInitializing random number generator from current time\n\n\nInitializing worker threads...\n\nThreads started!\n\nSQL statistics:\n    queries performed:\n        read:                            165508\n        write:                           47288\n        other:                           23644\n        total:                           236440\n    transactions:                        11822  (1173.39 per sec.)\n    queries:                             236440 (23467.75 per sec.)\n    ignored errors:                      0      (0.00 per sec.)\n    reconnects:                          0      (0.00 per sec.)\n\nGeneral statistics:\n    total time:                          10.0721s\n    total number of events:              11822\n\nLatency (ms):\n         min:                                    1.83\n         avg:                                   26.81\n         max:                                  687.19\n         95th percentile:                       71.83\n         sum:                               316940.56\n\nThreads fairness:\n    events (avg/stddev):           369.4375/29.95\n    execution time (avg/stddev):   9.9044/0.05\n\u003c/code\u003e\u003c/pre\u003e\n"}},"__N_SSG":true},"page":"/blog/[link]","query":{"link":"2021-03-27 MyRocks 非正式压测"},"buildId":"ravzvVxRlFE3_IAU4jdd7","nextExport":false,"isFallback":false,"gsp":true}</script><script nomodule="" src="/_next/static/chunks/polyfills-ff94e68042added27a93.js"></script><script src="/_next/static/chunks/main-c006ee6087559bbd65e3.js" async=""></script><script src="/_next/static/chunks/webpack-50bee04d1dc61f8adf5b.js" async=""></script><script src="/_next/static/chunks/framework.15878d4e523f86636251.js" async=""></script><script src="/_next/static/chunks/99f422a92ff7083adb8a7d840734144fa7589f68.e37cca09058b1656d546.js" async=""></script><script src="/_next/static/chunks/pages/_app-86af5e0fcdd51c9c3a66.js" async=""></script><script src="/_next/static/chunks/314642ff.81d3755a1df95fed9f2f.js" async=""></script><script src="/_next/static/chunks/762e22088df2ca7ea97d3f731b2a7315c482f91e.cb9acb13aef2b3683e00.js" async=""></script><script src="/_next/static/chunks/pages/blog/%5Blink%5D-87cd50cf458654f0c030.js" async=""></script><script src="/_next/static/ravzvVxRlFE3_IAU4jdd7/_buildManifest.js" async=""></script><script src="/_next/static/ravzvVxRlFE3_IAU4jdd7/_ssgManifest.js" async=""></script></body></html>

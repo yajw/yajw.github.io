@@ -1,0 +1,89 @@
+<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width"/><meta charSet="utf-8"/><title>blog -  BigTable</title><link rel="icon" href="/favicon.ico"/><link rel="stylesheet" href="/static/css/androidstudio.min.css"/><script src="/static/js/highlight.min.js"></script><script>hljs.highlightAll();</script><meta name="next-head-count" content="7"/><link rel="preload" href="/_next/static/css/3c5946e20da2cc20d075.css" as="style"/><link rel="stylesheet" href="/_next/static/css/3c5946e20da2cc20d075.css" data-n-g=""/><link rel="preload" href="/_next/static/css/e2e6dc732d39303ab748.css" as="style"/><link rel="stylesheet" href="/_next/static/css/e2e6dc732d39303ab748.css" data-n-p=""/><link rel="preload" href="/_next/static/css/4b5ef9ffeb729d4f1c31.css" as="style"/><link rel="stylesheet" href="/_next/static/css/4b5ef9ffeb729d4f1c31.css" data-n-p=""/><noscript data-n-css=""></noscript><link rel="preload" href="/_next/static/chunks/main-c006ee6087559bbd65e3.js" as="script"/><link rel="preload" href="/_next/static/chunks/webpack-50bee04d1dc61f8adf5b.js" as="script"/><link rel="preload" href="/_next/static/chunks/framework.15878d4e523f86636251.js" as="script"/><link rel="preload" href="/_next/static/chunks/99f422a92ff7083adb8a7d840734144fa7589f68.e37cca09058b1656d546.js" as="script"/><link rel="preload" href="/_next/static/chunks/pages/_app-86af5e0fcdd51c9c3a66.js" as="script"/><link rel="preload" href="/_next/static/chunks/314642ff.81d3755a1df95fed9f2f.js" as="script"/><link rel="preload" href="/_next/static/chunks/762e22088df2ca7ea97d3f731b2a7315c482f91e.cb9acb13aef2b3683e00.js" as="script"/><link rel="preload" href="/_next/static/chunks/pages/blog/%5Blink%5D-87cd50cf458654f0c030.js" as="script"/></head><body><div id="__next"><div class="Home_container__1EcsU"><main class="Home_main__1x8gC"><div class="ui text container"><h1 class="ui header"> BigTable</h1><span></span><section><p>这个论文是2006年发表的，当时我还在读高二吧。据论文中所说，BigTable是在03年左右开始的，花了两年多时间，不包含测试的代码在10w行（应该是C++）。</p>
+<p>BigTable是什么？分布式存储系统，设计目标是能够处理大到PT级别的数据量，能够支持数千台服务器的集群。应用场景包括不同数据量（url到网页到卫星图片），吞吐型（批处理），低延迟型（实时查询）。BigTable在处理这些各种各样的场景时，表现出了灵活性和高性能。</p>
+<p>BigTable</p>
+<ol>
+<li>设计思路和特点</li>
+<li>主要优势，怎么实现的</li>
+</ol>
+<ul>
+<li>怎么可靠可伸缩</li>
+<li>高性能</li>
+<li>多场景</li>
+<li>高可用</li>
+<li>一致性</li>
+</ul>
+<ol start="3">
+<li>启发</li>
+</ol>
+<p>BigTabe特点：</p>
+<ul>
+<li>能够可靠地伸缩</li>
+<li>简单的数据模型</li>
+<li>非严格的关系型</li>
+<li>数据结构和格式能够动态变化</li>
+<li>客户端能够对数据底层存储的局部性作出合理推测</li>
+<li>客户端参数能够指定是否从内存而不是硬盘中读</li>
+</ul>
+<h2>数据模型</h2>
+<p>BigTable是稀疏的、分布式、持久化的、多维有序map（原文：A BigTable is a sparse, distributed, persistent multi-dimensional sorted map.）。map的key是row key、column key和timestamp，value是字节数组。</p>
+<pre><code class="language-golang">(row:string, column:string, time:int64) -> string
+</code></pre>
+<p>论文中说采用这种数据模型，是在研究了多种可能的使用场景后确定的。最典型的网页存储，用url作row key、相关信息作column，网页内容放在content这一列下，包含带有时间戳的不同时间采集的各个版本。</p>
+<h3>Rows</h3>
+<p>row key是字符串，最长支持到64kb。</p>
+<p>在同一个row key下，对数据读写操作是原子的。</p>
+<p>BigTable按照row key的字典序maintain data。</p>
+<p>BigTable会按照row key的range来分区，一个range叫做一个table。tablet是负载均衡和分布式的最小单元。</p>
+<h3>Column Families</h3>
+<p>这里为了方便描述，要发明一些（自己的）术语。</p>
+<p>列键标识一列，列族标识一组列键。列族是访问控制的基本单元。</p>
+<p>列族中的数据通常是同一个类型，在BigTable中是压缩存储。</p>
+<p>一个table下，列族最多支持数百个，列键数量则无限制。</p>
+<p>列键的命名格式是：<code>familiy:qualifier</code></p>
+<p>列族的名字必须是printable的，qualifier则可以是任意的。</p>
+<p>访问控制、磁盘和内存审计都在列族层面。</p>
+<h3>timestamp</h3>
+<p>BigTable用时间戳标识数据的多个版本，各个版本按时间戳倒序存储。</p>
+<p>时间戳的格式是64 bit整数，精确到微秒。</p>
+<p>时间戳可以由客户端自己生成。</p>
+<p>BigTable支持两个列族粒度的参数，来用不同策略对比较老的数据版本作垃圾回收：一是保留最近n个版本，二是保留最近某段时间，比如最近7天。</p>
+<h2>API</h2>
+<p>BigTable提供了两种API，一是表和列族的操作，二是管理集群、表、列族的元数据，例如访问权限控制。</p>
+<p>客户端支持，写/删除value，对单行查找value，遍历某个子集。</p>
+<p><code>RowMutation</code>对单行数据作更新。</p>
+<p><code>Scanner</code>支持遍历操作。</p>
+<p>其他的复杂操作：</p>
+<ol>
+<li>单行事务</li>
+<li>允许单个cell作计数器</li>
+<li>支持在服务器上只读脚本（Sawzall语言）</li>
+<li>和MapReduce集成，作为MapReduce的输入输出</li>
+</ol>
+<h2>构件</h2>
+<p>BigTable使用GFS来存储日志和数据文件。</p>
+<p>BigTable运行在Google的共享机器池中，依赖公共的集群管理系统（任务调度、资源分配、故障处理、监控）。</p>
+<p>BigTable内部使用Google的SSTable结构来存储数据。SSTable是持久的、有序的immutable map，key和value都是任意字节串。
+SSTable支持查找、特定key range的遍历。SSTable包含多个blocks，一个block包含64KB。SSTable包含一个block index来快速定位block。block index在SSTable打开时加载到内存中。一次查找只需要一次磁盘seek，首先在内存中找到block，然后读取该block。SSTable也可以配置成完全内存加载方式，避免磁盘操作。</p>
+<h2>BigTable结构</h2>
+<p>逻辑上是多维的有序map，维度包括：row, column family, timestamp。既然是map，维度就是key，value是字符串。其中column family可以有多个（最多数百个），每个column family可以不限数量。</p>
+<p>论文中以一个存储网页数据的表WebTable为例，</p>
+<ul>
+<li>row是倒序的hostname，例如<code>com.yajunw.www</code></li>
+<li>column family有两个
+<ol>
+<li>第一个是<code>content:</code></li>
+<li>第二个是<code>anchor:</code>，它下面有两个column: <code>a.com</code>, <code>b.com</code></li>
+</ol>
+</li>
+<li>timestamp是在横向的，每个value都会有一个timestamp，可以标识数据的版本。</li>
+<li>value是某个时刻的网页文档数据。</li>
+</ul>
+<p>权限控制是到column family这个粒度。</p>
+<p>BigTable没有支持完整的关系型数据模型。
+BigTable只支持行级事务。
+BigTable最多支持2^61(2048PB)的数据量（猜测这个级别可能是不够用的）。</p>
+<p>BigTable提供两个配置：保留最后多少个版本，或者保留最近多少时间的版本。有垃圾回收机制，去做清理和释放空间。</p>
+<p>BigTable解决特定问题而发明的，并不是闭门造车的结果。BigTable不能替代关系型数据库。</p>
+<p>BigTable依赖Chubby，可用性因此也有一定程度依赖Chubby。</p>
+<p>BigTable某些特点似乎是针对网页存储而设计的。</p>
+</section><div role="list" class="ui list"><div role="listitem" class="item">2021-03-27 14:49:15 +0800<!-- --> <!-- -->yajw<!-- --> <!-- -->Copy old posts<!-- --> <!-- -->A</div></div><div id="comments"></div></div></main><footer class="Home_footer__1WdhD"><div class="Home_powered__2GdUA">Powered by<!-- --> <a href="https://nextjs.org/" target="_blank" rel="noopener noreferrer">Next.js</a>.</div></footer></div></div><script id="__NEXT_DATA__" type="application/json">{"props":{"pageProps":{"post":{"title":" BigTable","comments":true,"date":"2019-09-25T00:05:00.000Z","tags":["Google","BigTable"],"categories":["读书"],"modifyTime":"2021-03-27 14:49:15 +0800","createTime":"2021-03-27 14:49:15 +0800","logs":[{"status":["A"],"files":["2021-03-27 BigTable.md"],"abbrevHash":"f4f4061","hash":"f4f406175bde5279c552d8bac1c05cf7bb72d58e","subject":"Copy old posts","authorName":"yajw","authorDate":"2021-03-27 14:49:15 +0800"}],"link":"2021-03-27%20BigTable","id":"b009d4b0-9fa7-4091-ab69-b0fe3193a18f","content":"\u003cp\u003e这个论文是2006年发表的，当时我还在读高二吧。据论文中所说，BigTable是在03年左右开始的，花了两年多时间，不包含测试的代码在10w行（应该是C++）。\u003c/p\u003e\n\u003cp\u003eBigTable是什么？分布式存储系统，设计目标是能够处理大到PT级别的数据量，能够支持数千台服务器的集群。应用场景包括不同数据量（url到网页到卫星图片），吞吐型（批处理），低延迟型（实时查询）。BigTable在处理这些各种各样的场景时，表现出了灵活性和高性能。\u003c/p\u003e\n\u003cp\u003eBigTable\u003c/p\u003e\n\u003col\u003e\n\u003cli\u003e设计思路和特点\u003c/li\u003e\n\u003cli\u003e主要优势，怎么实现的\u003c/li\u003e\n\u003c/ol\u003e\n\u003cul\u003e\n\u003cli\u003e怎么可靠可伸缩\u003c/li\u003e\n\u003cli\u003e高性能\u003c/li\u003e\n\u003cli\u003e多场景\u003c/li\u003e\n\u003cli\u003e高可用\u003c/li\u003e\n\u003cli\u003e一致性\u003c/li\u003e\n\u003c/ul\u003e\n\u003col start=\"3\"\u003e\n\u003cli\u003e启发\u003c/li\u003e\n\u003c/ol\u003e\n\u003cp\u003eBigTabe特点：\u003c/p\u003e\n\u003cul\u003e\n\u003cli\u003e能够可靠地伸缩\u003c/li\u003e\n\u003cli\u003e简单的数据模型\u003c/li\u003e\n\u003cli\u003e非严格的关系型\u003c/li\u003e\n\u003cli\u003e数据结构和格式能够动态变化\u003c/li\u003e\n\u003cli\u003e客户端能够对数据底层存储的局部性作出合理推测\u003c/li\u003e\n\u003cli\u003e客户端参数能够指定是否从内存而不是硬盘中读\u003c/li\u003e\n\u003c/ul\u003e\n\u003ch2\u003e数据模型\u003c/h2\u003e\n\u003cp\u003eBigTable是稀疏的、分布式、持久化的、多维有序map（原文：A BigTable is a sparse, distributed, persistent multi-dimensional sorted map.）。map的key是row key、column key和timestamp，value是字节数组。\u003c/p\u003e\n\u003cpre\u003e\u003ccode class=\"language-golang\"\u003e(row:string, column:string, time:int64) -\u003e string\n\u003c/code\u003e\u003c/pre\u003e\n\u003cp\u003e论文中说采用这种数据模型，是在研究了多种可能的使用场景后确定的。最典型的网页存储，用url作row key、相关信息作column，网页内容放在content这一列下，包含带有时间戳的不同时间采集的各个版本。\u003c/p\u003e\n\u003ch3\u003eRows\u003c/h3\u003e\n\u003cp\u003erow key是字符串，最长支持到64kb。\u003c/p\u003e\n\u003cp\u003e在同一个row key下，对数据读写操作是原子的。\u003c/p\u003e\n\u003cp\u003eBigTable按照row key的字典序maintain data。\u003c/p\u003e\n\u003cp\u003eBigTable会按照row key的range来分区，一个range叫做一个table。tablet是负载均衡和分布式的最小单元。\u003c/p\u003e\n\u003ch3\u003eColumn Families\u003c/h3\u003e\n\u003cp\u003e这里为了方便描述，要发明一些（自己的）术语。\u003c/p\u003e\n\u003cp\u003e列键标识一列，列族标识一组列键。列族是访问控制的基本单元。\u003c/p\u003e\n\u003cp\u003e列族中的数据通常是同一个类型，在BigTable中是压缩存储。\u003c/p\u003e\n\u003cp\u003e一个table下，列族最多支持数百个，列键数量则无限制。\u003c/p\u003e\n\u003cp\u003e列键的命名格式是：\u003ccode\u003efamiliy:qualifier\u003c/code\u003e\u003c/p\u003e\n\u003cp\u003e列族的名字必须是printable的，qualifier则可以是任意的。\u003c/p\u003e\n\u003cp\u003e访问控制、磁盘和内存审计都在列族层面。\u003c/p\u003e\n\u003ch3\u003etimestamp\u003c/h3\u003e\n\u003cp\u003eBigTable用时间戳标识数据的多个版本，各个版本按时间戳倒序存储。\u003c/p\u003e\n\u003cp\u003e时间戳的格式是64 bit整数，精确到微秒。\u003c/p\u003e\n\u003cp\u003e时间戳可以由客户端自己生成。\u003c/p\u003e\n\u003cp\u003eBigTable支持两个列族粒度的参数，来用不同策略对比较老的数据版本作垃圾回收：一是保留最近n个版本，二是保留最近某段时间，比如最近7天。\u003c/p\u003e\n\u003ch2\u003eAPI\u003c/h2\u003e\n\u003cp\u003eBigTable提供了两种API，一是表和列族的操作，二是管理集群、表、列族的元数据，例如访问权限控制。\u003c/p\u003e\n\u003cp\u003e客户端支持，写/删除value，对单行查找value，遍历某个子集。\u003c/p\u003e\n\u003cp\u003e\u003ccode\u003eRowMutation\u003c/code\u003e对单行数据作更新。\u003c/p\u003e\n\u003cp\u003e\u003ccode\u003eScanner\u003c/code\u003e支持遍历操作。\u003c/p\u003e\n\u003cp\u003e其他的复杂操作：\u003c/p\u003e\n\u003col\u003e\n\u003cli\u003e单行事务\u003c/li\u003e\n\u003cli\u003e允许单个cell作计数器\u003c/li\u003e\n\u003cli\u003e支持在服务器上只读脚本（Sawzall语言）\u003c/li\u003e\n\u003cli\u003e和MapReduce集成，作为MapReduce的输入输出\u003c/li\u003e\n\u003c/ol\u003e\n\u003ch2\u003e构件\u003c/h2\u003e\n\u003cp\u003eBigTable使用GFS来存储日志和数据文件。\u003c/p\u003e\n\u003cp\u003eBigTable运行在Google的共享机器池中，依赖公共的集群管理系统（任务调度、资源分配、故障处理、监控）。\u003c/p\u003e\n\u003cp\u003eBigTable内部使用Google的SSTable结构来存储数据。SSTable是持久的、有序的immutable map，key和value都是任意字节串。\nSSTable支持查找、特定key range的遍历。SSTable包含多个blocks，一个block包含64KB。SSTable包含一个block index来快速定位block。block index在SSTable打开时加载到内存中。一次查找只需要一次磁盘seek，首先在内存中找到block，然后读取该block。SSTable也可以配置成完全内存加载方式，避免磁盘操作。\u003c/p\u003e\n\u003ch2\u003eBigTable结构\u003c/h2\u003e\n\u003cp\u003e逻辑上是多维的有序map，维度包括：row, column family, timestamp。既然是map，维度就是key，value是字符串。其中column family可以有多个（最多数百个），每个column family可以不限数量。\u003c/p\u003e\n\u003cp\u003e论文中以一个存储网页数据的表WebTable为例，\u003c/p\u003e\n\u003cul\u003e\n\u003cli\u003erow是倒序的hostname，例如\u003ccode\u003ecom.yajunw.www\u003c/code\u003e\u003c/li\u003e\n\u003cli\u003ecolumn family有两个\n\u003col\u003e\n\u003cli\u003e第一个是\u003ccode\u003econtent:\u003c/code\u003e\u003c/li\u003e\n\u003cli\u003e第二个是\u003ccode\u003eanchor:\u003c/code\u003e，它下面有两个column: \u003ccode\u003ea.com\u003c/code\u003e, \u003ccode\u003eb.com\u003c/code\u003e\u003c/li\u003e\n\u003c/ol\u003e\n\u003c/li\u003e\n\u003cli\u003etimestamp是在横向的，每个value都会有一个timestamp，可以标识数据的版本。\u003c/li\u003e\n\u003cli\u003evalue是某个时刻的网页文档数据。\u003c/li\u003e\n\u003c/ul\u003e\n\u003cp\u003e权限控制是到column family这个粒度。\u003c/p\u003e\n\u003cp\u003eBigTable没有支持完整的关系型数据模型。\nBigTable只支持行级事务。\nBigTable最多支持2^61(2048PB)的数据量（猜测这个级别可能是不够用的）。\u003c/p\u003e\n\u003cp\u003eBigTable提供两个配置：保留最后多少个版本，或者保留最近多少时间的版本。有垃圾回收机制，去做清理和释放空间。\u003c/p\u003e\n\u003cp\u003eBigTable解决特定问题而发明的，并不是闭门造车的结果。BigTable不能替代关系型数据库。\u003c/p\u003e\n\u003cp\u003eBigTable依赖Chubby，可用性因此也有一定程度依赖Chubby。\u003c/p\u003e\n\u003cp\u003eBigTable某些特点似乎是针对网页存储而设计的。\u003c/p\u003e\n"}},"__N_SSG":true},"page":"/blog/[link]","query":{"link":"2021-03-27 BigTable"},"buildId":"ravzvVxRlFE3_IAU4jdd7","nextExport":false,"isFallback":false,"gsp":true}</script><script nomodule="" src="/_next/static/chunks/polyfills-ff94e68042added27a93.js"></script><script src="/_next/static/chunks/main-c006ee6087559bbd65e3.js" async=""></script><script src="/_next/static/chunks/webpack-50bee04d1dc61f8adf5b.js" async=""></script><script src="/_next/static/chunks/framework.15878d4e523f86636251.js" async=""></script><script src="/_next/static/chunks/99f422a92ff7083adb8a7d840734144fa7589f68.e37cca09058b1656d546.js" async=""></script><script src="/_next/static/chunks/pages/_app-86af5e0fcdd51c9c3a66.js" async=""></script><script src="/_next/static/chunks/314642ff.81d3755a1df95fed9f2f.js" async=""></script><script src="/_next/static/chunks/762e22088df2ca7ea97d3f731b2a7315c482f91e.cb9acb13aef2b3683e00.js" async=""></script><script src="/_next/static/chunks/pages/blog/%5Blink%5D-87cd50cf458654f0c030.js" async=""></script><script src="/_next/static/ravzvVxRlFE3_IAU4jdd7/_buildManifest.js" async=""></script><script src="/_next/static/ravzvVxRlFE3_IAU4jdd7/_ssgManifest.js" async=""></script></body></html>
