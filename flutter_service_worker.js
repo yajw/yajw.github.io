@@ -75,8 +75,8 @@ const RESOURCES = {"assets/fonts/MaterialIcons-Regular.otf": "3265e4dca96cbeed42
 "assets/NOTICES": "1decf007be0e4a94c180b670f08f06cf",
 "version.json": "5603abc73000b9d2e1e1a7b99cac3fb6",
 "manifest.json": "9681b6d51d61be704c1d337100d5c2c1",
-"index.html": "41f886ebf5f415af3373523e4def4ec1",
-"/": "41f886ebf5f415af3373523e4def4ec1",
+"index.html": "db4de1c06c1868b706b6ae10e372b41d",
+"/": "db4de1c06c1868b706b6ae10e372b41d",
 "favicon.png": "5dcef449791fa27946b3d35ad8803796",
 "flutter.js": "0b19a3d1d54c58174c41cd35acdd9388",
 "icons/Icon-192.png": "ac9a721a12bbc803b44f645561ecb1e1",
@@ -93,6 +93,21 @@ const RESOURCES = {"assets/fonts/MaterialIcons-Regular.otf": "3265e4dca96cbeed42
 "canvaskit/skwasm.js": "5256dd3e40ec9fe1fc9faa51a116bcfd"};
 // The application shell files that are downloaded before a service worker can
 // start.
+const CORE = ["main.dart.js",
+"index.html",
+"assets/AssetManifest.json",
+"assets/FontManifest.json"];
+
+// During install, the TEMP cache is populated with the application shell files.
+self.addEventListener("install", (event) => {
+  self.skipWaiting();
+  return event.waitUntil(
+    caches.open(TEMP).then((cache) => {
+      return cache.addAll(
+        CORE.map((value) => new Request(value, {'cache': 'reload'})));
+    })
+  );
+});
 // During activate, the cache is populated with the temp files downloaded in
 // install. If this service worker is upgrading from one with a saved
 // MANIFEST, then use this to retain unchanged resource files.
@@ -153,7 +168,6 @@ self.addEventListener("activate", function(event) {
     }
   }());
 });
-var IN_PROCESSING_REQUESTS = {};
 // The fetch handler redirects requests for RESOURCE files to the service
 // worker cache.
 self.addEventListener("fetch", (event) => {
@@ -183,27 +197,12 @@ self.addEventListener("fetch", (event) => {
       return cache.match(event.request).then((response) => {
         // Either respond with the cached resource, or perform a fetch and
         // lazily populate the cache only if the resource was successfully fetched.
-
-        if (response) {
-          return response;
-        }
-
-        if (IN_PROCESSING_REQUESTS[key]) {
-          return IN_PROCESSING_REQUESTS[key].clone();
-        }
-
-        return fetch(event.request).then((response) => {
+        return response || fetch(event.request).then((response) => {
           if (response && Boolean(response.ok)) {
-
-            cache.put(event.request, response.clone())
-                .then(() => delete IN_PROCESSING_REQUESTS[key]);
+            cache.put(event.request, response.clone());
           }
-
-          IN_PROCESSING_REQUESTS[key] = response.clone();
-
           return response;
         });
-
       })
     })
   );

@@ -368,16 +368,7 @@ _flutter.loader = null;
       // Install the `didCreateEngineInitializer` listener where Flutter web expects it to be.
       this.didCreateEngineInitializer =
         entrypointLoader.didCreateEngineInitializer.bind(entrypointLoader);
-      const main = entrypointLoader.loadEntrypoint(entrypoint);
-
-      fetch("canvaskit/canvaskit.js");
-      fetch("canvaskit/canvaskit.wasm");
-      fetch("assets/FontManifest.json");
-      fetch("assets/fonts/MaterialIcons-Regular.otf");
-      fetch("assets/fonts/MaterialIcons-Regular.otf");
-      fetch("/");
-
-      return main;
+      return entrypointLoader.loadEntrypoint(entrypoint);
     }
   }
 
