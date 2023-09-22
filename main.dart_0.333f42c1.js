@@ -553,7 +553,7 @@ var $async$T8=A.a_(function(b,c){if(b===1)return A.W(c,r)
 while(true)switch(s){case 0:n={}
 l=t.Lk
 s=3
-return A.a3(A.Ta(a.wn("FontManifest.7736bb7f.json")),$async$T8)
+return A.a3(A.Ta(a.wn("FontManifest.f4fda0a2.json")),$async$T8)
 case 3:m=l.a(c)
 if(!m.gN0()){$.oF().$1("Font manifest does not exist at `"+m.a+"` - ignoring.")
 q=new A.uR(A.b([],t.z8))
