@@ -22264,7 +22264,7 @@ $1(a){var s=$.c0
 s=(s==null?$.c0=A.eK(self.window.flutterConfiguration):s).b
 if(s==null)s=null
 else{s=s.canvasKitBaseUrl
-if(s==null)s=null}return(s==null?"https://cdn.jsdelivr.net/npm/canvaskit-wasm@0.38/bin/canvaskit.min.js":s)+a},
+if(s==null)s=null}return(s==null?"https://cdn.jsdelivr.net/npm/canvaskit-wasm@0.38/bin/":s)+a},
 $S:55}
 A.acA.prototype={
 $1(a){this.a.remove()
