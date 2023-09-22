@@ -556,4 +556,4 @@ var s=A.aiQ
 if(typeof dartMainRunner==="function")dartMainRunner(s,[])
 else s([])})})()
 
-//@ sourceURL=https://yajw.org/main.dart.75b1211a.js
+//@ sourceURL=https://yajw.github.io/main.dart.75b1211a.js
