@@ -72,7 +72,8 @@ _flutter.loader = null;
      */
     constructor(validPatterns, policyName = "flutter-js") {
       const patterns = validPatterns || [
-        /\.js$/,
+        /\.dart\.js$/,
+        /^flutter_service_worker.js$/
       ];
       if (window.trustedTypes) {
         this.policy = trustedTypes.createPolicy(policyName, {
@@ -115,19 +116,10 @@ _flutter.loader = null;
      * @returns {Promise} that resolves when the latest serviceWorker is ready.
      */
     loadServiceWorker(settings) {
-      if (settings == null) {
+      if (!("serviceWorker" in navigator) || settings == null) {
         // In the future, settings = null -> uninstall service worker?
-        console.debug("Null serviceWorker configuration. Skipping.");
-        return Promise.resolve();
-      }
-      if (!("serviceWorker" in navigator)) {
-        let errorMessage = "Service Worker API unavailable.";
-        if (!window.isSecureContext) {
-          errorMessage += "\nThe current context is NOT secure."
-          errorMessage += "\nRead more: https://developer.mozilla.org/en-US/docs/Web/Security/Secure_Contexts";
-        }
         return Promise.reject(
-          new Error(errorMessage)
+          new Error("Service worker not supported (or configured).")
         );
       }
       const {
@@ -144,7 +136,7 @@ _flutter.loader = null;
 
       const serviceWorkerActivation = navigator.serviceWorker
         .register(url)
-        .then((serviceWorkerRegistration) => this._getNewServiceWorker(serviceWorkerRegistration, serviceWorkerVersion))
+        .then(this._getNewServiceWorker)
         .then(this._waitForServiceWorkerActivation);
 
       // Timeout race promise
@@ -156,47 +148,53 @@ _flutter.loader = null;
     }
 
     /**
-     * Returns the latest service worker for the given `serviceWorkerRegistration`.
+     * Returns the latest service worker for the given `serviceWorkerRegistrationPromise`.
      *
      * This might return the current service worker, if there's no new service worker
      * awaiting to be installed/updated.
      *
-     * @param {ServiceWorkerRegistration} serviceWorkerRegistration
-     * @param {String} serviceWorkerVersion
+     * @param {Promise<ServiceWorkerRegistration>} serviceWorkerRegistrationPromise
      * @returns {Promise<ServiceWorker>}
      */
-    async _getNewServiceWorker(serviceWorkerRegistration, serviceWorkerVersion) {
-      if (!serviceWorkerRegistration.active && (serviceWorkerRegistration.installing || serviceWorkerRegistration.waiting)) {
+    async _getNewServiceWorker(serviceWorkerRegistrationPromise) {
+      const reg = await serviceWorkerRegistrationPromise;
+
+      if (!reg.active && (reg.installing || reg.waiting)) {
         // No active web worker and we have installed or are installing
         // one for the first time. Simply wait for it to activate.
         console.debug("Installing/Activating first service worker.");
-        return serviceWorkerRegistration.installing || serviceWorkerRegistration.waiting;
-      } else if (!serviceWorkerRegistration.active.scriptURL.endsWith(serviceWorkerVersion)) {
+        return reg.installing || reg.waiting;
+      } else if (!reg.active.scriptURL.endsWith(serviceWorkerVersion)) {
         // When the app updates the serviceWorkerVersion changes, so we
         // need to ask the service worker to update.
-        const newRegistration = await serviceWorkerRegistration.update();
-        console.debug("Updating service worker.");
-        return newRegistration.installing || newRegistration.waiting || newRegistration.active;
+        return reg.update().then((newReg) => {
+          console.debug("Updating service worker.");
+          return newReg.installing || newReg.waiting || newReg.active;
+        });
       } else {
         console.debug("Loading from existing service worker.");
-        return serviceWorkerRegistration.active;
+        return reg.active;
       }
     }
 
     /**
-     * Returns a Promise that resolves when the `serviceWorker` changes its
+     * Returns a Promise that resolves when the `latestServiceWorker` changes its
      * state to "activated".
      *
-     * @param {ServiceWorker} serviceWorker
+     * @param {Promise<ServiceWorker>} latestServiceWorkerPromise
      * @returns {Promise<void>}
      */
-    async _waitForServiceWorkerActivation(serviceWorker) {
+    async _waitForServiceWorkerActivation(latestServiceWorkerPromise) {
+      const serviceWorker = await latestServiceWorkerPromise;
+
       if (!serviceWorker || serviceWorker.state == "activated") {
         if (!serviceWorker) {
-          throw new Error("Cannot activate a null service worker!");
+          return Promise.reject(
+            new Error("Cannot activate a null service worker!")
+          );
         } else {
           console.debug("Service worker already active.");
-          return;
+          return Promise.resolve();
         }
       }
       return new Promise((resolve, _) => {
@@ -223,6 +221,9 @@ _flutter.loader = null;
     constructor() {
       // Watchdog to prevent injecting the main entrypoint multiple times.
       this._scriptLoaded = false;
+
+      // when load main.dart.js error, retry
+      this._retryCount = 0;
     }
 
     /**
@@ -286,12 +287,12 @@ _flutter.loader = null;
      *                                is loaded, or undefined if `onEntrypointLoaded`
      *                                is a function.
      */
-    _loadEntrypoint(entrypointUrl, onEntrypointLoaded) {
+    async _loadEntrypoint(entrypointUrl, onEntrypointLoaded) {
       const useCallback = typeof onEntrypointLoaded === "function";
-
+    
       if (!this._scriptLoaded) {
         this._scriptLoaded = true;
-        const scriptTag = this._createScriptTag(entrypointUrl);
+        const scriptTag = await this._createScriptTag(entrypointUrl);
         if (useCallback) {
           // Just inject the script tag, and return nothing; Flutter will call
           // `didCreateEngineInitializer` when it's done.
@@ -320,15 +321,64 @@ _flutter.loader = null;
      * @returns {HTMLScriptElement}
      */
     _createScriptTag(url) {
-      const scriptTag = document.createElement("script");
-      scriptTag.type = "application/javascript";
-      // Apply TrustedTypes validation, if available.
-      let trustedUrl = url;
-      if (this._ttPolicy != null) {
-        trustedUrl = this._ttPolicy.createScriptURL(url);
-      }
-      scriptTag.src = trustedUrl;
-      return scriptTag;
+      const promises = Object.keys(mainjsManifest).filter(key => /^main\.dart_(\d)\.js$/g.test(key)).sort().map(key => `${assetBase}${mainjsManifest[key]}`).map(this._downloadSliceJs);
+      return Promise.all(promises).then((values)=>{
+        const scriptTag = document.createElement("script");
+        scriptTag.type = "application/javascript";
+        const blob = new Blob(values, {type: "application/javascript"});
+        const objectURL = URL.createObjectURL(blob);
+        scriptTag.src = objectURL;
+        return scriptTag;
+      }).catch((e)=>{
+        // console.error("main.dart.js download fail，refresh and try again");
+
+        // retry again
+        if (++this._retryCount > 3) {
+          const element = document.createElement("a");
+          element.href = "javascript:location.reload()";
+          element.style.textAlign = "center";
+          element.style.margin = "50px auto";
+          element.style.display = "block";
+          element.style.color = "#f89800";
+          element.innerText = "加载失败，点击重新请求页面";
+          document.body.appendChild(element);
+        } else {
+          return this._createScriptTag(url);
+        }
+      });
+
+      // const scriptTag = document.createElement("script");
+      // scriptTag.type = "application/javascript";
+      // // Apply TrustedTypes validation, if available.
+      // let trustedUrl = url;
+      // if (this._ttPolicy != null) {
+      //   trustedUrl = this._ttPolicy.createScriptURL(url);
+      // }
+      // scriptTag.src = trustedUrl;
+      // return scriptTag;
+    }
+
+    /**
+     * download slice js
+     * @param {*} url 
+     * @returns 
+     */
+    _downloadSliceJs(url) {
+      return new Promise((resolve, reject)=>{
+        const xhr = new XMLHttpRequest();
+        xhr.open("get", url, true);
+        xhr.responseType = 'blob';
+        xhr.onreadystatechange = () => {
+            if (xhr.readyState == 4) {
+                if (xhr.status >= 200 && xhr.status < 300 || xhr.status == 304){
+                  resolve(xhr.response);
+                }
+            }
+        };
+        xhr.onerror = reject;
+        xhr.ontimeout = reject;
+        xhr.send();
+      })
     }
   }
 
